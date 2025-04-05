@@ -5,3 +5,11 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+@layer utilities {
+  @media (min-width: 768px) {
+    .md\:h-left {
+      height: calc(100vh - 208px);
+    }
+  }
+}
