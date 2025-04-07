@@ -6,7 +6,8 @@ export type IconKeys =
   | "calendar"
   | "user"
   | "file"
-  | "award";
+  | "award"
+  | "x";
 
 const iconMap: Record<IconKeys, string> = {
   logoSm: "/tave-logo-sm.svg",
@@ -15,6 +16,7 @@ const iconMap: Record<IconKeys, string> = {
   user: "/user.svg",
   file: "/file.svg",
   award: "/award.svg",
+  x: "/x.svg",
 };
 
 interface IconProps {
@@ -40,7 +42,7 @@ export const Icons = ({
       width={width}
       height={height}
       alt={alt}
-      className={className}
+      className={`w-auto h-auto ${className}`}
       priority
     />
   ) : (
@@ -49,7 +51,7 @@ export const Icons = ({
       width={width}
       height={height}
       alt={alt}
-      className={className}
+      className={`w-auto h-auto ${className}`}
     />
   );
 };

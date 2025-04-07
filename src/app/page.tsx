@@ -1,5 +1,6 @@
-import FlexBox from "./components/layout/FlexBox";
-import Rectangle from "./components/Rectangle";
+import FlexBox from "../components/layout/FlexBox";
+import Rectangle from "../components/Rectangle";
+import StepBar from "../components/StepBar";
 
 const currentSemester = 15;
 export default function Home() {

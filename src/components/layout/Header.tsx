@@ -3,9 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import Login from "../Modal/Login";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -37,7 +39,7 @@ export default function Header() {
             {redirectionList.map((item, index) => (
               <li key={index} className="relative group">
                 <Link
-                  href={"/"}
+                  href={`/${item.toLowerCase()}`}
                   className="cursor-pointer relative z-50 font-bold"
                 >
                   {item}
@@ -45,8 +47,11 @@ export default function Header() {
               </li>
             ))}
             <li>
-              <div className="bg-gradient-to-r from-[#6D3CFF] to-[#1A5BFF] py-2 px-6 rounded-2xl text-center font-bold">
-                <button className="cursor-pointer relative z-50">
+              <div className="bg-gradient-to-r from-[#1A5BFF] to-[#60AFFF] py-2 px-6 rounded-lg text-center font-bold">
+                <button
+                  className="cursor-pointer relative z-50"
+                  onClick={() => setIsModalOpen(true)}
+                >
                   지원하기
                 </button>
               </div>
@@ -127,14 +132,19 @@ export default function Header() {
             </li>
           ))}
           <li className="py-3">
-            <div className="flex items-center justify-center bg-gradient-to-r from-[#6D3CFF] to-[#1A5BFF] rounded-lg text-center w-20 h-9">
-              <Link href="/" className="cursor-pointer text-base font-bold">
+            <div className="flex items-center justify-center bg-gradient-to-r from-[#1A5BFF] to-[#60AFFF] rounded-lg text-center w-20 h-9">
+              <button
+                className="cursor-pointer text-base font-bold"
+                onClick={() => setIsModalOpen(true)}
+              >
                 지원하기
-              </Link>
+              </button>
             </div>
           </li>
         </ul>
       </>
+
+      {isModalOpen && <Login isOpen={isModalOpen} setIsOpen={setIsModalOpen} />}
     </header>
   );
 }
