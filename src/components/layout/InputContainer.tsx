@@ -1,4 +1,4 @@
-import InputLable from "../InputLabel";
+import InputLable from "../Input/InputLabel";
 import FlexBox from "./FlexBox";
 
 interface InputContainerProps {

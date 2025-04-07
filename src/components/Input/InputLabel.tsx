@@ -1,4 +1,4 @@
-import FlexBox from "./layout/FlexBox";
+import FlexBox from "../layout/FlexBox";
 
 interface InputLabelProps {
   htmlFor?: string;
