@@ -17,7 +17,7 @@ const StepBar = ({ title, currentStep, maxStep }: StepBarProps) => {
         {Array.from({ length: maxStep }, (_, i) => (
           <React.Fragment key={i}>
             <div
-              className={`w-8 h-8 rounded-full bg-[#44495D] flex justify-center items-center cursor-pointer 
+              className={`w-8 h-8 rounded-full bg-[#44495D] flex justify-center items-center 
                 ${
                   i + 1 <= currentStep
                     ? "bg-gradient-to-r from-[#1A5BFF] to-[#60AFFF]"

@@ -96,12 +96,12 @@ const AccountClient = () => {
         <ButtonNavigate
           text="이전"
           hasBackGround={false}
-          onClick={() => router.push("/register/profile")}
+          onClick={() => router.push("auth/register/profile")}
         />
         <ButtonNavigate
           text="다음"
           isActive={checkAll}
-          onClick={() => router.push("/register/complete")}
+          onClick={() => router.push("auth/register/complete")}
         />
       </div>
     </FlexBox>

@@ -69,7 +69,7 @@ const TermsClient = () => {
       <FlexBox className="justify-end pt-4">
         <ButtonNavigate
           text="다음"
-          onClick={() => router.push("/register/account")}
+          onClick={() => router.push("/auth/register/profile")}
           isActive={checkAll}
           isDisabled={!checkAll}
         />

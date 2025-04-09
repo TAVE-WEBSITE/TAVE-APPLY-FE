@@ -20,7 +20,7 @@ const RegisterLayoutClient = ({
 }: Readonly<{ children: React.ReactNode }>) => {
   const pathName = usePathname();
   const step =
-    registerMap[pathName.replace("/register/", "") as RegisterProcess] || 1;
+    registerMap[pathName.replace("auth/register/", "") as RegisterProcess] || 1;
   return (
     <>
       <div className="md:pt-28 md:pb-16 pt-20 pb-10">

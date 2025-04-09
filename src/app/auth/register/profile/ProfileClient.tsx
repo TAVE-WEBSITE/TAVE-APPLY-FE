@@ -83,13 +83,13 @@ const ProfileClient = () => {
         <ButtonNavigate
           text="이전"
           hasBackGround={false}
-          onClick={() => router.push("/register/terms")}
+          onClick={() => router.push("auth/register/terms")}
         />
         <ButtonNavigate
           text="다음"
           isActive={checkAll}
           isDisabled={!checkAll}
-          onClick={() => router.push("/register/account")}
+          onClick={() => router.push("auth/register/account")}
         />
       </div>
     </>
