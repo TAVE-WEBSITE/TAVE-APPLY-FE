@@ -1,41 +1,49 @@
-type InputType = "text" | "email" | "password" | "number";
-type InputSize = "w-[473px]" | "w-full";
+import { Dispatch, SetStateAction } from "react";
 
-interface InputProps {
+type InputType = "text" | "email" | "password" | "number";
+
+interface InputProps<T extends string | number> {
   type?: InputType;
-  width?: InputSize;
-  value: string;
+  value: T;
   placeholder?: string;
-  setValue: (value: string) => void;
-  onBlur?: () => void;
+  setValue: Dispatch<SetStateAction<T>>;
   isError?: boolean;
   errorMessage?: string;
   readonly?: boolean;
+  hasButton?: boolean;
+  maxLength?: number;
   className?: string;
 }
 
-const InputField = ({
+const InputField = <T extends string | number>({
   type = "text",
   value,
-  width = "w-full",
   placeholder,
   setValue,
-  onBlur,
   isError = false,
   errorMessage,
   readonly = false,
+  hasButton = false,
+  maxLength,
   className,
-}: InputProps) => {
+}: InputProps<T>) => {
   return (
     <>
       <input
         type={type}
         value={value}
         placeholder={placeholder}
-        onChange={(e) => setValue(e.target.value.trim())}
-        onBlur={onBlur}
+        maxLength={maxLength}
+        onChange={(e) => {
+          const val = e.target.value;
+          if (type === "number") {
+            setValue(val === "" ? ("" as T) : (Number(val) as T));
+          } else if ((type = "text")) {
+            setValue(val as T);
+          }
+        }}
         readOnly={readonly}
-        className={`${width} border ${
+        className={`${hasButton ? "w-[277px] md:w-[473px]" : "w-full"} border ${
           isError ? "border-red-500" : "border-[#E5E7EB]"
         } p-3 md:p-4 rounded-xl text-[#394150] md:text-base shadow-[0px_0px_24px_0px_#195BFF14] ${className}`}
       />

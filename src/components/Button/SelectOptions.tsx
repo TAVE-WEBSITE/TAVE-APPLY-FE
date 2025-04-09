@@ -2,16 +2,16 @@
 
 import FlexBox from "../layout/FlexBox";
 
-interface SelectOptionsProps<T> {
-  options: T[];
-  selectedOption: T;
-  setSelectedOption: (option: T) => void;
+interface SelectOptionsProps {
+  options: string[];
+  selectedOption: string;
+  setSelectedOption: (option: string) => void;
 }
-const SelectOptions = <T extends string | undefined>({
+const SelectOptions = ({
   options,
   selectedOption,
   setSelectedOption,
-}: SelectOptionsProps<T>) => {
+}: SelectOptionsProps) => {
   return (
     <FlexBox className="justify-between">
       {options.map((option) => {
@@ -20,7 +20,7 @@ const SelectOptions = <T extends string | undefined>({
         return (
           <button
             key={option}
-            className={`w-[273px] h-[50px] border ${
+            className={`md:w-[273px] w-[167px] h-[50px] border ${
               isSelected
                 ? "border-[#195BFF80] opacity-50 bg-[#195BFF1A] opacity-10 text-[#195BFF]"
                 : "border-[#E5E7EB] bg-[#FFFFFF] text-[#394150]"

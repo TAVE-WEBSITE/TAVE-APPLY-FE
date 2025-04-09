@@ -4,12 +4,16 @@ import { usePathname } from "next/navigation";
 import StepBar from "@/components/StepBar";
 import FlexBox from "@/components/layout/FlexBox";
 
-type RegisterProcess = "account" | "profile" | "complete";
+/** terms - 이용약관, profile1 - 이름 등, profile2 - 이메일 등, complete - 가입완료 */
+type RegisterProcess = "terms" | "account" | "profile" | "complete";
 const registerMap: Record<RegisterProcess, number> = {
-  account: 1,
+  terms: 1,
   profile: 2,
-  complete: 3,
+  account: 3,
+  complete: 4,
 };
+
+const stepCount = Object.keys(registerMap).length;
 
 const RegisterLayoutClient = ({
   children,
@@ -19,13 +23,12 @@ const RegisterLayoutClient = ({
     registerMap[pathName.replace("/register/", "") as RegisterProcess] || 1;
   return (
     <>
-      {" "}
-      <div className="pt-28 pb-16">
-        <StepBar title="JOIN TO TAVE" maxStep={3} currentStep={step} />
+      <div className="md:pt-28 md:pb-16 pt-20 pb-10">
+        <StepBar title="JOIN TO TAVE" maxStep={stepCount} currentStep={step} />
       </div>
       <section className="bg-[#F9FAFB] flex-1">
         <FlexBox
-          className="py-12 md:w-[562px] w-[328px] mx-auto h-full gap-4"
+          className="py-12 md:w-[562px] w-[348px] mx-auto h-full gap-4"
           direction="col"
         >
           {children}

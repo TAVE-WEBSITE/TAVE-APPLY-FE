@@ -5,7 +5,7 @@ const Complete = () => {
   return (
     <FlexBox
       direction="col"
-      className="text-[#394150] text-[32px] font-bold text-center h-full justify-center gap-8"
+      className="text-[#394150] md:text-[32px] text-2xl font-bold text-center h-full justify-center gap-8"
     >
       <div>
         <p>홍길동님</p>

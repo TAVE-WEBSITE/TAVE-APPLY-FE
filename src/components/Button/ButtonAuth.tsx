@@ -26,7 +26,7 @@ const ButtonAuth = ({ text, isActive = true, onClick }: ButtonAuthProps) => {
   };
   return (
     <button
-      className={`w-[76px] h-[42px] bg-[#212225] ${
+      className={`md:w-[76px] w-[61px] h-[42px] md:text-sm text-xs bg-[#212225] ${
         isActive ? "" : "opacity-40"
       } rounded-lg text-white font-bold cursor-pointer flex justify-center items-center`}
       onClick={handleClick}
