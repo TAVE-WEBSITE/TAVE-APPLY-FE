@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { isValidPassword, validatePasswordConfirm } from "@/utils/validate";
 import FlexBox from "@/components/layout/FlexBox";
@@ -8,42 +8,28 @@ import ButtonNavigate from "@/components/Button/ButtonNavigate";
 import InputContainer from "@/components/layout/InputContainer";
 import InputField from "@/components/Input/InputField";
 import ButtonAuth from "@/components/Button/ButtonAuth";
+import { useValidation } from "@/hooks/useValidation";
 
 const AccountClient = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [authCode, setAuthCode] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const passwordError = useValidation(password, isValidPassword);
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [confirmError, setConfirmError] = useState("");
-  //const [isAllChecked, setIsAllChecked] = useState(false);
-
-  const checkPassword = () => {
-    const error = isValidPassword(password);
-    setPasswordError(error);
-  };
-
-  const confirmPassword = () => {
-    const error = validatePasswordConfirm(password, passwordConfirm);
-    setConfirmError(error);
-  };
-
-  useEffect(() => {
-    if (password.length > 0) checkPassword();
-    else setPasswordError("");
-  }, [password]);
-
-  useEffect(() => {
-    if (passwordConfirm.length > 0) confirmPassword();
-    else setPasswordConfirm("");
-  }, [passwordConfirm]);
+  const confirmError = useValidation(
+    password,
+    validatePasswordConfirm,
+    passwordConfirm
+  );
 
   const handleCheck = () => {
     if (
       email.length &&
       String(authCode).length &&
+      password.length &&
       passwordError.length === 0 &&
+      passwordConfirm.length &&
       confirmError.length === 0
     )
       return true;
