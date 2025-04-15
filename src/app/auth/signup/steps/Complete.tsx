@@ -1,7 +1,13 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useSignUpStore } from "@/store/signUpStore";
 import FlexBox from "@/components/layout/FlexBox";
 
 const Complete = () => {
+  const router = useRouter();
+  const { reset } = useSignUpStore();
+
   return (
     <FlexBox
       direction="col"
@@ -12,12 +18,15 @@ const Complete = () => {
         <p>회원가입이 완료되었습니다!</p>
       </div>
       <FlexBox direction="col" className="items-center">
-        <Link
-          href="/"
-          className="w-[98px] h-[50px] bg-[#195BFF] text-[#FFFFFF] font-bold text-base rounded-lg flex items-center justify-center"
+        <button
+          onClick={() => {
+            reset();
+            router.push("/");
+          }}
+          className="w-[98px] h-[50px] bg-[#195BFF] cursor-pointer text-[#FFFFFF] font-bold text-base rounded-lg flex items-center justify-center"
         >
           돌아가기
-        </Link>
+        </button>
       </FlexBox>
     </FlexBox>
   );
