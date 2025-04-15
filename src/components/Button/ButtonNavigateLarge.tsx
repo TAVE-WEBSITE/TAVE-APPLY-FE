@@ -1,15 +1,8 @@
 "use client";
 
-export interface ButtonNavigateProps {
-  text: string;
-  isActive?: boolean;
-  isDisabled?: boolean;
-  onClick?: () => void;
-  hasBackGround?: boolean;
-  className?: string;
-}
+import { ButtonNavigateProps } from "./ButtonNavigate";
 
-const ButtonNavigate = ({
+const ButtonNavigateLarge = ({
   text,
   isActive = true,
   isDisabled,
@@ -19,7 +12,7 @@ const ButtonNavigate = ({
 }: ButtonNavigateProps) => {
   return (
     <button
-      className={`w-full md:w-[72px] h-[50px] rounded-lg font-bold cursor-pointer 
+      className={`w-full md:w-[140px] h-[50px] rounded-lg font-bold cursor-pointer 
         ${
           hasBackGround
             ? "bg-[#195BFF] text-white"
@@ -34,4 +27,4 @@ const ButtonNavigate = ({
   );
 };
 
-export default ButtonNavigate;
+export default ButtonNavigateLarge;
