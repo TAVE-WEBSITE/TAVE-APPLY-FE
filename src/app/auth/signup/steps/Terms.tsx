@@ -1,18 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import CheckBox from "@/components/Input/CheckBox";
 import FlexBox from "@/components/layout/FlexBox";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
+import { useSignUpStore } from "@/store/signUpStore";
 
 const TermsClient = () => {
-  const router = useRouter();
-  const [checkService, setCheckService] = useState(false);
-  const [checkPrivacy, setCheckPrivacy] = useState(false);
+  const {
+    checkPrivacy,
+    checkService,
+    setCheckPrivacy,
+    setCheckService,
+    setCurrentStep,
+  } = useSignUpStore();
 
-  const checkAll = checkService && checkPrivacy;
+  const checkAll = checkPrivacy && checkService;
 
   const handleCheckAll = () => {
     const next = !checkAll;
@@ -21,6 +24,9 @@ const TermsClient = () => {
   };
   return (
     <>
+      <h1 className="font-bold md:text-2xl text-xl text-[#394150] text-center mb-4">
+        약관 동의
+      </h1>
       <FlexBox
         direction="col"
         className="gap-6 border border-[#E5E7EB] bg-white rounded-2xl p-8 text-[#394150] md:text-base text-sm"
@@ -69,7 +75,7 @@ const TermsClient = () => {
       <FlexBox className="justify-end pt-4">
         <ButtonNavigate
           text="다음"
-          onClick={() => router.push("/auth/register/profile")}
+          onClick={() => setCurrentStep(2)}
           isActive={checkAll}
           isDisabled={!checkAll}
         />

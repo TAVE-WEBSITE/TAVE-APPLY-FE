@@ -6,12 +6,14 @@ interface InputProps<T extends string | number> {
   type?: InputType;
   value: T;
   placeholder?: string;
-  setValue: Dispatch<SetStateAction<T>>;
+  setValue?: (value: T) => void;
   isError?: boolean;
   errorMessage?: string;
   readonly?: boolean;
   hasButton?: boolean;
   maxLength?: number;
+  isTimerActive?: boolean;
+  timeLeft?: number;
   className?: string;
 }
 
@@ -25,6 +27,8 @@ const InputField = <T extends string | number>({
   readonly = false,
   hasButton = false,
   maxLength,
+  isTimerActive = false,
+  timeLeft = 300,
   className,
 }: InputProps<T>) => {
   return (
@@ -36,9 +40,9 @@ const InputField = <T extends string | number>({
         maxLength={maxLength}
         onChange={(e) => {
           const val = e.target.value;
-          if (type === "number") {
-            setValue(val === "" ? ("" as T) : (Number(val) as T));
-          } else if ((type = "text")) {
+          if (type === "number" && setValue) {
+            setValue(val === "" ? ("" as T) : (String(val) as T));
+          } else if (setValue) {
             setValue(val as T);
           }
         }}
