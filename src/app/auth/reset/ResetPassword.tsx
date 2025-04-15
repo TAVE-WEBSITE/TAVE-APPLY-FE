@@ -11,6 +11,7 @@ import { isValidPassword, validatePasswordConfirm } from "@/utils/validate";
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [isToastOpen, setIsToastOpen] = useState(false);
 
   const passwordError = useValidation(newPassword, isValidPassword);
   const passwordConfirmError = useValidation(
@@ -19,7 +20,9 @@ const ResetPassword = () => {
     passwordConfirm
   );
 
-  const handlePasswordUpdate = () => {};
+  const handlePasswordUpdate = () => {
+    setIsToastOpen(!isToastOpen);
+  };
 
   return (
     <FlexBox className="pt-4 gap-8" direction="col">

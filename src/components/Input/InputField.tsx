@@ -29,7 +29,7 @@ const InputField = <T extends string | number>({
   readonly = false,
   hasButton = false,
   maxLength,
-  isCounting = true,
+  isCounting = false,
   minuteLimit = 300,
   className,
 }: InputProps<T>) => {
@@ -56,7 +56,7 @@ const InputField = <T extends string | number>({
     return `${String(minute).padStart(2, "0")}:${second.padStart(2, "0")}`;
   };
   return (
-    <>
+    <div className="relative">
       <input
         type={type}
         value={value}
@@ -83,7 +83,7 @@ const InputField = <T extends string | number>({
           {formatTime(remainingTime)}
         </p>
       )}
-    </>
+    </div>
   );
 };
 

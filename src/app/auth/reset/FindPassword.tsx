@@ -7,6 +7,7 @@ import InputField from "@/components/Input/InputField";
 import ButtonAuth from "@/components/Button/ButtonAuth";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
 import FlexBox from "@/components/layout/FlexBox";
+import ToastMessage from "@/components/ToastMessage";
 
 const FindPassword = () => {
   const {
@@ -22,8 +23,13 @@ const FindPassword = () => {
   } = useResetPasswordStore();
 
   const [isAuthRequested, setIsAuthRequested] = useState(false);
+  const [isToastOpen, setIsToastOpen] = useState(false);
 
-  const handleAuthClick = () => {
+  const hanldeAuthRequest = () => {
+    setIsToastOpen(true);
+  };
+
+  const handleAuthConfirm = () => {
     setIsAuthRequested(true);
   };
 
@@ -54,8 +60,9 @@ const FindPassword = () => {
             setValue={setEmail}
             placeholder="이메일 주소를 입력해주세요"
             hasButton={true}
+            isCounting={isAuthRequested}
           />
-          <ButtonAuth text="인증요청" />
+          <ButtonAuth text="인증요청" onClick={hanldeAuthRequest} />
         </FlexBox>
       </InputContainer>
       <InputContainer label="인증번호" isRequired={true}>
@@ -65,15 +72,19 @@ const FindPassword = () => {
             setValue={setAuthCode}
             placeholder="인증번호를 입력해주세요"
             hasButton={true}
-            isCounting={isAuthRequested}
           />
           <ButtonAuth
             text="인증확인"
             isActive={authCode.length > 0}
-            onClick={handleAuthClick}
+            onClick={handleAuthConfirm}
           />
         </FlexBox>
       </InputContainer>
+      <ToastMessage
+        message={"이메일로 회원 인증번호가 발송되었습니다"}
+        isOpen={isToastOpen}
+        setIsOpen={setIsToastOpen}
+      />
       <div className="flex flex-col-reverse md:flex-row font-bold md:justify-end py-8 gap-1">
         <ButtonNavigate text="다음" onClick={() => setCurrentStep(2)} />
       </div>
