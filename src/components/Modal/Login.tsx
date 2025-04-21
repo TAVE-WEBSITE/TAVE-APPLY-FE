@@ -52,14 +52,14 @@ const Login = ({ setIsOpen }: LoginProps) => {
             </button>
             <FlexBox className="justify-center gap-x-2">
               <Link
-                href="/register"
+                href="/auth/register/terms"
                 className="text-[#394150] opacity-60 text-sm md:text-md"
               >
                 회원 가입
               </Link>
               <div className="w-[1.2px] h-5 bg-[#E5E7EB] mx-2" />
               <Link
-                href="/"
+                href="/auth/password/find"
                 className="text-[#394150] opacity-60 text-sm md:text-md"
               >
                 비밀번호 찾기

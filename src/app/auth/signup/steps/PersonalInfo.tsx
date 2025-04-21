@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import InputContainer from "@/components/layout/InputContainer";
 import InputField from "@/components/Input/InputField";
 import FlexBox from "@/components/layout/FlexBox";
@@ -10,7 +9,6 @@ import { isValidBirth } from "@/utils/validate";
 import { useSignUpStore } from "@/store/signUpStore";
 
 const PersonalInfo = () => {
-  const router = useRouter();
   const {
     name,
     phoneNumber,
