@@ -12,7 +12,6 @@ export interface ButtonNavigateProps {
 const ButtonNavigate = ({
   text,
   isActive = true,
-  isDisabled,
   onClick,
   hasBackGround = true,
   className,

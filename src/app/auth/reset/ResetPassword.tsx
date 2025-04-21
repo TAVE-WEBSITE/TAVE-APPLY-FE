@@ -24,6 +24,8 @@ const ResetPassword = () => {
     setIsToastOpen(!isToastOpen);
   };
 
+  const isActive = newPassword !== "" && passwordConfirm !== "";
+
   return (
     <FlexBox className="pt-4 gap-8" direction="col">
       <InputContainer
@@ -53,6 +55,7 @@ const ResetPassword = () => {
       <div className="flex flex-col-reverse md:flex-row font-bold md:justify-end py-8 gap-1">
         <ButtonNavigateLarge
           text="비밀번호 재설정"
+          isActive={isActive}
           onClick={handlePasswordUpdate}
         />
       </div>
