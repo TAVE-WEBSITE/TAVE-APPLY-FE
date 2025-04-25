@@ -1,19 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useResetPasswordStore } from "@/store/resetPasswordStore";
 import InputContainer from "@/components/layout/InputContainer";
 import InputField from "@/components/Input/InputField";
 import ButtonAuth from "@/components/Button/ButtonAuth";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
 import FlexBox from "@/components/layout/FlexBox";
+import ToastMessage from "@/components/ToastMessage";
 
-const FindClient = () => {
-  const router = useRouter();
-  const [name, setName] = useState("");
-  const [birth, setBirth] = useState("");
-  const [email, setEmail] = useState("");
-  const [authCode, setAuthCode] = useState("");
+const FindPassword = () => {
+  const {
+    name,
+    birth,
+    email,
+    authCode,
+    setName,
+    setBirth,
+    setEmail,
+    setAuthCode,
+    setCurrentStep,
+  } = useResetPasswordStore();
+
+  const [isAuthRequested, setIsAuthRequested] = useState(false);
+  const [isToastOpen, setIsToastOpen] = useState(false);
+
+  const hanldeAuthRequest = () => {
+    setIsToastOpen(true);
+  };
+
+  const handleAuthConfirm = () => {
+    setIsAuthRequested(true);
+  };
 
   return (
     <FlexBox className="pt-4 gap-8" direction="col">
@@ -42,8 +60,9 @@ const FindClient = () => {
             setValue={setEmail}
             placeholder="이메일 주소를 입력해주세요"
             hasButton={true}
+            isCounting={isAuthRequested}
           />
-          <ButtonAuth text="인증요청" />
+          <ButtonAuth text="인증요청" onClick={hanldeAuthRequest} />
         </FlexBox>
       </InputContainer>
       <InputContainer label="인증번호" isRequired={true}>
@@ -54,17 +73,23 @@ const FindClient = () => {
             placeholder="인증번호를 입력해주세요"
             hasButton={true}
           />
-          <ButtonAuth text="인증확인" />
+          <ButtonAuth
+            text="인증확인"
+            isActive={authCode.length > 0}
+            onClick={handleAuthConfirm}
+          />
         </FlexBox>
       </InputContainer>
+      <ToastMessage
+        message={"이메일로 회원 인증번호가 발송되었습니다"}
+        isOpen={isToastOpen}
+        setIsOpen={setIsToastOpen}
+      />
       <div className="flex flex-col-reverse md:flex-row font-bold md:justify-end py-8 gap-1">
-        <ButtonNavigate
-          text="다음"
-          onClick={() => router.push("auth/password/reset")}
-        />
+        <ButtonNavigate text="다음" onClick={() => setCurrentStep(2)} />
       </div>
     </FlexBox>
   );
 };
 
-export default FindClient;
+export default FindPassword;

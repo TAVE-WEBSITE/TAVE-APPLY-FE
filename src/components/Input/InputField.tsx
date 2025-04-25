@@ -1,4 +1,6 @@
-import { Dispatch, SetStateAction } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 
 type InputType = "text" | "email" | "password" | "number";
 
@@ -6,12 +8,14 @@ interface InputProps<T extends string | number> {
   type?: InputType;
   value: T;
   placeholder?: string;
-  setValue: Dispatch<SetStateAction<T>>;
+  setValue?: (value: T) => void;
   isError?: boolean;
   errorMessage?: string;
   readonly?: boolean;
   hasButton?: boolean;
   maxLength?: number;
+  isCounting?: boolean;
+  minuteLimit?: number;
   className?: string;
 }
 
@@ -25,10 +29,34 @@ const InputField = <T extends string | number>({
   readonly = false,
   hasButton = false,
   maxLength,
+  isCounting = false,
+  minuteLimit = 300,
   className,
 }: InputProps<T>) => {
+  const [remainingTime, setRemainingTime] = useState(minuteLimit);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (isCounting && remainingTime > 0) {
+      timer = setInterval(() => {
+        setRemainingTime((prev) => prev - 1);
+      }, 1000);
+
+      if (remainingTime <= 0) {
+        clearInterval(timer); // 타이머가 끝나면 멈춤
+      }
+    }
+    return () => clearTimeout(timer);
+  }, [isCounting, remainingTime]);
+
+  const formatTime = (time: number) => {
+    const minute = Math.floor(remainingTime / 60);
+    const second = String(remainingTime % 60);
+    return `${String(minute).padStart(2, "0")}:${second.padStart(2, "0")}`;
+  };
   return (
-    <>
+    <div className="relative">
       <input
         type={type}
         value={value}
@@ -36,9 +64,9 @@ const InputField = <T extends string | number>({
         maxLength={maxLength}
         onChange={(e) => {
           const val = e.target.value;
-          if (type === "number") {
-            setValue(val === "" ? ("" as T) : (Number(val) as T));
-          } else if ((type = "text")) {
+          if (type === "number" && setValue) {
+            setValue(val === "" ? ("" as T) : (String(val) as T));
+          } else if (setValue) {
             setValue(val as T);
           }
         }}
@@ -50,7 +78,12 @@ const InputField = <T extends string | number>({
       <p className="absolute bottom-[-24px] text-sm text-red-500">
         {errorMessage}
       </p>
-    </>
+      {isCounting && (
+        <p className="absolute right-0 bottom-[-24px] font-medium text-sm text-[#8CADFF]">
+          {formatTime(remainingTime)}
+        </p>
+      )}
+    </div>
   );
 };
 
