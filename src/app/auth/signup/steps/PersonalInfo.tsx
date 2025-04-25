@@ -1,20 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import InputContainer from "@/components/layout/InputContainer";
 import InputField from "@/components/Input/InputField";
 import FlexBox from "@/components/layout/FlexBox";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
 import SelectOptions from "@/components/Button/SelectOptions";
 import { isValidBirth } from "@/utils/validate";
+import { useSignUpStore } from "@/store/signUpStore";
 
-const ProfileClient = () => {
-  const router = useRouter();
-  const [name, setName] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<number | string>("");
-  const [birth, setBirth] = useState<string>("");
-  const [selectedGender, setSelectedGender] = useState<string>("");
+const PersonalInfo = () => {
+  const {
+    name,
+    phoneNumber,
+    birth,
+    selectedGender,
+    setName,
+    setPhoneNumber,
+    setBirth,
+    setSelectedGender,
+    setCurrentStep,
+  } = useSignUpStore();
 
   const gender = ["남성", "여성"];
 
@@ -31,7 +36,7 @@ const ProfileClient = () => {
   const handleCheck = () => {
     if (
       name.length &&
-      checkPhoneNumber() &&
+      String(phoneNumber).length &&
       checkBirth() &&
       selectedGender.length
     ) {
@@ -42,6 +47,9 @@ const ProfileClient = () => {
 
   return (
     <>
+      <h1 className="font-bold md:text-2xl text-xl text-[#394150] text-center">
+        개인 정보 입력
+      </h1>
       <InputContainer label="이름" isRequired={true}>
         <InputField
           value={name}
@@ -83,17 +91,17 @@ const ProfileClient = () => {
         <ButtonNavigate
           text="이전"
           hasBackGround={false}
-          onClick={() => router.push("auth/register/terms")}
+          onClick={() => setCurrentStep(1)}
         />
         <ButtonNavigate
           text="다음"
           isActive={checkAll}
           isDisabled={!checkAll}
-          onClick={() => router.push("auth/register/account")}
+          onClick={() => setCurrentStep(3)}
         />
       </div>
     </>
   );
 };
 
-export default ProfileClient;
+export default PersonalInfo;

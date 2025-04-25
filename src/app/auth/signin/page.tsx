@@ -1,6 +1,6 @@
-import LoginForm from "./LoginForm";
+import SignUpForm from "./SignInForm";
 
-const Login = () => {
+const SignIn = () => {
   return (
     <div>
       <div className="pt-24 pb-16">
@@ -8,11 +8,11 @@ const Login = () => {
       </div>
       <div>
         <section className="bg-white md:h-left h-screen">
-          <LoginForm />
+          <SignUpForm />
         </section>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default SignIn;
