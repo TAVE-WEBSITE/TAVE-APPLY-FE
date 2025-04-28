@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import OverLay from "../layout/OverLay";
 import FlexBox from "../layout/FlexBox";
-import { Icons } from "../Icons";
+import Icons from "../Icons";
 import LoginField from "../Input/LoginField";
 import LoadingSpinner from "../LoadingSpinner";
 
