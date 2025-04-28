@@ -48,12 +48,12 @@ export default function Header() {
             ))}
             <li>
               <div className="bg-gradient-to-r from-[#1A5BFF] to-[#60AFFF] py-2 px-6 rounded-lg text-center font-bold">
-                <button
+                <Link
+                  href="/auth/signup"
                   className="cursor-pointer relative z-50"
-                  onClick={() => setIsModalOpen(true)}
                 >
                   지원하기
-                </button>
+                </Link>
               </div>
             </li>
           </ul>
