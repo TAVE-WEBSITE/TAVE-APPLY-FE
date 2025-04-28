@@ -33,6 +33,9 @@ const FindPassword = () => {
     setIsAuthRequested(true);
   };
 
+  const isActive =
+    name !== "" && birth !== "" && email !== "" && authCode !== "";
+
   return (
     <FlexBox className="pt-4 gap-8" direction="col">
       <InputContainer label="이름" isRequired={true}>
@@ -72,6 +75,8 @@ const FindPassword = () => {
             setValue={setAuthCode}
             placeholder="인증번호를 입력해주세요"
             hasButton={true}
+            isPassed={true}
+            passMessage="* 인증번호가 확인되었습니다."
           />
           <ButtonAuth
             text="인증확인"
@@ -86,7 +91,11 @@ const FindPassword = () => {
         setIsOpen={setIsToastOpen}
       />
       <div className="flex flex-col-reverse md:flex-row font-bold md:justify-end py-8 gap-1">
-        <ButtonNavigate text="다음" onClick={() => setCurrentStep(2)} />
+        <ButtonNavigate
+          text="다음"
+          onClick={() => setCurrentStep(2)}
+          isActive={isActive}
+        />
       </div>
     </FlexBox>
   );

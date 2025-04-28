@@ -9,7 +9,9 @@ interface InputProps<T extends string | number> {
   value: T;
   placeholder?: string;
   setValue?: (value: T) => void;
+  isPassed?: boolean;
   isError?: boolean;
+  passMessage?: string;
   errorMessage?: string;
   readonly?: boolean;
   hasButton?: boolean;
@@ -24,7 +26,9 @@ const InputField = <T extends string | number>({
   value,
   placeholder,
   setValue,
+  isPassed = false,
   isError = false,
+  passMessage,
   errorMessage,
   readonly = false,
   hasButton = false,
@@ -73,11 +77,22 @@ const InputField = <T extends string | number>({
         readOnly={readonly}
         className={`${hasButton ? "w-[277px] md:w-[473px]" : "w-full"} border ${
           isError ? "border-red-500" : "border-[#E5E7EB]"
-        } p-3 md:p-4 rounded-xl text-[#394150] md:text-base shadow-[0px_0px_24px_0px_#195BFF14] ${className}`}
+        } 
+        ${isPassed ? "border-green-600" : "border-[#E5E7EB]"}
+        p-3 md:p-4 rounded-xl text-[#394150] md:text-base shadow-[0px_0px_24px_0px_#195BFF14] ${
+          readonly ? "bg-[#F3F4F6] text-[#394150] opacity-50" : ""
+        } ${className}`}
       />
-      <p className="absolute bottom-[-24px] text-sm text-red-500">
-        {errorMessage}
-      </p>
+      {errorMessage && (
+        <p className="absolute bottom-[-24px] text-sm text-red-500">
+          {errorMessage}
+        </p>
+      )}
+      {passMessage && (
+        <p className="absolute bottom-[-24px] text-sm text-green-600">
+          {passMessage}
+        </p>
+      )}
       {isCounting && (
         <p className="absolute right-0 bottom-[-24px] font-medium text-sm text-[#8CADFF]">
           {formatTime(remainingTime)}

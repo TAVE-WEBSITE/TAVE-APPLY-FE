@@ -5,7 +5,6 @@ import { ButtonNavigateProps } from "./ButtonNavigate";
 const ButtonNavigateLarge = ({
   text,
   isActive = true,
-  isDisabled,
   onClick,
   hasBackGround = true,
   className,
