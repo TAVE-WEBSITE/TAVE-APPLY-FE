@@ -36,11 +36,12 @@ const SignInForm = () => {
         </InputContainer>
         <InputContainer label="비밀번호">
           <InputField
+            type="password"
             value={password}
             setValue={setPassword}
             placeholder="비밀번호를 입력해주세요"
-            errorMessage={passwordError}
-            isError={!!passwordError}
+            // errorMessage={passwordError}
+            // isError={!!passwordError}
           />
         </InputContainer>
       </form>

@@ -1,5 +1,11 @@
+import Mypage from "./Mypage";
+
 const page = () => {
-  return <div>page Component</div>;
+  return (
+    <div>
+      <Mypage />
+    </div>
+  );
 };
 
 export default page;
