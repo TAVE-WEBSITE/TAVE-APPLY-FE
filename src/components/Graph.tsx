@@ -1,7 +1,7 @@
 import FlexBox from "./layout/FlexBox";
 import GridBox from "./layout/GridBox";
 import Icons from "./Icons";
-import { Status, ApplicantData } from "@/app/types/mypage";
+import { Status, ApplicantData } from "@/app/types";
 
 interface GraphProps {
   data: ApplicantData[];
