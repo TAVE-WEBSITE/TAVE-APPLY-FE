@@ -9,7 +9,6 @@ import FlexBox from "@/components/layout/FlexBox";
 import StepBar from "@/components/StepBar";
 import useRecruitStore from "@/store/recruitStore";
 
-/** 비밀번호 찾기 과정 - 1.찾기, 2.리셋 */
 const recruitMap: Record<number, JSX.Element> = {
   1: <PersonalInfo />,
   2: <Field />,
