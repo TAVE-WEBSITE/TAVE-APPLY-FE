@@ -38,7 +38,6 @@ const Mypage = () => {
           <h1 className="font-bold md:text-2xl text-xl text-[#394150] text-center mb-4">
             지원 현황
           </h1>
-
           <Graph data={applicantData} />
         </FlexBox>
       </section>
