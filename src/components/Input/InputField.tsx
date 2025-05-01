@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 type InputType = "text" | "email" | "password" | "number";
 
@@ -9,6 +9,7 @@ interface InputProps<T extends string | number> {
   value: T;
   placeholder?: string;
   setValue?: (value: T) => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   isPassed?: boolean;
   isError?: boolean;
   passMessage?: string;
@@ -26,6 +27,7 @@ const InputField = <T extends string | number>({
   value,
   placeholder,
   setValue,
+  onChange,
   isPassed = false,
   isError = false,
   passMessage,
@@ -67,6 +69,9 @@ const InputField = <T extends string | number>({
         placeholder={placeholder}
         maxLength={maxLength}
         onChange={(e) => {
+          if (onChange) {
+            onChange(e);
+          }
           const val = e.target.value;
           if (type === "number" && setValue) {
             setValue(val === "" ? ("" as T) : (String(val) as T));

@@ -25,7 +25,6 @@ export const createFieldStore = <T extends Record<string, any>>(
       ...dynamicSetters,
       setField: (key, value) => set((state) => ({ ...state, [key]: value })),
       reset: () => {
-        console.log(dynamicSetters);
         set(initalStates as FieldStore<T>);
       },
     };

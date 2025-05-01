@@ -5,7 +5,7 @@ import { useResetPasswordStore } from "@/store/resetPasswordStore";
 import InputContainer from "@/components/layout/InputContainer";
 import InputField from "@/components/Input/InputField";
 import ButtonAuth from "@/components/Button/ButtonAuth";
-import ButtonNavigate from "@/components/Button/ButtonNavigate";
+import Button from "@/components/Button/ButtonNavigate";
 import FlexBox from "@/components/layout/FlexBox";
 import ToastMessage from "@/components/ToastMessage";
 

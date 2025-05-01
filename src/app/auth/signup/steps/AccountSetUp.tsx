@@ -8,13 +8,19 @@ import InputField from "@/components/Input/InputField";
 import ButtonAuth from "@/components/Button/ButtonAuth";
 import { useValidation } from "@/hooks/useValidation";
 import { useSignUpStore } from "@/store/signUpStore";
+import { useAuth } from "@/hooks/useAuth";
+import { convertToFullYear } from "@/utils/convert";
 
 const AccountSetUp = () => {
   const {
+    name,
     email,
     authCode,
     password,
+    phoneNumber,
+    birth,
     passwordConfirm,
+    selectedGender,
     setEmail,
     setAuthCode,
     setPassword,
@@ -27,6 +33,14 @@ const AccountSetUp = () => {
     validatePasswordConfirm,
     passwordConfirm
   );
+
+  const {
+    signUp,
+    verifyRequest,
+    verifyConfirm,
+    isVerifyRequestLoading,
+    isVerifyConfirmLoading,
+  } = useAuth();
 
   const handleCheck = () => {
     if (
@@ -43,6 +57,36 @@ const AccountSetUp = () => {
 
   const checkAll = handleCheck();
 
+  const handleSignUp = async () => {
+    const sex = selectedGender === "남성" ? "MALE" : "FEMALE";
+    const res = await signUp(
+      {
+        email,
+        password,
+        phoneNumber,
+        username: name,
+        birthday: convertToFullYear(birth),
+        sex: sex,
+      },
+      () => setCurrentStep(4)
+    );
+    console.log(res.data);
+  };
+
+  const verifyEmail = () => {
+    verifyRequest({
+      email: email,
+      number: "",
+      reset: false,
+    });
+  };
+
+  const verifyCode = () => {
+    verifyConfirm({
+      email: email,
+      number: authCode,
+    });
+  };
   return (
     <>
       <h1 className="font-bold text-2xl text-[#394150] text-center">
@@ -61,7 +105,11 @@ const AccountSetUp = () => {
               placeholder="이메일주소를 입력해주세요"
               hasButton={true}
             />
-            <ButtonAuth text={"인증요청"} />
+            <ButtonAuth
+              text={"인증요청"}
+              onClick={verifyEmail}
+              isLoading={isVerifyRequestLoading}
+            />
           </FlexBox>
         </InputContainer>
         <InputContainer label="인증번호" isRequired={true}>
@@ -73,7 +121,12 @@ const AccountSetUp = () => {
               placeholder="인증번호를 입력해주세요"
               hasButton={true}
             />
-            <ButtonAuth text={"인증확인"} isActive={false} />
+            <ButtonAuth
+              text={"인증확인"}
+              onClick={verifyCode}
+              isActive={authCode.length > 0}
+              isLoading={isVerifyConfirmLoading}
+            />
           </FlexBox>
         </InputContainer>
         <InputContainer
@@ -108,9 +161,9 @@ const AccountSetUp = () => {
             onClick={() => setCurrentStep(2)}
           />
           <ButtonNavigate
-            text="다음"
+            text="가입"
             isActive={checkAll}
-            onClick={() => setCurrentStep(4)}
+            onClick={handleSignUp}
           />
         </div>
       </FlexBox>
