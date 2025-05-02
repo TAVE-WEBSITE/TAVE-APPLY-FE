@@ -11,7 +11,7 @@ const Home = () => {
         <FlexBox direction="col">
             <FlexBox direction="col" className="h-dvh justify-between">
                 <FlexBox direction="col" className="h-full justify-center items-center">
-                    <Icons name="logoSm" height={44} width={87} />
+                    <Icons name="logo" height={44} width={87} />
                     <p className="opacity-50 font-medium">The new technology wave</p>
                     <h2 className="font-bold md:text-4xl text-2xl mt-6 leading-snug text-center">
                         기술의 물결 속에서 함께 성장할

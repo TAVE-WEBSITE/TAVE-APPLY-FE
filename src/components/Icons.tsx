@@ -2,7 +2,6 @@ import Image from 'next/image';
 
 export type IconKeys =
     | 'arrow'
-    | 'logoSm'
     | 'logo'
     | 'calendar'
     | 'user'
@@ -14,7 +13,6 @@ export type IconKeys =
     | 'circleArrow';
 
 const iconMap: Record<IconKeys, string> = {
-    logoSm: '/tave-logo-sm.svg',
     logo: '/tave-logo.svg',
     calendar: '/calendar.svg',
     user: '/user.svg',
