@@ -5,7 +5,7 @@ import { useResetPasswordStore } from "@/store/resetPasswordStore";
 import InputContainer from "@/components/layout/InputContainer";
 import InputField from "@/components/Input/InputField";
 import ButtonAuth from "@/components/Button/ButtonAuth";
-import Button from "@/components/Button/ButtonNavigate";
+import ButtonNavigate from "@/components/Button/ButtonNavigate";
 import FlexBox from "@/components/layout/FlexBox";
 import ToastMessage from "@/components/ToastMessage";
 
@@ -63,25 +63,31 @@ const FindPassword = () => {
             setValue={setEmail}
             placeholder="이메일 주소를 입력해주세요"
             hasButton={true}
-            isCounting={isAuthRequested}
           />
-          <ButtonAuth text="인증요청" onClick={hanldeAuthRequest} />
+          <ButtonAuth
+            text="인증요청"
+            onClick={hanldeAuthRequest}
+            isLoading={false}
+          />
         </FlexBox>
       </InputContainer>
       <InputContainer label="인증번호" isRequired={true}>
         <FlexBox className="items-center justify-between">
           <InputField
+            type="number"
             value={authCode}
             setValue={setAuthCode}
             placeholder="인증번호를 입력해주세요"
             hasButton={true}
-            isPassed={true}
-            passMessage="* 인증번호가 확인되었습니다."
+            isCounting={isAuthRequested}
+            // isPassed={true}
+            // passMessage="* 인증번호가 확인되었습니다."
           />
           <ButtonAuth
             text="인증확인"
             isActive={authCode.length > 0}
             onClick={handleAuthConfirm}
+            isLoading={false}
           />
         </FlexBox>
       </InputContainer>

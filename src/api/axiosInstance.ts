@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import axios, { AxiosError } from "axios";
 import { getCookie } from "cookies-next";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -32,6 +32,7 @@ axiosInstance.interceptors.request.use(
     ) {
       try {
         const refreshToken = getCookie("refreshToken");
+        console.log(refreshToken);
         const email = localStorage.getItem("email");
         const res = await axios.post(`${API_BASE_URL}/v1/auth/refresh`, {
           email,

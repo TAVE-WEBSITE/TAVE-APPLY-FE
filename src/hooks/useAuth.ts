@@ -9,21 +9,22 @@ import {
   Login,
   LoginResponse,
 } from "@/app/types/auth";
+import { useLoginStore } from "@/store/loginStore";
 
 export const useAuth = () => {
+  const { setIsLogin } = useLoginStore();
   const [isSignUpLoading, setIsSignUpLoading] = useState(false);
   const [isSignInLoading, setIsSignInLoading] = useState(false);
   const [isVerifyRequestLoading, setIsVerifyRequestLoading] = useState(false);
   const [isVerifyConfirmLoading, setIsVerifyConfirmLoading] = useState(false);
   //const [error, setError] = useState(null);
 
-  const signUp = async (userData: SignUpData, callback: () => void) => {
+  const signUp = async (userData: SignUpData) => {
     try {
       setIsSignUpLoading(true);
       const res = await axiosInstance.post(`/v1/auth/normal/signup`, userData);
 
       if (res.status === 200) {
-        callback();
         return res.data;
       }
     } catch (error) {
@@ -33,19 +34,21 @@ export const useAuth = () => {
     }
   };
 
-  const signIn = async (body: Login, callback: () => void) => {
+  const signIn = async (body: Login) => {
     try {
       setIsSignInLoading(true);
       const res = await axiosInstance.post(`/v1/auth/signin`, body);
 
       if (res.status === 200) {
-        const result: LoginResponse = res.data;
+        const data = res.data;
+        const result: LoginResponse = data.result;
         localStorage.setItem("accessToken", result.accessToken);
-        callback();
+        setIsLogin(true);
+        return res.status;
       }
     } catch (error) {
-      console.error(error);
       if (axios.isAxiosError(error)) {
+        console.error(error.response);
         return error.response?.data;
       }
     } finally {
@@ -53,9 +56,18 @@ export const useAuth = () => {
     }
   };
 
-  const login = async () => {};
+  const signout = async () => {
+    try {
+      const res = await axiosInstance.get(`/v1/auth/signout`);
 
-  const logout = async () => {};
+      if (res.status === 200) {
+        setIsLogin(false);
+        console.log(res.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const verifyRequest = async (body: VerifyRequest) => {
     try {
@@ -99,6 +111,7 @@ export const useAuth = () => {
     signIn,
     verifyRequest,
     verifyConfirm,
+    signout,
     isSignUpLoading,
     isSignInLoading,
     isVerifyRequestLoading,

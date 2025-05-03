@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 
 const SignInForm = () => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
@@ -27,14 +28,15 @@ const SignInForm = () => {
   };
 
   const handleLogin = async () => {
-    const res = await signIn(
-      {
-        email,
-        password,
-      },
-      () => useRouter().push("/")
-    );
-    setLoginError(res.message);
+    const res = await signIn({
+      email,
+      password,
+    });
+    if (res === 200) {
+      router.push("/");
+    } else if (res && res.message) {
+      setLoginError(res.message);
+    }
     localStorage.setItem("email", email);
   };
 
@@ -87,7 +89,7 @@ const SignInForm = () => {
           </Link>
           <div className="w-[1.2px] h-5 bg-[#E5E7EB] mx-2" />
           <Link
-            href="/"
+            href="/auth/reset"
             className="text-[#394150] opacity-60 text-sm md:text-md"
           >
             비밀번호 찾기
