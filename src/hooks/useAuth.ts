@@ -3,7 +3,7 @@ import axios from "axios";
 import { axiosInstance } from "@/api/axiosInstance";
 import {
   SignUpData,
-  VerifyRequest,
+  VerifyEmail,
   VerifyConfirm,
   PasswordReset,
   Login,
@@ -15,9 +15,9 @@ export const useAuth = () => {
   const { setIsLogin } = useLoginStore();
   const [isSignUpLoading, setIsSignUpLoading] = useState(false);
   const [isSignInLoading, setIsSignInLoading] = useState(false);
-  const [isVerifyRequestLoading, setIsVerifyRequestLoading] = useState(false);
+  const [isVerifyEmailLoading, setIsVerifyEmailLoading] = useState(false);
   const [isVerifyConfirmLoading, setIsVerifyConfirmLoading] = useState(false);
-  //const [error, setError] = useState(null);
+  const [isResetPasswordLoading, setIsResetPasswordLoading] = useState(false);
 
   const signUp = async (userData: SignUpData) => {
     try {
@@ -69,33 +69,34 @@ export const useAuth = () => {
     }
   };
 
-  const verifyRequest = async (body: VerifyRequest) => {
+  const verifyEmail = async (body: VerifyEmail, reset: boolean) => {
     try {
-      setIsVerifyRequestLoading(true);
+      setIsVerifyEmailLoading(true);
       const res = await axiosInstance.post(
-        `/v1/normal/authenticate/email`,
+        `/v1/normal/authenticate/email?reset=${reset}`,
         body
       );
 
       if (res.status === 200) {
-        console.log(res.data);
         return res.data;
       }
     } catch (error) {
       console.error(error);
     } finally {
-      setIsVerifyRequestLoading(false);
+      setIsVerifyEmailLoading(false);
     }
   };
 
-  const verifyConfirm = async (body: VerifyConfirm) => {
+  const verifyConfirm = async (body: VerifyConfirm, reset: boolean) => {
     try {
       setIsVerifyConfirmLoading(true);
-      const res = await axiosInstance.post(`/v1/normal/verify/number`, body);
+      const res = await axiosInstance.post(
+        `/v1/normal/verify/number?reset=${reset}`,
+        body
+      );
 
       if (res.status === 200) {
-        console.log(res.data);
-        return;
+        return res.status;
       }
     } catch (error) {
       console.error(error);
@@ -104,17 +105,32 @@ export const useAuth = () => {
     }
   };
 
-  const resetPassword = async (body: PasswordReset) => {};
+  const resetPassword = async (body: PasswordReset) => {
+    try {
+      setIsResetPasswordLoading(true);
+      const res = await axiosInstance.post(`/v1/normal/password/change`, body);
+
+      if (res.status === 200) {
+        return res.data;
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsResetPasswordLoading(false);
+    }
+  };
 
   return {
     signUp,
     signIn,
-    verifyRequest,
+    verifyEmail,
     verifyConfirm,
     signout,
+    resetPassword,
     isSignUpLoading,
     isSignInLoading,
-    isVerifyRequestLoading,
+    isVerifyEmailLoading,
     isVerifyConfirmLoading,
+    isResetPasswordLoading,
   };
 };

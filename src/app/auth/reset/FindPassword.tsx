@@ -8,6 +8,7 @@ import ButtonAuth from "@/components/Button/ButtonAuth";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
 import FlexBox from "@/components/layout/FlexBox";
 import ToastMessage from "@/components/ToastMessage";
+import { useAuth } from "@/hooks/useAuth";
 
 const FindPassword = () => {
   const {
@@ -24,17 +25,40 @@ const FindPassword = () => {
 
   const [isAuthRequested, setIsAuthRequested] = useState(false);
   const [isToastOpen, setIsToastOpen] = useState(false);
+  const [isPassed, setIsPassed] = useState(false);
 
-  const hanldeAuthRequest = () => {
-    setIsToastOpen(true);
-  };
-
-  const handleAuthConfirm = () => {
-    setIsAuthRequested(true);
-  };
+  const {
+    verifyEmail,
+    verifyConfirm,
+    isVerifyEmailLoading,
+    isVerifyConfirmLoading,
+  } = useAuth();
 
   const isActive =
-    name !== "" && birth !== "" && email !== "" && authCode !== "";
+    name !== "" && birth !== "" && email !== "" && authCode !== "" && isPassed;
+
+  const handleVerifyEmail = () => {
+    verifyEmail(
+      {
+        email: email,
+        number: authCode,
+      },
+      true
+    );
+  };
+
+  const handleVerifyConfirm = async () => {
+    const res = await verifyConfirm(
+      {
+        email: email,
+        number: authCode,
+      },
+      true
+    );
+    if (res === 200) {
+      setIsPassed(true);
+    }
+  };
 
   return (
     <FlexBox className="pt-4 gap-8" direction="col">
@@ -66,8 +90,8 @@ const FindPassword = () => {
           />
           <ButtonAuth
             text="인증요청"
-            onClick={hanldeAuthRequest}
-            isLoading={false}
+            onClick={handleVerifyEmail}
+            isLoading={isVerifyEmailLoading}
           />
         </FlexBox>
       </InputContainer>
@@ -80,14 +104,14 @@ const FindPassword = () => {
             placeholder="인증번호를 입력해주세요"
             hasButton={true}
             isCounting={isAuthRequested}
-            // isPassed={true}
-            // passMessage="* 인증번호가 확인되었습니다."
+            isPassed={isPassed}
+            passMessage="* 인증번호가 확인되었습니다."
           />
           <ButtonAuth
             text="인증확인"
             isActive={authCode.length > 0}
-            onClick={handleAuthConfirm}
-            isLoading={false}
+            onClick={handleVerifyConfirm}
+            isLoading={isVerifyConfirmLoading}
           />
         </FlexBox>
       </InputContainer>

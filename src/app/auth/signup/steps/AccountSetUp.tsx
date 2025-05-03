@@ -36,9 +36,9 @@ const AccountSetUp = () => {
 
   const {
     signUp,
-    verifyRequest,
+    verifyEmail,
     verifyConfirm,
-    isVerifyRequestLoading,
+    isVerifyEmailLoading,
     isVerifyConfirmLoading,
   } = useAuth();
 
@@ -59,33 +59,34 @@ const AccountSetUp = () => {
 
   const handleSignUp = async () => {
     const sex = selectedGender === "남성" ? "MALE" : "FEMALE";
-    const res = await signUp(
-      {
-        email,
-        password,
-        phoneNumber,
-        username: name,
-        birthday: convertToFullYear(birth),
-        sex: sex,
-      },
-      () => setCurrentStep(4)
-    );
-    console.log(res.data);
+    const res = await signUp({
+      email,
+      password,
+      phoneNumber,
+      username: name,
+      birthday: convertToFullYear(birth),
+      sex: sex,
+    });
   };
 
-  const verifyEmail = () => {
-    verifyRequest({
-      email: email,
-      number: "",
-      reset: false,
-    });
+  const handleVerifyEmail = () => {
+    verifyEmail(
+      {
+        email: email,
+        number: "",
+      },
+      false
+    );
   };
 
   const verifyCode = () => {
-    verifyConfirm({
-      email: email,
-      number: authCode,
-    });
+    verifyConfirm(
+      {
+        email: email,
+        number: authCode,
+      },
+      false
+    );
   };
   return (
     <>
@@ -107,8 +108,8 @@ const AccountSetUp = () => {
             />
             <ButtonAuth
               text={"인증요청"}
-              onClick={verifyEmail}
-              isLoading={isVerifyRequestLoading}
+              onClick={handleVerifyEmail}
+              isLoading={isVerifyEmailLoading}
             />
           </FlexBox>
         </InputContainer>

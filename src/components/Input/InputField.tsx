@@ -93,7 +93,7 @@ const InputField = <T extends string | number>({
           {errorMessage}
         </p>
       )}
-      {passMessage && (
+      {isPassed && passMessage && (
         <p className="absolute bottom-[-24px] text-sm text-green-600">
           {passMessage}
         </p>

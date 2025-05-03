@@ -32,7 +32,6 @@ axiosInstance.interceptors.request.use(
     ) {
       try {
         const refreshToken = getCookie("refreshToken");
-        console.log(refreshToken);
         const email = localStorage.getItem("email");
         const res = await axios.post(`${API_BASE_URL}/v1/auth/refresh`, {
           email,
