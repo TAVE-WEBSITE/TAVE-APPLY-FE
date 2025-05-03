@@ -4,7 +4,6 @@ export interface SignUpStore {
   name: string;
   phoneNumber: string;
   birth: string;
-  gender: string;
   email: string;
   authCode: string;
   selectedGender: string;
@@ -19,7 +18,6 @@ const initalStates: SignUpStore = {
   name: "",
   phoneNumber: "",
   birth: "",
-  gender: "",
   email: "",
   authCode: "",
   selectedGender: "",

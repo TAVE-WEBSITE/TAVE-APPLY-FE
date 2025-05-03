@@ -6,7 +6,7 @@ import FlexBox from "@/components/layout/FlexBox";
 
 const Complete = () => {
   const router = useRouter();
-  const { reset } = useSignUpStore();
+  const { name, reset } = useSignUpStore();
 
   return (
     <FlexBox
@@ -14,7 +14,7 @@ const Complete = () => {
       className="text-[#394150] md:text-[32px] text-2xl font-bold text-center h-full justify-center gap-8"
     >
       <div>
-        <p>홍길동님</p>
+        <p>{name}님</p>
         <p>회원가입이 완료되었습니다!</p>
       </div>
       <FlexBox direction="col" className="items-center">

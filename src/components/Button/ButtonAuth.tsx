@@ -1,24 +1,21 @@
-"use client";
-
-import { useState } from "react";
 import LoadingSpinner from "../LoadingSpinner";
 
 interface ButtonAuthProps {
   text: string;
   isActive?: boolean;
+  isLoading: boolean;
   onClick?: () => void;
 }
 
-const ButtonAuth = ({ text, isActive = true, onClick }: ButtonAuthProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-
+const ButtonAuth = ({
+  text,
+  isActive = true,
+  isLoading,
+  onClick,
+}: ButtonAuthProps) => {
   const handleClick = () => {
     if (onClick) {
       onClick();
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 3000);
     }
   };
 
