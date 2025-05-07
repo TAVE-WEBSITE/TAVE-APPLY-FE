@@ -7,6 +7,9 @@ import ButtonNavigateLarge from "@/components/Button/ButtonNavigateLarge";
 import FlexBox from "@/components/layout/FlexBox";
 import { useValidation } from "@/hooks/useValidation";
 import { isValidPassword, validatePasswordConfirm } from "@/utils/validate";
+import { useAuth } from "@/hooks/useAuth";
+import { useResetPasswordStore } from "@/store/resetPasswordStore";
+import ToastMessage from "@/components/ToastMessage";
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -20,11 +23,26 @@ const ResetPassword = () => {
     passwordConfirm
   );
 
-  const handlePasswordUpdate = () => {
-    setIsToastOpen(!isToastOpen);
-  };
+  const { email } = useResetPasswordStore();
 
   const isActive = newPassword !== "" && passwordConfirm !== "";
+
+  const { resetPassword, isResetPasswordLoading } = useAuth();
+
+  const handleUpdatePassword = async () => {
+    if (newPassword === passwordConfirm) {
+      const res = await resetPassword({
+        email: email,
+        password: newPassword,
+        validatedPassword: passwordConfirm,
+      });
+      if (res.message) {
+        setIsToastOpen(true);
+      }
+      setNewPassword("");
+      setPasswordConfirm("");
+    }
+  };
 
   return (
     <FlexBox className="pt-4 gap-8" direction="col">
@@ -52,11 +70,17 @@ const ResetPassword = () => {
           isError={!!passwordConfirmError}
         ></InputField>
       </InputContainer>
+      <ToastMessage
+        message={"비밀번호가 재설정되었습니다."}
+        isOpen={isToastOpen}
+        setIsOpen={setIsToastOpen}
+      />
       <div className="flex flex-col-reverse md:flex-row font-bold md:justify-end py-8 gap-1">
         <ButtonNavigateLarge
           text="비밀번호 재설정"
           isActive={isActive}
-          onClick={handlePasswordUpdate}
+          onClick={handleUpdatePassword}
+          isLoading={isResetPasswordLoading}
         />
       </div>
     </FlexBox>

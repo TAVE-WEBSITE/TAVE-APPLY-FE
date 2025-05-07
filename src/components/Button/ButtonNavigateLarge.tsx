@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingSpinner from "../LoadingSpinner";
 import { ButtonNavigateProps } from "./ButtonNavigate";
 
 const ButtonNavigateLarge = ({
@@ -7,6 +8,7 @@ const ButtonNavigateLarge = ({
   isActive = true,
   onClick,
   hasBackGround = true,
+  isLoading = false,
   className,
 }: ButtonNavigateProps) => {
   return (
@@ -21,7 +23,13 @@ const ButtonNavigateLarge = ({
       onClick={onClick}
       disabled={!isActive}
     >
-      {text}
+      {isLoading ? (
+        <div className="flex justify-center">
+          <LoadingSpinner />
+        </div>
+      ) : (
+        text
+      )}
     </button>
   );
 };

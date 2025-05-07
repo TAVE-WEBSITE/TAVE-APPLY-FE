@@ -5,9 +5,10 @@ import { useResetPasswordStore } from "@/store/resetPasswordStore";
 import InputContainer from "@/components/layout/InputContainer";
 import InputField from "@/components/Input/InputField";
 import ButtonAuth from "@/components/Button/ButtonAuth";
-import Button from "@/components/Button/ButtonNavigate";
+import ButtonNavigate from "@/components/Button/ButtonNavigate";
 import FlexBox from "@/components/layout/FlexBox";
 import ToastMessage from "@/components/ToastMessage";
+import { useAuth } from "@/hooks/useAuth";
 
 const FindPassword = () => {
   const {
@@ -24,17 +25,40 @@ const FindPassword = () => {
 
   const [isAuthRequested, setIsAuthRequested] = useState(false);
   const [isToastOpen, setIsToastOpen] = useState(false);
+  const [isPassed, setIsPassed] = useState(false);
 
-  const hanldeAuthRequest = () => {
-    setIsToastOpen(true);
-  };
-
-  const handleAuthConfirm = () => {
-    setIsAuthRequested(true);
-  };
+  const {
+    verifyEmail,
+    verifyConfirm,
+    isVerifyEmailLoading,
+    isVerifyConfirmLoading,
+  } = useAuth();
 
   const isActive =
-    name !== "" && birth !== "" && email !== "" && authCode !== "";
+    name !== "" && birth !== "" && email !== "" && authCode !== "" && isPassed;
+
+  const handleVerifyEmail = () => {
+    verifyEmail(
+      {
+        email: email,
+        number: authCode,
+      },
+      true
+    );
+  };
+
+  const handleVerifyConfirm = async () => {
+    const res = await verifyConfirm(
+      {
+        email: email,
+        number: authCode,
+      },
+      true
+    );
+    if (res === 200) {
+      setIsPassed(true);
+    }
+  };
 
   return (
     <FlexBox className="pt-4 gap-8" direction="col">
@@ -63,25 +87,31 @@ const FindPassword = () => {
             setValue={setEmail}
             placeholder="이메일 주소를 입력해주세요"
             hasButton={true}
-            isCounting={isAuthRequested}
           />
-          <ButtonAuth text="인증요청" onClick={hanldeAuthRequest} />
+          <ButtonAuth
+            text="인증요청"
+            onClick={handleVerifyEmail}
+            isLoading={isVerifyEmailLoading}
+          />
         </FlexBox>
       </InputContainer>
       <InputContainer label="인증번호" isRequired={true}>
         <FlexBox className="items-center justify-between">
           <InputField
+            type="number"
             value={authCode}
             setValue={setAuthCode}
             placeholder="인증번호를 입력해주세요"
             hasButton={true}
-            isPassed={true}
+            isCounting={isAuthRequested}
+            isPassed={isPassed}
             passMessage="* 인증번호가 확인되었습니다."
           />
           <ButtonAuth
             text="인증확인"
             isActive={authCode.length > 0}
-            onClick={handleAuthConfirm}
+            onClick={handleVerifyConfirm}
+            isLoading={isVerifyConfirmLoading}
           />
         </FlexBox>
       </InputContainer>

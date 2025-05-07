@@ -3,27 +3,28 @@ import axios from "axios";
 import { axiosInstance } from "@/api/axiosInstance";
 import {
   SignUpData,
-  VerifyRequest,
+  VerifyEmail,
   VerifyConfirm,
   PasswordReset,
   Login,
   LoginResponse,
 } from "@/app/types/auth";
+import { useLoginStore } from "@/store/loginStore";
 
 export const useAuth = () => {
+  const { setIsLogin } = useLoginStore();
   const [isSignUpLoading, setIsSignUpLoading] = useState(false);
   const [isSignInLoading, setIsSignInLoading] = useState(false);
-  const [isVerifyRequestLoading, setIsVerifyRequestLoading] = useState(false);
+  const [isVerifyEmailLoading, setIsVerifyEmailLoading] = useState(false);
   const [isVerifyConfirmLoading, setIsVerifyConfirmLoading] = useState(false);
-  //const [error, setError] = useState(null);
+  const [isResetPasswordLoading, setIsResetPasswordLoading] = useState(false);
 
-  const signUp = async (userData: SignUpData, callback: () => void) => {
+  const signUp = async (userData: SignUpData) => {
     try {
       setIsSignUpLoading(true);
       const res = await axiosInstance.post(`/v1/auth/normal/signup`, userData);
 
       if (res.status === 200) {
-        callback();
         return res.data;
       }
     } catch (error) {
@@ -33,19 +34,21 @@ export const useAuth = () => {
     }
   };
 
-  const signIn = async (body: Login, callback: () => void) => {
+  const signIn = async (body: Login) => {
     try {
       setIsSignInLoading(true);
       const res = await axiosInstance.post(`/v1/auth/signin`, body);
 
       if (res.status === 200) {
-        const result: LoginResponse = res.data;
+        const data = res.data;
+        const result: LoginResponse = data.result;
         localStorage.setItem("accessToken", result.accessToken);
-        callback();
+        setIsLogin(true);
+        return res.status;
       }
     } catch (error) {
-      console.error(error);
       if (axios.isAxiosError(error)) {
+        console.error(error.response);
         return error.response?.data;
       }
     } finally {
@@ -53,37 +56,47 @@ export const useAuth = () => {
     }
   };
 
-  const login = async () => {};
-
-  const logout = async () => {};
-
-  const verifyRequest = async (body: VerifyRequest) => {
+  const signout = async () => {
     try {
-      setIsVerifyRequestLoading(true);
+      const res = await axiosInstance.get(`/v1/auth/signout`);
+
+      if (res.status === 200) {
+        setIsLogin(false);
+        console.log(res.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const verifyEmail = async (body: VerifyEmail, reset: boolean) => {
+    try {
+      setIsVerifyEmailLoading(true);
       const res = await axiosInstance.post(
-        `/v1/normal/authenticate/email`,
+        `/v1/normal/authenticate/email?reset=${reset}`,
         body
       );
 
       if (res.status === 200) {
-        console.log(res.data);
         return res.data;
       }
     } catch (error) {
       console.error(error);
     } finally {
-      setIsVerifyRequestLoading(false);
+      setIsVerifyEmailLoading(false);
     }
   };
 
-  const verifyConfirm = async (body: VerifyConfirm) => {
+  const verifyConfirm = async (body: VerifyConfirm, reset: boolean) => {
     try {
       setIsVerifyConfirmLoading(true);
-      const res = await axiosInstance.post(`/v1/normal/verify/number`, body);
+      const res = await axiosInstance.post(
+        `/v1/normal/verify/number?reset=${reset}`,
+        body
+      );
 
       if (res.status === 200) {
-        console.log(res.data);
-        return;
+        return res.status;
       }
     } catch (error) {
       console.error(error);
@@ -92,16 +105,32 @@ export const useAuth = () => {
     }
   };
 
-  const resetPassword = async (body: PasswordReset) => {};
+  const resetPassword = async (body: PasswordReset) => {
+    try {
+      setIsResetPasswordLoading(true);
+      const res = await axiosInstance.post(`/v1/normal/password/change`, body);
+
+      if (res.status === 200) {
+        return res.data;
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsResetPasswordLoading(false);
+    }
+  };
 
   return {
     signUp,
     signIn,
-    verifyRequest,
+    verifyEmail,
     verifyConfirm,
+    signout,
+    resetPassword,
     isSignUpLoading,
     isSignInLoading,
-    isVerifyRequestLoading,
+    isVerifyEmailLoading,
     isVerifyConfirmLoading,
+    isResetPasswordLoading,
   };
 };

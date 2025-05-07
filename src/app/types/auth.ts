@@ -8,10 +8,9 @@ interface SignUpData {
 }
 
 /** 인증번호 요청 바디 타입 */
-interface VerifyRequest {
+interface VerifyEmail {
   email: string;
   number: string;
-  reset: boolean;
 }
 
 /** 인증번호 확인 바디 타입 */
@@ -45,7 +44,7 @@ interface LoginResponse {
 }
 export type {
   SignUpData,
-  VerifyRequest,
+  VerifyEmail,
   VerifyConfirm,
   PasswordReset,
   Login,

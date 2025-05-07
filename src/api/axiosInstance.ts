@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import axios, { AxiosError } from "axios";
 import { getCookie } from "cookies-next";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
