@@ -25,6 +25,8 @@ const FindPassword = () => {
 
   const [isAuthRequested, setIsAuthRequested] = useState(false);
   const [isToastOpen, setIsToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [isEmailPassed, setIsEmailPassed] = useState(false);
   const [isPassed, setIsPassed] = useState(false);
 
   const {
@@ -37,14 +39,22 @@ const FindPassword = () => {
   const isActive =
     name !== "" && birth !== "" && email !== "" && authCode !== "" && isPassed;
 
-  const handleVerifyEmail = () => {
-    verifyEmail(
+  const handleVerifyEmail = async () => {
+    const res = await verifyEmail(
       {
         email: email,
         number: authCode,
       },
       true
     );
+    if (res.status == 200) {
+      setIsEmailPassed(true);
+      setToastMessage(res.message);
+    } else {
+      setIsEmailPassed(false);
+      setToastMessage(res.response.data.message);
+    }
+    setIsToastOpen(true);
   };
 
   const handleVerifyConfirm = async () => {
@@ -55,8 +65,12 @@ const FindPassword = () => {
       },
       true
     );
-    if (res === 200) {
+    if (res.status === 200) {
       setIsPassed(true);
+    } else {
+      setIsPassed(false);
+      setToastMessage(res.response.data.message);
+      setIsToastOpen(true);
     }
   };
 
@@ -116,7 +130,8 @@ const FindPassword = () => {
         </FlexBox>
       </InputContainer>
       <ToastMessage
-        message={"이메일로 회원 인증번호가 발송되었습니다"}
+        isError={!isEmailPassed}
+        message={toastMessage}
         isOpen={isToastOpen}
         setIsOpen={setIsToastOpen}
       />

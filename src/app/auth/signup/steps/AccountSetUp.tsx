@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { isValidPassword, validatePasswordConfirm } from "@/utils/validate";
 import FlexBox from "@/components/layout/FlexBox";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
@@ -10,6 +11,7 @@ import { useValidation } from "@/hooks/useValidation";
 import { useSignUpStore } from "@/store/signUpStore";
 import { useAuth } from "@/hooks/useAuth";
 import { convertToFullYear } from "@/utils/convert";
+import ToastMessage from "@/components/ToastMessage";
 
 const AccountSetUp = () => {
   const {
@@ -42,6 +44,9 @@ const AccountSetUp = () => {
     isVerifyConfirmLoading,
   } = useAuth();
 
+  const [isToastOpen, setIsToastOpen] = useState(false);
+  const [toastmessage, setToastMessage] = useState("");
+
   const handleCheck = () => {
     if (
       email.length &&
@@ -67,26 +72,42 @@ const AccountSetUp = () => {
       birthday: convertToFullYear(birth),
       sex: sex,
     });
+    if (res.status !== 200) {
+      setToastMessage(res.response.data.message);
+      setIsToastOpen(true);
+    }
   };
 
-  const handleVerifyEmail = () => {
-    verifyEmail(
+  const handleVerifyEmail = async () => {
+    const res = await verifyEmail(
       {
         email: email,
         number: "",
       },
       false
     );
+    if (res.status !== 200) {
+      setToastMessage(res.response.data.message);
+    } else {
+      setToastMessage("인증번호 발송에 성공했습니다.");
+    }
+    setIsToastOpen(true);
   };
 
-  const verifyCode = () => {
-    verifyConfirm(
+  const verifyCode = async () => {
+    const res: any = await verifyConfirm(
       {
         email: email,
         number: authCode,
       },
       false
     );
+    if (res.status !== 200) {
+      setToastMessage(res.response.data.message);
+    } else {
+      setToastMessage("인증에 성공했습니다.");
+    }
+    setIsToastOpen(true);
   };
   return (
     <>
@@ -167,6 +188,12 @@ const AccountSetUp = () => {
             onClick={handleSignUp}
           />
         </div>
+        <ToastMessage
+          isOpen={isToastOpen}
+          isError={true}
+          setIsOpen={setIsToastOpen}
+          message={toastmessage}
+        />
       </FlexBox>
     </>
   );

@@ -29,19 +29,25 @@ const ResetPassword = () => {
 
   const { resetPassword, isResetPasswordLoading } = useAuth();
 
+  const [isError, setIsError] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
   const handleUpdatePassword = async () => {
-    if (newPassword === passwordConfirm) {
-      const res = await resetPassword({
-        email: email,
-        password: newPassword,
-        validatedPassword: passwordConfirm,
-      });
-      if (res.message) {
-        setIsToastOpen(true);
-      }
-      setNewPassword("");
-      setPasswordConfirm("");
+    const res = await resetPassword({
+      email: email,
+      password: newPassword,
+      validatedPassword: passwordConfirm,
+    });
+    if (res.status === 200) {
+      setIsError(false);
+      setToastMessage(res.message);
+    } else {
+      setIsError(true);
+      setToastMessage(res.response.data.message);
     }
+    setIsToastOpen(true);
+    setNewPassword("");
+    setPasswordConfirm("");
   };
 
   return (
@@ -71,7 +77,8 @@ const ResetPassword = () => {
         ></InputField>
       </InputContainer>
       <ToastMessage
-        message={"비밀번호가 재설정되었습니다."}
+        isError={isError}
+        message={toastMessage}
         isOpen={isToastOpen}
         setIsOpen={setIsToastOpen}
       />
