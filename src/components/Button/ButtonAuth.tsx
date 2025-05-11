@@ -1,6 +1,7 @@
 import LoadingSpinner from "../LoadingSpinner";
 
-interface ButtonAuthProps {
+interface ButtonAuthProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   isActive?: boolean;
   isLoading: boolean;
@@ -14,7 +15,7 @@ const ButtonAuth = ({
   onClick,
 }: ButtonAuthProps) => {
   const handleClick = () => {
-    if (onClick) {
+    if (onClick && isActive) {
       onClick();
     }
   };
@@ -25,6 +26,8 @@ const ButtonAuth = ({
         isActive ? "cursor-pointer" : "opacity-40 cursor-not-allowed"
       } rounded-lg text-white font-bold flex justify-center items-center`}
       onClick={handleClick}
+      disabled={!isActive}
+      aria-disabled={!isActive}
     >
       {isLoading ? <LoadingSpinner /> : text}
     </button>
