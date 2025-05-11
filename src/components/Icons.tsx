@@ -6,19 +6,22 @@ export type IconKeys =
   | "calendar"
   | "user"
   | "file"
+  | "fileGray"
   | "message"
   | "mail"
   | "award"
   | "x"
   | "circleArrow"
   | "checkCircle"
-  | "error";
+  | "error"
+  | "upload";
 
 const iconMap: Record<IconKeys, string> = {
   logo: "/tave-logo.svg",
   calendar: "/calendar.svg",
   user: "/user.svg",
   file: "/file.svg",
+  fileGray: "file-gray.svg",
   award: "/award.svg",
   mail: "/mail.svg",
   message: "/message.svg",
@@ -27,6 +30,7 @@ const iconMap: Record<IconKeys, string> = {
   circleArrow: "/circle-arrow.svg",
   checkCircle: "/check-circle.svg",
   error: "/error.svg",
+  upload: "/upload.svg",
 };
 
 interface IconProps {

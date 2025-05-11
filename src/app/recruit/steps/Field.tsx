@@ -66,7 +66,7 @@ const Field = () => {
           maxLength={700}
         />
       </Disclosure>
-      <FlexBox className="justify-between">
+      <FlexBox className="justify-between my-8">
         <ButtonNavigate text="이전" onClick={() => setCurrentStep(1)} />
         <ButtonNavigate text="다음" onClick={() => setCurrentStep(3)} />
       </FlexBox>
