@@ -1,18 +1,24 @@
 "use client";
 
+import { useState } from "react";
+import ButtonNavigate from "@/components/Button/ButtonNavigate";
 import Disclosure from "@/components/Disclosure";
 import InputField from "@/components/Input/InputField";
 import TextArea from "@/components/Input/TextArea";
+import FlexBox from "@/components/layout/FlexBox";
 import StepCounter from "@/components/StepCounter";
-import { useState } from "react";
+import useRecruitStore from "@/store/recruitStore";
 
 const programmingLevel = ["입문", "초급", "중급", "상급", "전문가"];
 
 const Field = () => {
+  const { setCurrentStep } = useRecruitStore();
+
   const [level, setLevel] = useState<number>(0);
   const [techStack, setTechStack] = useState("");
   const [question1, setQuestion1] = useState("");
   const [question2, setQuestion2] = useState("");
+
   return (
     <>
       <h1 className="font-bold text-2xl text-[#394150] text-center">
@@ -60,6 +66,10 @@ const Field = () => {
           maxLength={700}
         />
       </Disclosure>
+      <FlexBox className="justify-between my-8">
+        <ButtonNavigate text="이전" onClick={() => setCurrentStep(1)} />
+        <ButtonNavigate text="다음" onClick={() => setCurrentStep(3)} />
+      </FlexBox>
     </>
   );
 };

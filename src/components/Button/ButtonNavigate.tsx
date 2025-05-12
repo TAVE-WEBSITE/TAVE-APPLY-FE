@@ -2,7 +2,8 @@
 
 import LoadingSpinner from "../LoadingSpinner";
 
-export interface ButtonNavigateProps {
+export interface ButtonNavigateProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   isActive?: boolean;
   isDisabled?: boolean;

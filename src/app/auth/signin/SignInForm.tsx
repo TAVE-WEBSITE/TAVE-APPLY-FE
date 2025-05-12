@@ -37,6 +37,8 @@ const SignInForm = () => {
     } else if (res && res.message) {
       setLoginError(res.message);
     }
+    setEmail("");
+    setPassword("");
     localStorage.setItem("email", email);
   };
 

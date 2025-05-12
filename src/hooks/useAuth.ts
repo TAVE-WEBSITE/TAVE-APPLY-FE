@@ -28,7 +28,7 @@ export const useAuth = () => {
         return res.data;
       }
     } catch (error) {
-      console.error(error);
+      return error;
     } finally {
       setIsSignUpLoading(false);
     }
@@ -62,7 +62,6 @@ export const useAuth = () => {
 
       if (res.status === 200) {
         setIsLogin(false);
-        console.log(res.data);
       }
     } catch (error) {
       console.error(error);
@@ -81,7 +80,7 @@ export const useAuth = () => {
         return res.data;
       }
     } catch (error) {
-      console.error(error);
+      return error;
     } finally {
       setIsVerifyEmailLoading(false);
     }
@@ -96,10 +95,10 @@ export const useAuth = () => {
       );
 
       if (res.status === 200) {
-        return res.status;
+        return res.data;
       }
     } catch (error) {
-      console.error(error);
+      return error;
     } finally {
       setIsVerifyConfirmLoading(false);
     }
@@ -114,7 +113,7 @@ export const useAuth = () => {
         return res.data;
       }
     } catch (error) {
-      console.error(error);
+      return error;
     } finally {
       setIsResetPasswordLoading(false);
     }

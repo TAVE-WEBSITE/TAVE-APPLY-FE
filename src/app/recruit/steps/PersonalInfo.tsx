@@ -5,8 +5,18 @@ import InputField from "@/components/Input/InputField";
 import FlexBox from "@/components/layout/FlexBox";
 import useRecruitStore from "@/store/recruitStore";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
+import { RecruitField } from "@/store/recruitStore";
+import Select from "@/components/select/Select";
 
 const lables = ["이름", "성별", "생년월일", "연락처", "이메일 주소"];
+const options: RecruitField[] = [
+  "UX/UI 디자이너",
+  "웹 프론트엔드",
+  "앱 프론트엔드",
+  "백엔드",
+  "데이터분석",
+  "딥러닝",
+];
 
 const PersonalInfo = () => {
   const {
@@ -36,7 +46,22 @@ const PersonalInfo = () => {
             <InputField value={label} readonly />
           </InputContainer>
         ))}
-        <InputContainer label="힉교" isRequired={true}>
+        <InputContainer
+          label="지원분야"
+          isRequired={true}
+          description="기수 당 1개의 분야만 지원 가능합니다."
+        >
+          <Select selectedValue={applyField} setSelectedValue={setApplyField}>
+            <Select.Trigger>
+              <Select.Options>
+                {options.map((option) => (
+                  <Select.Option key={option} value={option} />
+                ))}
+              </Select.Options>
+            </Select.Trigger>
+          </Select>
+        </InputContainer>
+        <InputContainer label="학교" isRequired={true}>
           <InputField value={school} placeholder="학교를 입력해주세요" />
         </InputContainer>
         <InputContainer label="전공" isRequired={true}>
@@ -47,13 +72,6 @@ const PersonalInfo = () => {
             value={minorDouble}
             placeholder="부전공 or 복수전공을 입력해주세요"
           />
-        </InputContainer>
-        <InputContainer
-          label="지원분야"
-          isRequired={true}
-          description="기수 당 1개의 분야만 지원 가능합니다."
-        >
-          <InputField value={minorDouble} />
         </InputContainer>
         <FlexBox className="justify-end">
           <ButtonNavigate text="다음" onClick={() => setCurrentStep(2)} />
