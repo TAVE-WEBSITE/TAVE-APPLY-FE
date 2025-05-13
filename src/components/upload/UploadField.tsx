@@ -17,13 +17,6 @@ export default function UploadField({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [fileName, setFileName] = useState("");
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFileName(file.name);
-    }
-  };
-
   if (type === "file") {
     return (
       <FlexBox className="items-center gap-3 border border-[#E5E7EB] rounded-xl px-4 py-3 md:py-4 cursor-pointer w-full">
@@ -36,13 +29,13 @@ export default function UploadField({
           htmlFor="file-input"
           className="text-[#394150] md:text-base cursor-pointer"
         >
-          {fileName ? fileName : "파일 선택"}
+          {value.name ? value.name : "파일 선택"}
         </label>
         <input
           id="file-input"
           ref={inputRef}
           type="file"
-          onChange={handleFileChange}
+          onChange={onChange}
           className="hidden"
         />
       </FlexBox>

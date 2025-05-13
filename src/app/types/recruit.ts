@@ -6,4 +6,13 @@ type RecruitField =
   | "데이터분석"
   | "딥러닝";
 
-export type { RecruitField };
+interface TimeSlot {
+  time: string;
+}
+
+interface Schedule {
+  date: string;
+  timeSlots: TimeSlot[];
+}
+
+export type { RecruitField, TimeSlot, Schedule };

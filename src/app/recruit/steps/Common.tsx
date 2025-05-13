@@ -1,13 +1,28 @@
 import { useState } from "react";
 import Disclosure from "@/components/Disclosure";
 import TextArea from "@/components/Input/TextArea";
-import FlexBox from "@/components/layout/FlexBox";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
 import Uploader from "@/components/upload/Uploader";
+import TimePicker from "@/components/TimePicker/TimePicker";
 import useRecruitStore from "@/store/recruitStore";
+import formatTimeSlot from "@/utils/formatTimeSlot";
 
 const uploadOptions = ["Github", "Tech Blog", "Portfolio"];
 type uploadType = "text" | "file";
+
+// 샘플 데이터
+const schedules = [
+  "2025-11-20 13:00",
+  "2025-11-20 13:30",
+  "2025-11-20 14:00",
+  "2025-11-20 14:30",
+  "2025-11-20 15:00",
+  "2025-11-20 15:30",
+  "2025-11-20 16:00",
+  "2025-11-20 16:30",
+];
+
+const formattedSchedule = formatTimeSlot(schedules);
 
 const Common = () => {
   const { setCurrentStep } = useRecruitStore();
@@ -15,11 +30,19 @@ const Common = () => {
 
   const [selectedOption, setSelectedOption] = useState("");
   const [uploadType, setUploadType] = useState<uploadType>("text");
-  const [uploadValue, setUploadValue] = useState();
+  const [uploadValue, setUploadValue] = useState<string | File>("");
 
-  const handleOnChange = () => {};
+  // 면접시간관련 상태
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
 
-  console.log(selectedOption);
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadValue(file.name);
+    } else setUploadValue(e.target.value);
+  };
+
   return (
     <>
       <h1 className="font-bold text-2xl text-[#394150] text-center">
@@ -85,7 +108,7 @@ const Common = () => {
             type={uploadType}
             value={uploadValue}
             setValue={setUploadValue}
-            onChange={handleOnChange}
+            onChange={handleUpload}
           />
         </Uploader>
       </Disclosure>
@@ -94,22 +117,30 @@ const Common = () => {
         title={"가능한 오프라인 면접 시간을 모두 체크해주세요"}
         isRequired={true}
       >
-        <TextArea
-          value={question1}
-          setValue={setQuestion1}
-          placeholder="지원자님의 경험을 공유해주세요"
-          maxLength={500}
-        />
+        <TimePicker>
+          {formattedSchedule.map((schedule) => (
+            <TimePicker.DateRow key={schedule.date} date={schedule.date}>
+              {schedule.timeSlots.map((timeSlot) => (
+                <TimePicker.TimeSlotButton
+                  key={timeSlot.time}
+                  time={timeSlot.time}
+                  isSelected={selectedDate === timeSlot.time}
+                  onClick={() => setSelectedDate(timeSlot.time)}
+                />
+              ))}
+            </TimePicker.DateRow>
+          ))}
+        </TimePicker>
       </Disclosure>
-      <FlexBox className="justify-between my-8">
+      <div className="flex flex-col-reverse md:flex-row justify-between my-8">
         <ButtonNavigate text="이전" onClick={() => setCurrentStep(1)} />
         <button
-          className="w-[120px] h-[50px] rounded-lg font-bold cursor-pointer md:bg-[#195BFF] md:text-white bg-[#F9FAFB] text-[#B0B3B9]"
+          className="w-full md:w-[110px] h-[50px] rounded-lg font-bold cursor-pointer md:bg-[#195BFF] md:text-white bg-[#F9FAFB] text-[#B0B3B9]"
           onClick={() => setCurrentStep(4)}
         >
           제출하기
         </button>
-      </FlexBox>
+      </div>
     </>
   );
 };

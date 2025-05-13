@@ -16,17 +16,20 @@ const Complete = () => {
 
       <FlexBox direction="col" className="w-full gap-4 items-center">
         <p className="w-full font-semibold text-[#394150] text-sm md:text-base rounded-[20px] border border-gray-200 p-6 mt-4">
-          1) TAVE 15기 활동은 매주 토요일에 오프라인으로 진행됩니다.
+          1) TAVE 15기 활동은 매주 토요일에{" "}
+          <span className="text-red-500">오프라인</span>으로 진행됩니다.
         </p>
 
         <p className="w-full font-semibold text-[#394150] text-sm md:text-base rounded-[20px] border border-gray-200 p-6 mt-4">
-          2) 모든 정기 세션은 필수 참여가 원칙이며, 토요일 14시 ~ 18시 사이에
-          진행됩니다.
+          2) 모든 정기 세션은 <span className="text-red-500">필수 참여</span>가
+          원칙이며, 토요일 14시 ~ 18시 사이에 진행됩니다.
         </p>
 
         <p className="w-full font-semibold text-[#394150] text-sm md:text-base rounded-[20px] border border-gray-200 p-6 mt-4">
-          3) TAVE 16기 OT 및 MT는 8/31 (토) 이며, 만남의 장은 9/7 (토) 에 진행될
-          예정입니다.
+          3) TAVE 16기 OT 및 MT는
+          <span className="text-red-500"> 8/31 (토) </span>
+          이며, 만남의 장은
+          <span className="text-red-500"> 9/7 (토)</span> 에 진행될 예정입니다.
         </p>
 
         <p className="w-full font-semibold text-[#394150] text-sm md:text-base rounded-[20px] border border-gray-200 p-6 mt-4">
