@@ -40,7 +40,7 @@ const Disclosure = ({
   return (
     <FlexBox
       direction="col"
-      className="rounded-[20px] border border-gray-200 p-6"
+      className="rounded-[20px] border border-gray-200 p-6 bg-white"
     >
       <FlexBox className="justify-between items-center text-[#394150] font-normal leading-snug text-sm md:text-base">
         <p className="font-semibold">{title}</p>
