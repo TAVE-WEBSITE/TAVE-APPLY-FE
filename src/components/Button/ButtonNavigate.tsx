@@ -1,11 +1,15 @@
 "use client";
 
-export interface ButtonNavigateProps {
+import LoadingSpinner from "../LoadingSpinner";
+
+export interface ButtonNavigateProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   isActive?: boolean;
   isDisabled?: boolean;
   onClick?: () => void;
   hasBackGround?: boolean;
+  isLoading?: boolean;
   className?: string;
 }
 
@@ -14,6 +18,7 @@ const ButtonNavigate = ({
   isActive = true,
   onClick,
   hasBackGround = true,
+  isLoading = false,
   className,
 }: ButtonNavigateProps) => {
   return (
@@ -28,7 +33,13 @@ const ButtonNavigate = ({
       onClick={onClick}
       disabled={!isActive}
     >
-      {text}
+      {isLoading ? (
+        <div className="flex justify-center">
+          <LoadingSpinner />
+        </div>
+      ) : (
+        text
+      )}
     </button>
   );
 };

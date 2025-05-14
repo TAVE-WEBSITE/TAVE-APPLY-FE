@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { isValidPassword, validatePasswordConfirm } from "@/utils/validate";
 import FlexBox from "@/components/layout/FlexBox";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
@@ -8,13 +9,20 @@ import InputField from "@/components/Input/InputField";
 import ButtonAuth from "@/components/Button/ButtonAuth";
 import { useValidation } from "@/hooks/useValidation";
 import { useSignUpStore } from "@/store/signUpStore";
+import { useAuth } from "@/hooks/useAuth";
+import { convertToFullYear } from "@/utils/convert";
+import ToastMessage from "@/components/ToastMessage";
 
 const AccountSetUp = () => {
   const {
+    name,
     email,
     authCode,
     password,
+    phoneNumber,
+    birth,
     passwordConfirm,
+    selectedGender,
     setEmail,
     setAuthCode,
     setPassword,
@@ -27,6 +35,17 @@ const AccountSetUp = () => {
     validatePasswordConfirm,
     passwordConfirm
   );
+
+  const {
+    signUp,
+    verifyEmail,
+    verifyConfirm,
+    isVerifyEmailLoading,
+    isVerifyConfirmLoading,
+  } = useAuth();
+
+  const [isToastOpen, setIsToastOpen] = useState(false);
+  const [toastmessage, setToastMessage] = useState("");
 
   const handleCheck = () => {
     if (
@@ -43,6 +62,53 @@ const AccountSetUp = () => {
 
   const checkAll = handleCheck();
 
+  const handleSignUp = async () => {
+    const sex = selectedGender === "남성" ? "MALE" : "FEMALE";
+    const res = await signUp({
+      email,
+      password,
+      phoneNumber,
+      username: name,
+      birthday: convertToFullYear(birth),
+      sex: sex,
+    });
+    if (res.status !== 200) {
+      setToastMessage(res.response.data.message);
+      setIsToastOpen(true);
+    }
+  };
+
+  const handleVerifyEmail = async () => {
+    const res = await verifyEmail(
+      {
+        email: email,
+        number: "",
+      },
+      false
+    );
+    if (res.status !== 200) {
+      setToastMessage(res.response.data.message);
+    } else {
+      setToastMessage("인증번호 발송에 성공했습니다.");
+    }
+    setIsToastOpen(true);
+  };
+
+  const verifyCode = async () => {
+    const res: any = await verifyConfirm(
+      {
+        email: email,
+        number: authCode,
+      },
+      false
+    );
+    if (res.status !== 200) {
+      setToastMessage(res.response.data.message);
+    } else {
+      setToastMessage("인증에 성공했습니다.");
+    }
+    setIsToastOpen(true);
+  };
   return (
     <>
       <h1 className="font-bold text-2xl text-[#394150] text-center">
@@ -61,7 +127,11 @@ const AccountSetUp = () => {
               placeholder="이메일주소를 입력해주세요"
               hasButton={true}
             />
-            <ButtonAuth text={"인증요청"} />
+            <ButtonAuth
+              text={"인증요청"}
+              onClick={handleVerifyEmail}
+              isLoading={isVerifyEmailLoading}
+            />
           </FlexBox>
         </InputContainer>
         <InputContainer label="인증번호" isRequired={true}>
@@ -73,7 +143,12 @@ const AccountSetUp = () => {
               placeholder="인증번호를 입력해주세요"
               hasButton={true}
             />
-            <ButtonAuth text={"인증확인"} isActive={false} />
+            <ButtonAuth
+              text={"인증확인"}
+              onClick={verifyCode}
+              isActive={authCode.length > 0}
+              isLoading={isVerifyConfirmLoading}
+            />
           </FlexBox>
         </InputContainer>
         <InputContainer
@@ -108,11 +183,17 @@ const AccountSetUp = () => {
             onClick={() => setCurrentStep(2)}
           />
           <ButtonNavigate
-            text="다음"
+            text="가입"
             isActive={checkAll}
-            onClick={() => setCurrentStep(4)}
+            onClick={handleSignUp}
           />
         </div>
+        <ToastMessage
+          isOpen={isToastOpen}
+          isError={true}
+          setIsOpen={setIsToastOpen}
+          message={toastmessage}
+        />
       </FlexBox>
     </>
   );

@@ -20,4 +20,18 @@ const validatePasswordConfirm = (password: string, confirmPassword: string) => {
   if (password !== confirmPassword) return "비밀번호가 일치하지 않습니다";
   else return "";
 };
-export { isValidEmail, isValidPassword, isValidBirth, validatePasswordConfirm };
+
+const isValidPhoneNumber = (phoneNumber: string) => {
+  // 000-0000-0000 형식 검증 (하이픈 포함)
+  const phoneRegex = /^[0-9]{3}-[0-9]{4}-[0-9]{4}$/;
+  if (!phoneRegex.test(phoneNumber)) return false;
+  else return true;
+};
+
+export {
+  isValidEmail,
+  isValidPassword,
+  isValidBirth,
+  isValidPhoneNumber,
+  validatePasswordConfirm,
+};

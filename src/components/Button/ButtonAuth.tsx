@@ -1,24 +1,22 @@
-"use client";
-
-import { useState } from "react";
 import LoadingSpinner from "../LoadingSpinner";
 
-interface ButtonAuthProps {
+interface ButtonAuthProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   isActive?: boolean;
+  isLoading: boolean;
   onClick?: () => void;
 }
 
-const ButtonAuth = ({ text, isActive = true, onClick }: ButtonAuthProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-
+const ButtonAuth = ({
+  text,
+  isActive = true,
+  isLoading,
+  onClick,
+}: ButtonAuthProps) => {
   const handleClick = () => {
-    if (onClick) {
+    if (onClick && isActive) {
       onClick();
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 3000);
     }
   };
 
@@ -28,6 +26,8 @@ const ButtonAuth = ({ text, isActive = true, onClick }: ButtonAuthProps) => {
         isActive ? "cursor-pointer" : "opacity-40 cursor-not-allowed"
       } rounded-lg text-white font-bold flex justify-center items-center`}
       onClick={handleClick}
+      disabled={!isActive}
+      aria-disabled={!isActive}
     >
       {isLoading ? <LoadingSpinner /> : text}
     </button>

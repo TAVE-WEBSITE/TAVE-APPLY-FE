@@ -5,7 +5,7 @@ import InputField from "@/components/Input/InputField";
 import FlexBox from "@/components/layout/FlexBox";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
 import SelectOptions from "@/components/Button/SelectOptions";
-import { isValidBirth } from "@/utils/validate";
+import { isValidPhoneNumber } from "@/utils/validate";
 import { useSignUpStore } from "@/store/signUpStore";
 
 const PersonalInfo = () => {
@@ -23,26 +23,34 @@ const PersonalInfo = () => {
 
   const gender = ["남성", "여성"];
 
-  const checkPhoneNumber = () => {
-    if (typeof phoneNumber === "string") return phoneNumber !== "";
-    else return true;
-  };
+  const formatPhoneNumber = (value: string) => {
+    const numbers = value.replace(/[^\d]/g, "");
 
-  const checkBirth = () => {
-    if (typeof birth === "string") return birth !== "";
-    else return isValidBirth(birth);
+    if (!numbers) return "";
+
+    if (numbers.length <= 3) {
+      setPhoneNumber(numbers);
+      return numbers;
+    } else if (numbers.length <= 7) {
+      setPhoneNumber(`${numbers.slice(0, 3)}-${numbers.slice(3)}`);
+    } else {
+      setPhoneNumber(
+        `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`
+      );
+    }
   };
 
   const handleCheck = () => {
     if (
       name.length &&
-      String(phoneNumber).length &&
-      checkBirth() &&
+      isValidPhoneNumber(phoneNumber) &&
+      birth &&
       selectedGender.length
     ) {
       return true;
     } else return false;
   };
+
   const checkAll = handleCheck();
 
   return (
@@ -59,19 +67,17 @@ const PersonalInfo = () => {
       </InputContainer>
       <InputContainer label="전화번호" isRequired={true}>
         <InputField
-          type="number"
           value={phoneNumber}
-          setValue={setPhoneNumber}
+          setValue={formatPhoneNumber}
           placeholder="전화번호를 입력해주세요"
         />
       </InputContainer>
       <InputContainer label="생년월일" isRequired={true}>
         <InputField
-          type="number"
           value={birth}
           setValue={setBirth}
           placeholder="YYMMDD 형식으로 입력해주세요"
-          maxLength={6}
+          maxLength={10}
         />
       </InputContainer>
       <FlexBox className="gap-2" direction="col">

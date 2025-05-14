@@ -32,7 +32,7 @@ const Disclosure = ({ title, description, isRequired = false, defaultOpen = true
     }, [isOpen]);
 
     return (
-        <FlexBox direction="col" className="rounded-[20px] border border-gray-200 p-6">
+        <FlexBox direction="col" className="rounded-[20px] border border-gray-200 p-6 bg-white">
             <FlexBox className="justify-between items-center text-[#394150] font-normal leading-snug text-sm md:text-base">
                 <span>
                     <span className="font-semibold whitespace-pre-line">{title}</span>
