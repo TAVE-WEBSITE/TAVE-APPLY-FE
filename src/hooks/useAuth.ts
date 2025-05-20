@@ -3,12 +3,11 @@ import axios from "axios";
 import { axiosInstance } from "@/api/axiosInstance";
 import {
   SignUpData,
-  VerifyEmail,
-  VerifyConfirm,
+  EmailVerification,
   PasswordReset,
   Login,
   LoginResponse,
-} from "@/app/types/auth";
+} from "@/modules/authType";
 import { useLoginStore } from "@/store/loginStore";
 
 export const useAuth = () => {
@@ -68,7 +67,7 @@ export const useAuth = () => {
     }
   };
 
-  const verifyEmail = async (body: VerifyEmail, reset: boolean) => {
+  const verifyEmail = async (body: EmailVerification, reset: boolean) => {
     try {
       setIsVerifyEmailLoading(true);
       const res = await axiosInstance.post(
@@ -86,7 +85,7 @@ export const useAuth = () => {
     }
   };
 
-  const verifyConfirm = async (body: VerifyConfirm, reset: boolean) => {
+  const verifyConfirm = async (body: EmailVerification, reset: boolean) => {
     try {
       setIsVerifyConfirmLoading(true);
       const res = await axiosInstance.post(

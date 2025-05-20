@@ -7,14 +7,7 @@ interface SignUpData {
   sex: "MALE" | "FEMALE";
 }
 
-/** 인증번호 요청 바디 타입 */
-interface VerifyEmail {
-  email: string;
-  number: string;
-}
-
-/** 인증번호 확인 바디 타입 */
-interface VerifyConfirm {
+interface EmailVerification {
   email: string;
   number: string;
 }
@@ -42,10 +35,10 @@ interface LoginResponse {
   department: string;
   job: string;
 }
+
 export type {
   SignUpData,
-  VerifyEmail,
-  VerifyConfirm,
+  EmailVerification,
   PasswordReset,
   Login,
   LoginResponse,

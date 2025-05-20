@@ -5,9 +5,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import '@/utils/swiper.css';
+import '@/styles/swiper.css';
 import { Navigation, Pagination } from 'swiper/modules';
-import { fieldData } from '@/utils/homeContent';
+import { fieldData } from '@/modules/homeContent';
 
 const GroupField = () => {
     return (

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
+import '@/styles/globals.css';
 import Header from "../components/layout/Header";
 
 /** 500, 600, 700 weight만 사용하기에 fonts폴더에 다운받아 사용 - 성능 최적화 */

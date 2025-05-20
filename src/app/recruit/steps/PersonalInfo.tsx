@@ -3,9 +3,9 @@
 import InputContainer from "@/components/layout/InputContainer";
 import InputField from "@/components/Input/InputField";
 import FlexBox from "@/components/layout/FlexBox";
-import useRecruitStore from "@/store/recruitStore";
+import { useRecruitStore } from "@/store/recruitStore";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
-import { RecruitField } from "@/store/recruitStore";
+import { RecruitField } from "@/modules/recruitType";
 import Select from "@/components/select/Select";
 
 const lables = ["이름", "성별", "생년월일", "연락처", "이메일 주소"];

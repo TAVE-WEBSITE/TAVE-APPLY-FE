@@ -4,7 +4,7 @@ import CardChip from '@/components/card/CardChip';
 import FlexBox from '@/components/layout/FlexBox';
 import ButtonChip from '@/components/Button/ButtonChip';
 import { useState } from 'react';
-import { sessionData } from '@/utils/homeContent';
+import { sessionData } from '@/modules/homeContent';
 
 type SessionChip = 'start' | 'one' | 'two';
 
