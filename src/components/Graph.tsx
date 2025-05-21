@@ -1,6 +1,6 @@
 import FlexBox from "./layout/FlexBox";
 import Icons from "./Icons";
-import { Status, ApplicantData } from "@/app/types";
+import { Status, ApplicantData } from "@/modules/outcomeType";
 
 interface GraphProps {
   data: ApplicantData[];

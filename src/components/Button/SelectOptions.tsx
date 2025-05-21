@@ -2,7 +2,7 @@
 
 import FlexBox from "../layout/FlexBox";
 
-interface tionsProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface SelectOptionsProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   options: string[];
   selectedOption: string;
   setSelectedOption: (option: string) => void;
