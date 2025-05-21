@@ -1,5 +1,5 @@
 import Icons, { IconKeys } from '@/components/Icons';
-import FlexBox from '../components/layout/FlexBox';
+import FlexBox from '@/components/layout/FlexBox';
 import CardSchedule from '@/components/card/CardSchedule';
 import CardTarget from '@/components/card/CardTarget';
 import GroupField from '@/components/group/GroupField';
