@@ -1,7 +1,7 @@
 import Link from "next/link";
 import FlexBox from "@/components/layout/FlexBox";
 import Graph from "@/components/Graph";
-import { ApplicantData } from "../types";
+import { ApplicantData } from "@/modules/outcomeType";
 
 const Mypage = () => {
   const applicantData: ApplicantData[] = [
