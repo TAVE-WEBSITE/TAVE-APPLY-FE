@@ -1,9 +1,9 @@
-import Welcome from "./Welcome";
+import Outcome from "./Outcome";
 
 const page = () => {
   return (
     <main>
-      <Welcome />
+      <Outcome />
     </main>
   );
 };

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import FlexBox from "../layout/FlexBox";
-import { RecruitField } from "@/store/recruitStore";
+import { RecruitField } from "@/modules/recruitType";
 import { useContext } from "react";
 import { SelectContext } from "./Select";
 

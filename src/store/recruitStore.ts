@@ -1,5 +1,5 @@
 import { createFieldStore } from "./createFieldStore";
-import { RecruitField } from "@/app/types/recruit";
+import { RecruitField } from "@/modules/recruitType";
 
 type Question = {
   question: string;
@@ -33,7 +33,5 @@ const initStates: RecruitStates = {
   applyField: "선택",
   questions: [],
 };
-const useRecruitStore = createFieldStore(initStates);
 
-export default useRecruitStore;
-export type { RecruitField, Question };
+export const useRecruitStore = createFieldStore(initStates);

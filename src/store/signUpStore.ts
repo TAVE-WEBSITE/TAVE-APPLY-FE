@@ -1,6 +1,6 @@
 import { createFieldStore } from "./createFieldStore";
 
-export interface SignUpStore {
+interface SignUpStore {
   name: string;
   phoneNumber: string;
   birth: string;

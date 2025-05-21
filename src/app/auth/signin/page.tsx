@@ -7,7 +7,7 @@ const SignIn = () => {
         <h3 className="text-2xl font-bold text-center">TAVE RECRUIT</h3>
       </div>
       <div>
-        <section className="bg-white md:h-left h-screen">
+        <section className="bg-white md:h-[calc(100vh-208px)] h-screen">
           <SignUpForm />
         </section>
       </div>

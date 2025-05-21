@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import ButtonNavigate from "@/components/Button/ButtonNavigate";
@@ -9,7 +9,7 @@ import FlexBox from "@/components/layout/FlexBox";
 import StepCounter from "@/components/StepCounter";
 import useRecruitStore from "@/store/recruitStore";
 
-const programmingLevel = ["입문", "초급", "중급", "상급", "전문가"];
+const programmingLevel = ['입문', '초급', '중급', '상급', '전문가'];
 
 const Field = () => {
   const { setCurrentStep } = useRecruitStore();

@@ -1,4 +1,4 @@
-import { RecruitField } from "@/store/recruitStore";
+import { RecruitField } from "@/modules/recruitType";
 
 interface SelectOptionProp<T> {
   children: React.ReactNode;

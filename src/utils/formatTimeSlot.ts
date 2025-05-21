@@ -1,4 +1,4 @@
-import { Schedule } from "@/app/types/recruit";
+import { Schedule } from "@/modules/recruitType";
 
 export default function formatTimeSlot(times: string[]) {
   const dateMap = new Map<string, Set<string>>();

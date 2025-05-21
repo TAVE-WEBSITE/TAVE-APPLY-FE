@@ -15,4 +15,4 @@ interface Schedule {
   timeSlots: TimeSlot[];
 }
 
-export type { RecruitField, TimeSlot, Schedule };
+export type { RecruitField, Schedule };

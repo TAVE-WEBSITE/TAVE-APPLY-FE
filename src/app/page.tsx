@@ -1,10 +1,10 @@
 import Icons, { IconKeys } from '@/components/Icons';
-import FlexBox from '../components/layout/FlexBox';
+import FlexBox from '@/components/layout/FlexBox';
 import CardSchedule from '@/components/card/CardSchedule';
 import CardTarget from '@/components/card/CardTarget';
 import GroupField from '@/components/group/GroupField';
 import GroupChip from '@/components/group/GroupChip';
-import { scheduleData, targetData } from '@/utils/homeContent';
+import { scheduleData, targetData } from '@/modules/homeContent';
 
 const Home = () => {
     return (
