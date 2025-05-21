@@ -1,18 +1,19 @@
-type RecruitField =
-  | "UX/UI 디자이너"
-  | "웹 프론트엔드"
-  | "앱 프론트엔드"
-  | "백엔드"
-  | "데이터분석"
-  | "딥러닝";
+type RecruitField = 'UX/UI 디자이너' | '웹 프론트엔드' | '앱 프론트엔드' | '백엔드' | '데이터분석' | '딥러닝';
+
+interface Personal {
+    school: string;
+    major: string;
+    minor: string;
+    field: RecruitField | string;
+}
 
 interface TimeSlot {
-  time: string;
+    time: string;
 }
 
 interface Schedule {
-  date: string;
-  timeSlots: TimeSlot[];
+    date: string;
+    timeSlots: TimeSlot[];
 }
 
-export type { RecruitField, Schedule };
+export type { RecruitField, Schedule, Personal };
