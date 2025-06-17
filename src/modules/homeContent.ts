@@ -1,15 +1,15 @@
-import hoverWeb from '../../public/card/hover-web.svg';
-import hoverApp from '../../public/card/hover-app.svg';
-import hoverBack from '../../public/card/hover-back.svg';
-import hoverDeep from '../../public/card/hover-deep.svg';
-import hoverData from '../../public/card/hover-data.svg';
-import hoverDesign from '../../public/card/hover-design.svg';
-import web from '../../public/card/web-card.svg';
-import app from '../../public/card/app-card.svg';
-import back from '../../public/card/back-card.svg';
-import deep from '../../public/card/deep-card.svg';
-import data from '../../public/card/data-card.svg';
-import design from '../../public/card/design-card.svg';
+import hoverWeb from '../../public/card/hover-web.png';
+import hoverApp from '../../public/card/hover-app.png';
+import hoverBack from '../../public/card/hover-back.png';
+import hoverDeep from '../../public/card/hover-deep.png';
+import hoverData from '../../public/card/hover-data.png';
+import hoverDesign from '../../public/card/hover-design.png';
+import web from '../../public/card/web-card.png';
+import app from '../../public/card/app-card.png';
+import back from '../../public/card/back-card.png';
+import deep from '../../public/card/deep-card.png';
+import data from '../../public/card/data-card.png';
+import design from '../../public/card/design-card.png';
 
 const fieldData = [
     {

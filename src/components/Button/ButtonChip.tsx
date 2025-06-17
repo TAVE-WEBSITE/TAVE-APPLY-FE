@@ -14,7 +14,7 @@ const ButtonChip = ({ text, isActive = false, onClick }: ButtonChipProps) => {
                 ${
                   isActive
                     ? "bg-gradient-to-br from-[#1a5bff] to-[#60afff]"
-                    : "bg-[#808694]/20 text-[#97999B]"
+                    : "bg-[#313339] text-[#97999B]"
                 } `}
       onClick={onClick}
     >

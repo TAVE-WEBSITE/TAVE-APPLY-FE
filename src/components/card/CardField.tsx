@@ -46,8 +46,8 @@ const CardField = ({ title, imgSrc, subTitle, hoverSrc, description, state = 'cl
                 )}
             </div>
             <FlexBox
-                className="lg:h-[144px] h-[128px] items-center justify-center text-center bg-[#7f8593]/20
-            rounded-2xl text-white/80 lg:text-sm text-xs whitespace-pre-line"
+                className="lg:h-[144px] h-[128px] items-center justify-center text-center bg-[#2A2C30]
+            rounded-2xl text-white/80 lg:text-[13px] text-xs whitespace-pre-line"
             >
                 {description}
             </FlexBox>
