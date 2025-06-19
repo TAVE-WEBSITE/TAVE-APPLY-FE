@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Disclosure from '@/components/Disclosure';
+import Disclosure from '@/components/layout/Disclosure';
 import TextArea from '@/components/Input/TextArea';
 import ButtonNavigate from '@/components/Button/ButtonNavigate';
 import Uploader from '@/components/upload/Uploader';

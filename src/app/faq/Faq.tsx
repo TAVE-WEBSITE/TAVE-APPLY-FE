@@ -31,7 +31,7 @@ const Faq = () => {
                 <Disclosure key={index} title={item.question} defaultOpen={index === 0 ? true : false} hasQ>
                     <FlexBox className="gap-1 font-medium text-[#394150]/60 leading-snug text-sm md:text-base">
                         <p>A.</p>
-                        <p className="whitespace-pre-line">{item.answer}</p>
+                        <p className="break-keep">{item.answer}</p>
                     </FlexBox>
                 </Disclosure>
             ))}

@@ -48,7 +48,7 @@ const Disclosure = ({
                 <FlexBox className="gap-1">
                     {hasQ && <p className="font-semibold">Q.</p>}
                     <p>
-                        <span className="whitespace-pre-line font-semibold">{title}</span>
+                        <span className="break-keep font-semibold">{title}</span>
                         <span>{description}</span>
                         {isRequired && <span className="text-[#FF0073CC]">*</span>}
                     </p>

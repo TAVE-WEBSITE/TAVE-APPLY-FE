@@ -1,4 +1,4 @@
-import Icons, { IconKeys } from '../Icons';
+import Icons, { IconKeys } from '@/components/Icons';
 import FlexBox from '@/components/layout/FlexBox';
 
 interface CardScheduleProps {

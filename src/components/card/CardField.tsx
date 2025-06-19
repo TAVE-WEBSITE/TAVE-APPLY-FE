@@ -10,7 +10,7 @@ interface CardFieldProps {
     title: string;
     subTitle: string;
     description: string;
-    state?: 'open' | 'closed' | 'reopen';
+    state?: 'open' | 'closed';
 }
 
 const CardField = ({ title, imgSrc, subTitle, hoverSrc, description, state = 'closed' }: CardFieldProps) => {
@@ -33,9 +33,7 @@ const CardField = ({ title, imgSrc, subTitle, hoverSrc, description, state = 'cl
                 {isHovered ? (
                     <>
                         <p className="text-white/60 text-lg lg:text-xl">{subTitle}</p>
-                        <p className="text-2xl lg:text-3xl">
-                            {state === 'open' ? '모집중' : state === 'closed' ? '모집 마감' : '추가 모집중'}
-                        </p>
+                        <p className="text-2xl lg:text-3xl">{state === 'open' ? '모집중' : '모집 마감'}</p>
                     </>
                 ) : (
                     <>
