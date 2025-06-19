@@ -1,6 +1,6 @@
 'use client';
 
-import Disclosure from '@/components/Disclosure';
+import Disclosure from '@/components/layout/Disclosure';
 import FlexBox from '@/components/layout/FlexBox';
 import { faqActivityData, faqRecruitData } from '@/modules/staticData';
 import { useState } from 'react';

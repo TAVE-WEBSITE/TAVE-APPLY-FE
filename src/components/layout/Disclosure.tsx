@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import FlexBox from '@/components/layout/FlexBox';
-import Icons from './Icons';
+import Icons from '@/components/Icons';
 
 interface DisclosureProps {
     title: string;
