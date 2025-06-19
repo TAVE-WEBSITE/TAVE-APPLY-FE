@@ -26,9 +26,9 @@ const Outcome = () => {
             <div
                 className="pt-28 pb-14 md:pt-36 md:pb-22"
                 style={{
-                    backgroundImage: 'url(/background/last-bg.png)',
+                    backgroundImage: 'url(/background/side-bg.png)',
                     backgroundSize: 'cover',
-                    backgroundPosition: 'center',
+                    backgroundPosition: 'top',
                 }}
             >
                 <h2 className="md:text-3xl text-2xl font-bold text-center whitespace-pre-line">{titleMap[status]}</h2>

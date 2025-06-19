@@ -9,10 +9,18 @@ interface DisclosureProps {
     description?: string;
     isRequired?: boolean;
     defaultOpen?: boolean;
+    hasQ?: boolean;
     children: React.ReactNode;
 }
 
-const Disclosure = ({ title, description, isRequired = false, defaultOpen = true, children }: DisclosureProps) => {
+const Disclosure = ({
+    title,
+    description,
+    isRequired = false,
+    defaultOpen = true,
+    children,
+    hasQ,
+}: DisclosureProps) => {
     const [isOpen, setIsOpen] = useState(defaultOpen);
     const contentRef = useRef<HTMLDivElement>(null);
 
@@ -22,28 +30,41 @@ const Disclosure = ({ title, description, isRequired = false, defaultOpen = true
 
     useEffect(() => {
         if (contentRef.current) {
-            const contentHeight = contentRef.current.scrollHeight;
+            const el = contentRef.current;
             if (isOpen) {
-                contentRef.current.style.maxHeight = `${contentHeight}px`;
+                const scrollHeight = el.scrollHeight;
+                requestAnimationFrame(() => {
+                    el.style.maxHeight = scrollHeight + 'px';
+                });
             } else {
-                contentRef.current.style.maxHeight = '0px';
+                el.style.maxHeight = '0px';
             }
         }
     }, [isOpen]);
 
     return (
         <FlexBox direction="col" className="rounded-[20px] border border-gray-200 p-6 bg-white">
-            <FlexBox className="justify-between items-center text-[#394150] font-normal leading-snug text-sm md:text-base">
-                <span>
-                    <span className="font-semibold whitespace-pre-line">{title}</span>
-                    {description}
-                    {isRequired && <span className="text-[#FF0073CC]">*</span>}
-                </span>
-                <button onClick={handleToggle} className="cursor-pointer">
+            <FlexBox className="justify-between items-center text-[#394150] leading-snug text-sm md:text-base gap-2">
+                <FlexBox className="gap-1">
+                    {hasQ && <p className="font-semibold">Q.</p>}
+                    <p>
+                        <span className="whitespace-pre-line font-semibold">{title}</span>
+                        <span>{description}</span>
+                        {isRequired && <span className="text-[#FF0073CC]">*</span>}
+                    </p>
+                </FlexBox>
+                <button onClick={handleToggle} className="cursor-pointer min-w-6 min-h-6">
                     <Icons name="arrow" width={24} height={24} className={`duration-500 ${isOpen && 'rotate-180'}`} />
                 </button>
             </FlexBox>
-            <div ref={contentRef} className="overflow-hidden duration-500">
+            <div
+                ref={contentRef}
+                style={{
+                    maxHeight: '0px',
+                    overflow: 'hidden',
+                    transition: 'max-height 0.5s ease',
+                }}
+            >
                 <div className="w-full h-px bg-gray-200 my-5" />
                 {children}
             </div>
