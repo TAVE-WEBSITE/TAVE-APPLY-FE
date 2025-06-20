@@ -39,10 +39,13 @@ axiosClient.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                 return axiosClient(originalRequest);
             } catch (refreshError) {
-                alert('로그인이 필요합니다.');
+                const currentPath = window.location.pathname;
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('email');
-                window.location.replace('/auth/signin');
+                if (currentPath !== '/auth/signin') {
+                    window.location.replace('/auth/signin');
+                }
+                alert('로그인이 필요합니다.');
                 return Promise.reject(refreshError);
             }
         }
