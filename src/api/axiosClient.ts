@@ -2,26 +2,23 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export const axiosInstance = axios.create({
-    baseURL: API_BASE_URL + '/v1',
+export const axiosClient = axios.create({
+    baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
     withCredentials: true,
 });
 
-axiosInstance.interceptors.request.use(
-    async (config) => {
-        if (typeof window !== undefined) {
-            const accessToken = localStorage.getItem('accessToken');
-            config.headers.set('Authorization', `Bearer ${accessToken}`);
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
+axiosClient.interceptors.request.use((config) => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken && config.headers) {
+        config.headers.set('Authorization', `Bearer ${accessToken}`);
+    }
+    return config;
+});
 
-axiosInstance.interceptors.response.use(
+axiosClient.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
@@ -32,11 +29,15 @@ axiosInstance.interceptors.response.use(
         ) {
             try {
                 const email = localStorage.getItem('email');
-                const refreshResponse = await axiosInstance.post('/auth/refresh', { email: email });
+                const refreshResponse = await axios.post(
+                    `${API_BASE_URL}/v1/auth/refresh`,
+                    { email },
+                    { withCredentials: true }
+                );
                 const newAccessToken = refreshResponse.data.result.accessToken;
                 localStorage.setItem('accessToken', newAccessToken);
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-                return axiosInstance(originalRequest);
+                return axiosClient(originalRequest);
             } catch (refreshError) {
                 alert('로그인이 필요합니다.');
                 localStorage.removeItem('accessToken');
