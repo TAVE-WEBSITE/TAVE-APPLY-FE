@@ -43,8 +43,10 @@ export default function RootLayout({
       <body
         className={`antialiased ${pretendard.variable} bg-[#121212] text-white w-screen h-screen`}
       >
-        <Header />
-        <AppGuard>{children}</AppGuard>
+        <AppGuard>
+          <Header />
+          {children}
+        </AppGuard>
       </body>
     </html>
   );

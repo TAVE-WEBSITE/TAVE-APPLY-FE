@@ -1,27 +1,27 @@
-import InputLable from "../Input/InputLabel";
+import InputLabel from "./InputLabel";
 import FlexBox from "./FlexBox";
-
+ 
 interface InputContainerProps {
   children: React.ReactNode;
   label: string;
   isRequired?: boolean;
   description?: string;
 }
-
+ 
 const InputContainer = ({
   children,
   label,
-  isRequired,
+  isRequired = true,
   description,
 }: InputContainerProps) => {
   return (
     <FlexBox
-      className="w-full font-medium text-sm md:text-md gap-1 relative"
+      className="font-medium md:text-base text-sm gap-1"
       direction="col"
     >
-      <InputLable
+      <InputLabel
         label={label}
-        isRequired={isRequired ? isRequired : false}
+        isRequired={isRequired}
         description={description}
       />
       {children}
