@@ -4,9 +4,13 @@ import CardSchedule from '@/components/card/CardSchedule';
 import CardTarget from '@/components/card/CardTarget';
 import GroupField from '@/components/group/GroupField';
 import GroupChip from '@/components/group/GroupChip';
-import { scheduleData, targetData } from '@/modules/homeContent';
+import { targetData } from '@/modules/staticData';
+import { applySession, applySetting } from '@/services/home';
 
-const Home = () => {
+export default async function Home() {
+    const groupedSession = await applySession();
+    const { generation, isDocument, formattedSetting } = await applySetting();
+
     return (
         <FlexBox direction="col">
             <FlexBox direction="col" className="h-dvh justify-between">
@@ -16,7 +20,7 @@ const Home = () => {
                     <h2 className="font-bold md:text-4xl text-2xl mt-6 leading-snug text-center">
                         기술의 물결 속에서 함께 성장할
                         <br />
-                        15기 TAVY 를 기다립니다
+                        {generation}기 TAVY를 기다립니다
                     </h2>
                 </FlexBox>
                 <FlexBox className="justify-center pb-10">
@@ -24,9 +28,9 @@ const Home = () => {
                 </FlexBox>
             </FlexBox>
             <FlexBox direction="col" className="h-dvh justify-center items-center gap-10">
-                <h3 className="font-bold md:text-3xl text-2xl">15기 모집 일정</h3>
+                <h3 className="font-bold md:text-3xl text-2xl">{generation}기 모집 일정</h3>
                 <div className="grid grid-cols-2 lg:grid-cols-4 md:gap-4.5 sm:gap-3.5 gap-2.5">
-                    {scheduleData.map((item, index) => (
+                    {formattedSetting.map((item, index) => (
                         <CardSchedule
                             key={index}
                             iconName={item.iconName as IconKeys}
@@ -54,18 +58,16 @@ const Home = () => {
             </FlexBox>
             <FlexBox direction="col" className="h-dvh justify-center items-center gap-10 md:mx-auto">
                 <h3 className="font-bold md:text-3xl text-2xl">모집 분야</h3>
-                <GroupField />
+                <GroupField isDocument={isDocument} generation={generation}/>
             </FlexBox>
             <FlexBox direction="col" className="h-dvh justify-center items-center gap-5 mx-auto">
                 <h3 className="font-bold md:text-3xl text-2xl">주요 세션 일정</h3>
                 <p className="md:text-xl text-lg leading-relaxed text-center opacity-60">
                     매주 토요일마다 세션 또는 활동이 진행되며,
-                    <br className="md:hidden" /> 오프라인으로 진행됩니다
+                    <br className="md:hidden" /> 오프라인으로 진행됩니다.
                 </p>
-                <GroupChip />
+                <GroupChip sessions={groupedSession}/>
             </FlexBox>
         </FlexBox>
     );
-};
-
-export default Home;
+}

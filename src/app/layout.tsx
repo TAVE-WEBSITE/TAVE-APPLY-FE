@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import '@/styles/globals.css';
 import Header from "@/components/layout/Header";
+import AppGuard from "./AppGuard";
 
 // 500, 600, 700 weight 만 사용하기에 fonts 폴더에 다운받아 사용 - 성능 최적화
 const pretendard = localFont({
@@ -43,7 +44,7 @@ export default function RootLayout({
         className={`antialiased ${pretendard.variable} bg-[#121212] text-white w-screen h-screen`}
       >
         <Header />
-        {children}
+        <AppGuard>{children}</AppGuard>
       </body>
     </html>
   );

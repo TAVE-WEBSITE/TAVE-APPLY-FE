@@ -7,9 +7,22 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import '@/styles/swiper.css';
 import { Navigation, Pagination } from 'swiper/modules';
-import { fieldData } from '@/modules/homeContent';
+import { fieldData } from '@/modules/staticData';
+import { useHomeStore } from '@/store/homeStore';
+import { useEffect } from 'react';
 
-const GroupField = () => {
+interface GroupFieldProps {
+    generation: string;
+    isDocument: boolean;
+}
+
+const GroupField = ({ generation, isDocument }: GroupFieldProps) => {
+    const { setGeneration } = useHomeStore();
+
+    useEffect(() => {
+        setGeneration(generation);
+    }, []);
+
     return (
         <>
             <div className="md:hidden">
@@ -28,6 +41,7 @@ const GroupField = () => {
                                 description={item.description}
                                 imgSrc={item.imgSrc}
                                 hoverSrc={item.hoverSrc}
+                                state={isDocument}
                             />
                         </SwiperSlide>
                     ))}
@@ -42,6 +56,7 @@ const GroupField = () => {
                         description={item.description}
                         imgSrc={item.imgSrc}
                         hoverSrc={item.hoverSrc}
+                        state={isDocument}
                     />
                 ))}
             </div>

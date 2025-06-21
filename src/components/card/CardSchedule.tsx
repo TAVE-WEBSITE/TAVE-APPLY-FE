@@ -1,4 +1,4 @@
-import Icons, { IconKeys } from '../Icons';
+import Icons, { IconKeys } from '@/components/Icons';
 import FlexBox from '@/components/layout/FlexBox';
 
 interface CardScheduleProps {
@@ -13,7 +13,7 @@ const CardSchedule = ({ iconName, title, description, extra }: CardScheduleProps
         <FlexBox
             direction="col"
             className="md:w-[217px] md:h-[175px] sm:w-[190px] sm:h-[160px] w-[150px] h-[155px]
-            bg-[#7f859333] rounded-2xl md:gap-y-4 gap-y-2.5 items-center pt-7.5"
+            bg-[#292A2E] rounded-2xl md:gap-y-4 gap-y-2.5 items-center pt-7.5"
         >
             <div className="rounded-full p-2.5 bg-[#F0F6FE]">
                 <Icons name={iconName} width={24} height={24} />

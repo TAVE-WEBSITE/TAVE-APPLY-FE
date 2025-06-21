@@ -9,7 +9,7 @@ const CardChip = ({ title, description }: CardChipProps) => {
     return (
         <FlexBox
             direction="col"
-            className="w-[150px] sm:w-[190px] md:w-[225px] py-4 bg-[#7f8593]/20
+            className="w-[150px] sm:w-[190px] md:w-[225px] py-4 bg-[#2A2C32]
             rounded-2xl md:gap-y-3.5 gap-y-2.5 md:px-4.5 px-3.5"
         >
             <p className="font-semibold md:text-lg text-base">{title}</p>

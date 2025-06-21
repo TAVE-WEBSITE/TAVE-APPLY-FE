@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import ButtonNavigate from '@/components/Button/ButtonNavigate';
-import Disclosure from '@/components/Disclosure';
+import Disclosure from '@/components/layout/Disclosure';
 import InputField from '@/components/Input/InputField';
 import TextArea from '@/components/Input/TextArea';
 import FlexBox from '@/components/layout/FlexBox';

@@ -3,25 +3,27 @@
 import CardChip from '@/components/card/CardChip';
 import FlexBox from '@/components/layout/FlexBox';
 import ButtonChip from '@/components/Button/ButtonChip';
+import { SessionGrouped, SessionChip } from '@/modules/homeType';
 import { useState } from 'react';
-import { sessionData } from '@/modules/homeContent';
 
-type SessionChip = 'start' | 'one' | 'two';
+interface GroupChipProps {
+    sessions: SessionGrouped;
+}
 
-const GroupChip = () => {
-    const [activeChip, setActiveChip] = useState<SessionChip>('start');
-    const items = sessionData[activeChip] || [];
+const GroupChip = ({ sessions }: GroupChipProps) => {
+    const [activeChip, setActiveChip] = useState<SessionChip>('START');
+    const items = sessions[activeChip];
+
+    const chips: { label: string; value: SessionChip }[] = [
+        { label: 'START', value: 'START' },
+        { label: 'PART 1', value: 'PART1' },
+        { label: 'PART 2', value: 'PART2' },
+    ];
 
     const rows = [];
     for (let i = 0; i < items.length; i += 3) {
         rows.push(items.slice(i, i + 3));
     }
-
-    const chips: { label: string; value: SessionChip }[] = [
-        { label: 'START', value: 'start' },
-        { label: 'PART 1', value: 'one' },
-        { label: 'PART 2', value: 'two' },
-    ];
 
     return (
         <FlexBox direction="col" className="gap-10 mt-5">

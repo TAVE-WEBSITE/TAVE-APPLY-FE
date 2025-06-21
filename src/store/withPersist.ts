@@ -9,6 +9,9 @@ export const withPersist = <T extends object>(
   store: UseBoundStore<StoreApi<T>>,
   options: PersistOptions<T>
 ): UseBoundStore<StoreApi<T & { clearPersist: () => void }>> => {
+  if (typeof window === 'undefined') {
+    return store as UseBoundStore<StoreApi<T & { clearPersist: () => void }>>;
+  }
   const stored = localStorage.getItem(options.name);
   if (stored) {
     try {
