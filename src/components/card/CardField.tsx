@@ -10,10 +10,10 @@ interface CardFieldProps {
     title: string;
     subTitle: string;
     description: string;
-    state?: 'open' | 'closed';
+    state: boolean;
 }
 
-const CardField = ({ title, imgSrc, subTitle, hoverSrc, description, state = 'closed' }: CardFieldProps) => {
+const CardField = ({ title, imgSrc, subTitle, hoverSrc, description, state }: CardFieldProps) => {
     const [isHovered, setIsHovered] = useState(false);
     const cardSrc = isHovered ? hoverSrc : imgSrc;
     const filteredSub = subTitle.toLowerCase().includes('frontend') ? subTitle.replace(/frontend/gi, '') : subTitle;
@@ -33,7 +33,7 @@ const CardField = ({ title, imgSrc, subTitle, hoverSrc, description, state = 'cl
                 {isHovered ? (
                     <>
                         <p className="text-white/60 text-lg lg:text-xl">{subTitle}</p>
-                        <p className="text-2xl lg:text-3xl">{state === 'open' ? '모집중' : '모집 마감'}</p>
+                        <p className="text-2xl lg:text-3xl">{state === true ? '모집중' : '모집 마감'}</p>
                     </>
                 ) : (
                     <>
