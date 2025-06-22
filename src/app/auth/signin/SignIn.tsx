@@ -71,9 +71,9 @@ const SignIn = () => {
                     className="bg-[#195BFF] md:py-4 py-3 rounded-[10px] w-full font-semibold cursor-pointer"
                 >
                     {isSignInLoading ? (
-                        <div className="flex justify-center">
+                        <FlexBox className="justify-center">
                             <LoadingSpinner />
-                        </div>
+                        </FlexBox>
                     ) : (
                         '로그인'
                     )}

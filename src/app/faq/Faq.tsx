@@ -9,7 +9,7 @@ const Faq = () => {
     const [selectedTab, setSelectedTab] = useState<'recruit' | 'activity'>('recruit');
     return (
         <>
-            <FlexBox className="justify-center md:text-xl">
+            <FlexBox className="justify-center md:text-xl mb-4.5 md:mb-6">
                 <button
                     onClick={() => setSelectedTab('recruit')}
                     className={`transition-all px-3 md:px-4.5 cursor-pointer ${
