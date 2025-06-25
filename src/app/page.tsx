@@ -12,7 +12,14 @@ export default async function Home() {
     const { generation, isDocument, formattedSetting } = await applySetting();
 
     return (
-        <FlexBox direction="col">
+        <div
+            className="flex flex-col"
+            style={{
+                backgroundImage: 'url(/background/home-bg.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'top',
+            }}
+        >
             <FlexBox direction="col" className="h-dvh justify-between">
                 <FlexBox direction="col" className="h-full justify-center items-center">
                     <Icons name="logo" height={44} width={87} />
@@ -68,6 +75,6 @@ export default async function Home() {
                 </p>
                 <GroupChip sessions={groupedSession} />
             </FlexBox>
-        </FlexBox>
+        </div>
     );
 }
