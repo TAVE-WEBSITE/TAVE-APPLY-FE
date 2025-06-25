@@ -1,11 +1,11 @@
-import SignUpClient from "./MultiStepSignUp";
+import SignUp from "./SignUp";
 
-const SignUp = () => {
+const page = () => {
   return (
-    <div className="h-screen flex flex-col">
-      <SignUpClient></SignUpClient>
-    </div>
+    <main>
+      <SignUp />
+    </main>
   );
 };
 
-export default SignUp;
+export default page;
