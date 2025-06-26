@@ -32,53 +32,43 @@ const useAuth = () => {
         }
     };
 
-    /////////
-
-    const signUp = async (userData: SignUpData) => {
+    const signUp = async (body: SignUpData) => {
         try {
-            const res = await axiosClient.post(`v1/auth/normal/signup`, userData);
-            return res.data;
+            const res = await axiosClient.post(`/v1/auth/normal/signup`, body);
+            return res;
         } catch (error) {
+            console.error(error);
             return error;
         }
     };
 
-    const signout = async () => {
-        try {
-            const res = await axiosClient.get(`/v1/auth/signout`);
-
-            if (res.status === 200) {
-                setIsLogin(false);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const verifyEmail = async (body: EmailVerification, reset: boolean) => {
+    const verifyEmail = async (body: EmailVerification) => {
         try {
             setIsVerifyEmailLoading(true);
-            const res = await axiosClient.post(`/normal/authenticate/email?reset=${reset}`, body);
-
-            if (res.status === 200) {
-                return res.data;
-            }
+            const res = await axiosClient.post(`/v1/normal/reset/verify`, body);
+            return res;
         } catch (error) {
+            console.error(error);
             return error;
         } finally {
             setIsVerifyEmailLoading(false);
         }
     };
 
-    const verifyConfirm = async (body: EmailVerification, reset: boolean) => {
+    const verifyConfirm = async (email: string, code: string) => {
         try {
             setIsVerifyConfirmLoading(true);
-            const res = await axiosClient.post(`/normal/verify/number?reset=${reset}`, body);
-
-            if (res.status === 200) {
-                return res.data;
-            }
+            const params = new URLSearchParams();
+            params.append('email', email);
+            params.append('code', code);
+            const res = await axiosClient.post('/v1/normal/reset/verify/code', params, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            });
+            return res;
         } catch (error) {
+            console.error(error);
             return error;
         } finally {
             setIsVerifyConfirmLoading(false);
@@ -88,15 +78,25 @@ const useAuth = () => {
     const resetPassword = async (body: PasswordReset) => {
         try {
             setIsResetPasswordLoading(true);
-            const res = await axiosClient.post(`/normal/password/change`, body);
-
-            if (res.status === 200) {
-                return res.data;
-            }
+            const res = await axiosClient.post(`/v1/normal/password/change`, body);
+            return res;
         } catch (error) {
+            console.error(error);
             return error;
         } finally {
             setIsResetPasswordLoading(false);
+        }
+    };
+
+    const signout = async () => {
+        try {
+            const res = await axiosClient.get(`/v1/auth/signout`);
+            useLoginStore.getState().reset();
+            localStorage.removeItem('accessToken');
+            return res;
+        } catch (error) {
+            console.error(error);
+            return error;
         }
     };
 
@@ -108,9 +108,9 @@ const useAuth = () => {
         signout,
         resetPassword,
         isSignInLoading,
-        isVerifyEmailLoading,
         isVerifyConfirmLoading,
         isResetPasswordLoading,
+        isVerifyEmailLoading,
     };
 };
 
