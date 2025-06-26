@@ -17,8 +17,8 @@ const Terms = () => {
     };
 
     return (
-        <>
-            <p className="font-bold md:text-2xl text-xl text-[#394150] text-center mb-6 md:mb-8">약관 동의</p>
+        <FlexBox direction="col" className="gap-6 md:gap-8">
+            <p className="font-bold md:text-2xl text-xl text-[#394150] text-center">약관 동의</p>
             <FlexBox
                 direction="col"
                 className="gap-5 sm:gap-6 md:gap-8 border border-gray-200 bg-white rounded-[20px] p-5 sm:p-6 md:p-8
@@ -64,14 +64,10 @@ const Terms = () => {
                     </a>
                 </FlexBox>
             </FlexBox>
-            <FlexBox className="justify-end mt-6">
-                <ButtonNavigate
-                    text="다음"
-                    onClick={() => setCurrentStep(2)}
-                    isActive={checkAll}
-                />
+            <FlexBox className="justify-end">
+                <ButtonNavigate text="다음" onClick={() => setCurrentStep(2)} isActive={checkAll} />
             </FlexBox>
-        </>
+        </FlexBox>
     );
 };
 

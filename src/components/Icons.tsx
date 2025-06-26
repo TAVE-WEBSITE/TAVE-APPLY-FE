@@ -12,7 +12,7 @@ export type IconKeys =
   | "award"
   | "x"
   | "circleArrow"
-  | "checkCircle"
+  | "check"
   | "error"
   | "upload";
 
@@ -28,7 +28,7 @@ const iconMap: Record<IconKeys, string> = {
   x: "/x.svg",
   arrow: "/arrow.svg",
   circleArrow: "/circle-arrow.svg",
-  checkCircle: "/check-circle.svg",
+  check: "/check.svg",
   error: "/error.svg",
   upload: "/upload.svg",
 };
