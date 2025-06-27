@@ -32,9 +32,10 @@ const ResetPassword = () => {
         });
         if (res === 200) {
             window.location.replace('/');
+        } else {
+            setNewPassword('');
+            setNewPasswordConfirm('');
         }
-        setNewPassword('');
-        setNewPasswordConfirm('');
     };
 
     return (
