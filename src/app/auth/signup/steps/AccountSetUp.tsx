@@ -31,7 +31,7 @@ const AccountSetUp = () => {
         setPasswordConfirm,
         setCurrentStep,
         setIsConfirmState,
-        setIsSentState
+        setIsSentState,
     } = useSignUpStore();
 
     const passwordError = useValidation(password, isValidPassword);
@@ -44,7 +44,14 @@ const AccountSetUp = () => {
     const [toast, setToast] = useState({ message: '', isError: false });
 
     const handleCheck = () => {
-        if (passwordError.length === 0 && confirmError.length === 0 && isConfirmState === 'SUCCESS') return true;
+        if (
+            password.length &&
+            passwordConfirm.length &&
+            passwordError.length === 0 &&
+            confirmError.length === 0 &&
+            isConfirmState === 'SUCCESS'
+        )
+            return true;
         else return false;
     };
 
@@ -67,9 +74,8 @@ const AccountSetUp = () => {
         setAuthCode('');
         setIsSentState('BEFORE');
         const res = await verifyEmail({
-            name,
             email,
-            birth: birthday,
+            reset: false,
         });
         if (res !== 200) {
             setIsSentState('ERROR');
@@ -123,7 +129,7 @@ const AccountSetUp = () => {
                         placeholder="인증번호를 입력해주세요"
                         isError={isConfirmState === 'ERROR'}
                         disabled={isSentState !== 'SUCCESS' || isConfirmState === 'SUCCESS'}
-                        isCounting={isSentState === 'SUCCESS' && !(isConfirmState === 'SUCCESS')}
+                        isCounting={isSentState === 'SUCCESS' && isConfirmState !== 'SUCCESS'}
                     />
                     <ButtonAuth
                         text="인증확인"

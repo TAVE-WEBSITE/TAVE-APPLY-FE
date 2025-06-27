@@ -75,15 +75,16 @@ const InputField = <T extends string | number>({
                 }}
                 disabled={disabled}
                 className={`w-full border p-3 md:p-4 rounded-[10px] text-gray-700 bg-white
-                    placeholder:text-[#B0B3B9] focus:outline-none
+                    placeholder:text-[#B0B3B9] focus:outline-none disabled:border-gray-200
                     focus:shadow-[0px_0px_24px_0px_#195BFF14] focus:border-blue-600/50
-                    ${isError ? 'border-pink-600/80' : isPassed ? 'border-emerald-600/80' : 'border-gray-200'}
-                    ${disabled ? 'text-[#A9ACB4] bg-gray-100 border-gray-200' : ''}`}
+                    ${isError ? 'border-pink-600/80' : isPassed ? 'border-emerald-600/80' : 'border-gray-200'}`}
             />
             {errorMessage && <p className="md:text-sm text-xs text-pink-600/80">{errorMessage}</p>}
             {isPassed && <p className="md:text-sm text-xs text-emerald-600">{passMessage}</p>}
             {isCounting && (
-                <p className="absolute bottom-[-20px] right-0 md:text-sm text-xs text-blue-300">{formatTime(remainingTime)}</p>
+                <p className="absolute bottom-[-20px] right-0 md:text-sm text-xs text-blue-300">
+                    {formatTime(remainingTime)}
+                </p>
             )}
         </FlexBox>
     );

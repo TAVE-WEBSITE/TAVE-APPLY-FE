@@ -1,11 +1,11 @@
 import Reset from "./Reset";
 
-const ResetPage = () => {
+const page = () => {
   return (
-    <div className="h-screen flex flex-col">
+    <main>
       <Reset />
-    </div>
+    </main>
   );
 };
 
-export default ResetPage;
+export default page;

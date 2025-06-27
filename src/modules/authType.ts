@@ -23,12 +23,14 @@ interface LoginResponse {
     generation: string;
     department: string;
     job: string;
+    resumeState: 'SUBMITTED' | 'TEMPORARY';
 }
 
 interface EmailVerification {
-    name: string;
+    name?: string;
     email: string;
-    birth: string;
+    birth?: string;
+    reset: boolean;
 }
 
 interface PasswordReset {

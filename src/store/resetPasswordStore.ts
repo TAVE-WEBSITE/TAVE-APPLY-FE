@@ -1,3 +1,4 @@
+import { VerifyState } from "@/modules/authType";
 import { createFieldStore } from "./createFieldStore";
 
 interface ResetPasswordStore {
@@ -8,6 +9,8 @@ interface ResetPasswordStore {
   newPassword: string;
   newPasswordConfirm: string;
   currentStep: number;
+  isSentState: VerifyState;
+  isConfirmState: VerifyState;
 }
 
 const initStates: ResetPasswordStore = {
@@ -18,6 +21,8 @@ const initStates: ResetPasswordStore = {
   newPassword: "",
   newPasswordConfirm: "",
   currentStep: 1,
+  isSentState: 'BEFORE',
+  isConfirmState: 'BEFORE'
 };
 
 export const useResetPasswordStore = createFieldStore(initStates);

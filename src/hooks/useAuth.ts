@@ -5,7 +5,7 @@ import { SignUpData, EmailVerification, PasswordReset, Login, LoginResponse } fr
 import { useLoginStore } from '@/store/loginStore';
 
 const useAuth = () => {
-    const { setIsLogin, setEmail, setMemberId, setUsername } = useLoginStore();
+    const { setIsLogin, setEmail, setMemberId, setUsername, setResumeState, reset } = useLoginStore();
     const [isSignInLoading, setIsSignInLoading] = useState(false);
     const [isVerifyEmailLoading, setIsVerifyEmailLoading] = useState(false);
     const [isVerifyConfirmLoading, setIsVerifyConfirmLoading] = useState(false);
@@ -21,6 +21,7 @@ const useAuth = () => {
             setEmail(data.email);
             setMemberId(data.memberId);
             setUsername(data.username);
+            setResumeState(data.resumeState);
             return res.status;
         } catch (error) {
             console.error(error);
@@ -35,7 +36,7 @@ const useAuth = () => {
     const signUp = async (body: SignUpData) => {
         try {
             const res = await axiosClient.post(`/v1/auth/normal/signup`, body);
-            return res;
+            return res.status;
         } catch (error) {
             console.error(error);
             return error;
@@ -46,10 +47,12 @@ const useAuth = () => {
         try {
             setIsVerifyEmailLoading(true);
             const res = await axiosClient.post(`/v1/normal/reset/verify`, body);
-            return res;
+            return res.status;
         } catch (error) {
             console.error(error);
-            return error;
+            if (axios.isAxiosError(error)) {
+                return error.response?.data;
+            }
         } finally {
             setIsVerifyEmailLoading(false);
         }
@@ -66,10 +69,12 @@ const useAuth = () => {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
             });
-            return res;
+            return res.status;
         } catch (error) {
             console.error(error);
-            return error;
+            if (axios.isAxiosError(error)) {
+                return error.response?.data;
+            }
         } finally {
             setIsVerifyConfirmLoading(false);
         }
@@ -79,7 +84,7 @@ const useAuth = () => {
         try {
             setIsResetPasswordLoading(true);
             const res = await axiosClient.post(`/v1/normal/password/change`, body);
-            return res;
+            return res.status;
         } catch (error) {
             console.error(error);
             return error;
@@ -88,12 +93,12 @@ const useAuth = () => {
         }
     };
 
-    const signout = async () => {
+    const signOut = async () => {
         try {
             const res = await axiosClient.get(`/v1/auth/signout`);
-            useLoginStore.getState().reset();
             localStorage.removeItem('accessToken');
-            return res;
+            reset();
+            return res.status;
         } catch (error) {
             console.error(error);
             return error;
@@ -105,7 +110,7 @@ const useAuth = () => {
         signIn,
         verifyEmail,
         verifyConfirm,
-        signout,
+        signOut,
         resetPassword,
         isSignInLoading,
         isVerifyConfirmLoading,
