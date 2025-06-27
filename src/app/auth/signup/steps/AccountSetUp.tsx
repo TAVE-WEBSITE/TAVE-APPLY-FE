@@ -149,7 +149,7 @@ const AccountSetUp = () => {
                     errorMessage={passwordError}
                 />
             </InputContainer>
-            <InputContainer label="비밀번호 확인" isRequired={true}>
+            <InputContainer label="비밀번호 확인">
                 <InputField
                     type="password"
                     value={passwordConfirm}
