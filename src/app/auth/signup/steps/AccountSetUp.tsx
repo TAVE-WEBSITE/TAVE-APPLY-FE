@@ -5,7 +5,6 @@ import { isValidPassword, validatePasswordConfirm } from '@/utils/validate';
 import { useValidation } from '@/hooks/useValidation';
 import { useSignUpStore } from '@/store/signUpStore';
 import { formatBirth } from '@/utils/formatBirth';
-import { VerifyState } from '@/modules/authType';
 import FlexBox from '@/components/layout/FlexBox';
 import ButtonNavigate from '@/components/Button/ButtonNavigate';
 import InputContainer from '@/components/layout/InputContainer';
@@ -24,11 +23,15 @@ const AccountSetUp = () => {
         birth,
         passwordConfirm,
         selectedGender,
+        isConfirmState,
+        isSentState,
         setEmail,
         setAuthCode,
         setPassword,
         setPasswordConfirm,
         setCurrentStep,
+        setIsConfirmState,
+        setIsSentState
     } = useSignUpStore();
 
     const passwordError = useValidation(password, isValidPassword);
@@ -37,8 +40,6 @@ const AccountSetUp = () => {
 
     const { signUp, verifyEmail, verifyConfirm, isVerifyEmailLoading, isVerifyConfirmLoading } = useAuth();
 
-    const [isSentState, setIsSentState] = useState<VerifyState>('BEFORE');
-    const [isConfirmState, setIsConfirmState] = useState<VerifyState>('BEFORE');
     const [isToastOpen, setIsToastOpen] = useState(false);
     const [toast, setToast] = useState({ message: '', isError: false });
 
