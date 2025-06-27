@@ -1,35 +1,28 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useSignUpStore } from "@/store/signUpStore";
-import FlexBox from "@/components/layout/FlexBox";
+import { useSignUpStore } from '@/store/signUpStore';
+import FlexBox from '@/components/layout/FlexBox';
+import ButtonNavigate from '@/components/Button/ButtonNavigate';
 
 const Complete = () => {
-  const router = useRouter();
-  const { name, reset } = useSignUpStore();
+    const { name } = useSignUpStore();
 
-  return (
-    <FlexBox
-      direction="col"
-      className="text-[#394150] md:text-[32px] text-2xl font-bold text-center h-full justify-center gap-8"
-    >
-      <div>
-        <p>{name}님</p>
-        <p>회원가입이 완료되었습니다!</p>
-      </div>
-      <FlexBox direction="col" className="items-center">
-        <button
-          onClick={() => {
-            reset();
-            router.push("/");
-          }}
-          className="w-[98px] h-[50px] bg-[#195BFF] cursor-pointer text-[#FFFFFF] font-bold text-base rounded-lg flex items-center justify-center"
-        >
-          돌아가기
-        </button>
-      </FlexBox>
-    </FlexBox>
-  );
+    return (
+        <FlexBox direction="col" className="items-center justify-center h-full md:gap-8 gap-6">
+            <div className="text-gray-700 sm:text-3xl text-2xl font-bold text-center">
+                <p>{name}님</p>
+                <p>회원가입이 완료되었습니다!</p>
+            </div>
+            <FlexBox className="items-center">
+                <ButtonNavigate
+                    text="돌아가기"
+                    onClick={() => {
+                        window.location.replace('/');
+                    }}
+                />
+            </FlexBox>
+        </FlexBox>
+    );
 };
 
 export default Complete;

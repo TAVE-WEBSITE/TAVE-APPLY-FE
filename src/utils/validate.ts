@@ -1,7 +1,7 @@
 const isValidPassword = (password: string) => {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
   if (!passwordRegex.test(String(password)))
-    return "적절하지 않은 비밀번호입니다";
+    return "비밀번호가 안전 기준을 충족하지 않습니다.";
   else return "";
 };
 

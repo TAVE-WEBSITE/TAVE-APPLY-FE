@@ -20,9 +20,9 @@ const ButtonNavigate = ({
 }: ButtonNavigateProps) => {
     return (
         <button
-            className={`w-full md:w-auto py-3.5 px-5.5 rounded-[10px] font-bold cursor-pointer 
+            className={`w-full md:w-auto py-3.5 px-5.5 rounded-[10px] font-bold  
         ${hasBackGround ? 'bg-[#195BFF] text-white' : 'md:bg-gray-200 md:text-zinc-400 bg-transparent text-gray-400'}
-      } ${isActive ? '' : 'opacity-60'}`}
+      } ${isActive ? 'cursor-pointer' : 'opacity-60 cursor-not-allowed'}`}
             onClick={onClick}
             disabled={!isActive}
         >

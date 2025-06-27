@@ -37,4 +37,6 @@ interface PasswordReset {
     validatedPassword: string;
 }
 
-export type { SignUpData, EmailVerification, PasswordReset, Login, LoginResponse };
+type VerifyState = 'SUCCESS' | 'ERROR' | 'BEFORE';
+
+export type { SignUpData, EmailVerification, PasswordReset, Login, LoginResponse, VerifyState };

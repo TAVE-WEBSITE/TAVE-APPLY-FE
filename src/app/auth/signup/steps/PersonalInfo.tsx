@@ -49,7 +49,7 @@ const PersonalInfo = () => {
     };
 
     return (
-        <FlexBox direction="col" className="gap-4">
+        <FlexBox direction="col" className="gap-5 md:gap-6">
             <p className="font-bold md:text-2xl text-xl text-[#394150] text-center mb-2">개인 정보 입력</p>
             <InputContainer label="이름">
                 <InputField value={name} setValue={setName} placeholder="이름을 입력해주세요" />

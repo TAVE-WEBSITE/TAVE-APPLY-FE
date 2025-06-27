@@ -16,7 +16,7 @@ const InputContainer = ({
 }: InputContainerProps) => {
   return (
     <FlexBox
-      className="font-medium md:text-base text-sm gap-1"
+      className="font-medium md:text-base text-sm gap-1.5"
       direction="col"
     >
       <InputLabel
