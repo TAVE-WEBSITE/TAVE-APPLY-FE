@@ -74,7 +74,7 @@ const InputField = <T extends string | number>({
                     }
                 }}
                 disabled={disabled}
-                className={`w-full border p-3 md:p-4 rounded-[10px] text-gray-700 bg-white
+                className={`w-full border p-3 md:p-4 rounded-[10px] text-gray-700 bg-white disabled:cursor-not-allowed
                     placeholder:text-[#B0B3B9] focus:outline-none disabled:border-gray-200
                     focus:shadow-[0px_0px_24px_0px_#195BFF14] focus:border-blue-600/50
                     ${isError ? 'border-pink-600/80' : isPassed ? 'border-emerald-600/80' : 'border-gray-200'}`}
