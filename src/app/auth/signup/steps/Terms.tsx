@@ -38,7 +38,7 @@ const Terms = () => {
                         </p>
                     </FlexBox>
                     <a
-                        href="https://snowy-cord-406.notion.site/TAVE-21a27a1548b480189c3fed254cec90a3?source=copy_link"
+                        href="https://alluring-eagle-b3d.notion.site/TAVE-21f8f2c5125080c0a9e2e21ffbbf07da"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#4584EE] cursor-pointer font-bold"
@@ -55,7 +55,7 @@ const Terms = () => {
                         </span>
                     </FlexBox>
                     <a
-                        href="https://snowy-cord-406.notion.site/TAVE-Recruit-17427a1548b4805d8242d9009190a323?pvs=74"
+                        href="https://alluring-eagle-b3d.notion.site/TAVE-Recruit-21f8f2c5125080fc9d6fe2de8caf4615"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#4584EE] cursor-pointer font-bold"
