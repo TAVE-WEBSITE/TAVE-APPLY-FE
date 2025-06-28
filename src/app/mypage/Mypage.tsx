@@ -12,7 +12,7 @@ import { ApplicantData } from '@/modules/resultType';
 
 const Mypage = () => {
     const { generation } = useHomeStore();
-    const { resumeState, memberId } = useMemberStore();
+    const { resumeState, memberId, setApplicationStatus } = useMemberStore();
     const { getApplicantHistory } = useResult();
     const [history, setHistory] = useState<ApplicantData[]>([]);
 
@@ -20,6 +20,14 @@ const Mypage = () => {
         const fetchHistory = async () => {
             const data = await getApplicantHistory(memberId);
             setHistory(data);
+            const current = data.find(
+                (item: ApplicantData) =>
+                    item.generation === Number(generation) &&
+                    ['DOCUMENT_PASSED', 'REJECTED', 'FINAL_ACCEPTED'].includes(item.applicationStatus)
+            );
+            if (current) {
+                setApplicationStatus(current.applicationStatus);
+            }
         };
 
         fetchHistory();

@@ -1,6 +1,7 @@
 import { createFieldStore } from './createFieldStore';
 import { withPersist } from './withPersist';
 import { withReset } from './withReset';
+import { OutcomeStatus } from '@/modules/resultType';
 
 interface MemberStates {
     isLogin: boolean;
@@ -8,7 +9,7 @@ interface MemberStates {
     username: string;
     email: string;
     resumeState: 'TEMPORARY' | 'SUBMITTED';
-    applicationStatus: 'NO_STATUS' | 'DOCUMENT_PASSED' | 'REJECTED' | 'FINAL_ACCEPTED';
+    applicationStatus: OutcomeStatus;
 }
 
 const initState: MemberStates = {

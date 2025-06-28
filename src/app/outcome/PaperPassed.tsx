@@ -2,21 +2,28 @@ import FlexBox from '@/components/layout/FlexBox';
 import Link from 'next/link';
 import ButtonInquire from '@/components/Button/ButtonInquire';
 import SectionContainer from '@/components/layout/SectionContainer';
+import { InterviewData } from '@/modules/resultType';
 
-const PaperPassed = () => {
+interface PaperPassedProps {
+    username: string;
+    generation: string;
+    interview: InterviewData;
+}
+
+const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
     return (
         <div className="text-[#394150] text-center">
             <FlexBox direction="col" className="md:gap-28 gap-23">
                 <div>
                     <p className="text-lg md:text-xl font-bold">
-                        OOO님 <br />
+                        {username}님 <br />
                         서류 합격을 축하드립니다
                     </p>
                     <p className="font-medium text-sm md:text-base">
                         <br />
-                        안녕하세요, IT 연합 동아리 TAVE 16기 운영진 입니다.
+                        안녕하세요, IT 연합 동아리 TAVE {generation}기 운영진 입니다.
                         <br />
-                        귀한 시간 내주어 저희 TAVE 16기에 지원을 해주신 것에 <br className="md:hidden" />
+                        귀한 시간 내주어 저희 TAVE {generation}기에 지원을 해주신 것에 <br className="md:hidden" />
                         깊은 감사를 드립니다. <br />
                         <br />
                         면접에 대해 자세한 내용은 아래를 참조해주세요.
@@ -37,9 +44,9 @@ const PaperPassed = () => {
                 <FlexBox direction="col" className="gap-5">
                     <p className="text-lg md:text-xl font-bold">장소 및 일정</p>
                     <p className="font-medium text-sm md:text-base">
-                        서울대학교 대양 AI 센터
+                        {interview.generalAddress} {interview.detailAddress}
                         <br />
-                        14:00 ~ 14:30
+                        {interview.interviewDate} {interview.dayName} {interview.interviewTime}
                     </p>
                 </FlexBox>
 
@@ -51,13 +58,15 @@ const PaperPassed = () => {
                             <br className="md:hidden" />
                             <span className="font-bold text-[#ff0072]"> 실명</span>으로 접속해주세요.
                         </p>
-                        <Link
-                            href="/"
+                        <a
+                            href={interview.openChatLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="py-3 px-6.5 md:w-auto md:mx-auto text-center bg-[#195BFF] text-white font-bold rounded-[10px]"
                         >
                             입장하기
-                        </Link>
-                        <p className="text-[#394150]/60 text-center">참여 코드 : 140238</p>
+                        </a>
+                        <p className="text-[#394150]/60 text-center">참여 코드 : {interview.code}</p>
                     </SectionContainer>
                     <SectionContainer>
                         <p>
@@ -91,7 +100,7 @@ const PaperPassed = () => {
                             <br className="md:hidden" /> 문의 부탁드립니다.
                         </p>
                     </SectionContainer>
-                    <FlexBox className='justify-center pb-12'>
+                    <FlexBox className="justify-center pb-12">
                         <ButtonInquire />
                     </FlexBox>
                 </FlexBox>
