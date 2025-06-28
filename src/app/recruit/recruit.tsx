@@ -6,7 +6,7 @@ import Field from './steps/Field';
 import Common from './steps/Common';
 import Complete from './steps/Complete';
 import FlexBox from '@/components/layout/FlexBox';
-import StepBar from '@/components/StepBar';
+import StepBar from '@/components/layout/StepBar';
 import { useRecruitStore } from '@/store/recruitStore';
 
 const recruitMap: Record<number, JSX.Element> = {

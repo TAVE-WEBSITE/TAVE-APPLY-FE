@@ -38,7 +38,7 @@ const ToastMessage = ({
           {isError ? (
             <Icons name="x" width={20} height={20} />
           ) : (
-            <Icons name="checkCircle" width={20} height={20} />
+            <Icons name="x" width={20} height={20} />
           )}
 
           <span className="text-sm mg:text-lg">{message}</span>

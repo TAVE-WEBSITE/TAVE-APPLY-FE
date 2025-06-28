@@ -14,7 +14,7 @@ const lables = ['이름', '성별', '생년월일', '연락처', '이메일 주�
 const options: RecruitField[] = ['UX/UI 디자이너', '웹 프론트엔드', '앱 프론트엔드', '백엔드', '데이터분석', '딥러닝'];
 
 const PersonalInfo = () => {
-    const { getPersonal, postPersonal, postResume } = useRecruit();
+    const { getPersonal, postResume } = useRecruit();
 
     const memberId = 44;
 
@@ -35,6 +35,7 @@ const PersonalInfo = () => {
     } = useRecruitStore();
 
     const handlePostPersonal = async () => {
+        /*
         const res = await postPersonal(
             {
                 school: school,
@@ -43,7 +44,7 @@ const PersonalInfo = () => {
                 field: applyField,
             },
             memberId
-        );
+        );*/
     };
 
     const handlePostResume = async () => {
@@ -68,7 +69,7 @@ const PersonalInfo = () => {
             <FlexBox direction="col" className="pt-4 gap-8">
                 {lables.map((label) => (
                     <InputContainer key={label} label={label}>
-                        <InputField value={label} readonly />
+                        <InputField value={label} />
                     </InputContainer>
                 ))}
                 <InputContainer label="지원분야" isRequired={true} description="기수 당 1개의 분야만 지원 가능합니다.">
