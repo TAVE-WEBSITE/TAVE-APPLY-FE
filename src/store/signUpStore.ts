@@ -1,4 +1,5 @@
 import { createFieldStore } from "./createFieldStore";
+import { VerifyState } from '@/modules/authType'; 
 
 interface SignUpStore {
   name: string;
@@ -12,6 +13,8 @@ interface SignUpStore {
   currentStep: number;
   checkService: boolean;
   checkPrivacy: boolean;
+  isSentState: VerifyState;
+  isConfirmState: VerifyState;
 }
 
 const initalStates: SignUpStore = {
@@ -26,6 +29,8 @@ const initalStates: SignUpStore = {
   currentStep: 1,
   checkService: false,
   checkPrivacy: false,
+  isSentState: 'BEFORE',
+  isConfirmState: 'BEFORE'
 };
 
 export const useSignUpStore = createFieldStore(initalStates);

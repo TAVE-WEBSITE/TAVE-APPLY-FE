@@ -1,47 +1,40 @@
-"use client";
+'use client';
 
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from '@/components/LoadingSpinner';
+import FlexBox from '@/components/layout/FlexBox';
 
-export interface ButtonNavigateProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  text: string;
-  isActive?: boolean;
-  isDisabled?: boolean;
-  onClick?: () => void;
-  hasBackGround?: boolean;
-  isLoading?: boolean;
-  className?: string;
+interface ButtonNavigateProps {
+    text: string;
+    onClick: () => void;
+    isActive?: boolean;
+    hasBackGround?: boolean;
+    isLoading?: boolean;
 }
 
 const ButtonNavigate = ({
-  text,
-  isActive = true,
-  onClick,
-  hasBackGround = true,
-  isLoading = false,
-  className,
+    text,
+    isActive = true,
+    onClick,
+    hasBackGround = true,
+    isLoading = false,
 }: ButtonNavigateProps) => {
-  return (
-    <button
-      className={`w-full md:w-[72px] h-[50px] rounded-lg font-bold cursor-pointer 
-        ${
-          hasBackGround
-            ? "bg-[#195BFF] text-white"
-            : "md:bg-[#195BFF] md:text-white bg-[#F9FAFB] text-[#B0B3B9]"
-        }
-      } ${isActive ? "" : "opacity-60"} ${className ?? ""}`}
-      onClick={onClick}
-      disabled={!isActive}
-    >
-      {isLoading ? (
-        <div className="flex justify-center">
-          <LoadingSpinner />
-        </div>
-      ) : (
-        text
-      )}
-    </button>
-  );
+    return (
+        <button
+            className={`w-full md:w-auto py-3.5 px-5.5 rounded-[10px] font-bold  
+        ${hasBackGround ? 'bg-[#195BFF] text-white' : 'md:bg-gray-200 md:text-zinc-400 bg-transparent text-gray-400'}
+      } ${isActive ? 'cursor-pointer' : 'opacity-60 cursor-not-allowed'}`}
+            onClick={onClick}
+            disabled={!isActive}
+        >
+            {isLoading ? (
+                <FlexBox className="justify-center">
+                    <LoadingSpinner />
+                </FlexBox>
+            ) : (
+                text
+            )}
+        </button>
+    );
 };
 
 export default ButtonNavigate;

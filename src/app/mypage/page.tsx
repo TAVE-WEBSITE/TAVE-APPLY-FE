@@ -2,9 +2,9 @@ import Mypage from "./Mypage";
 
 const page = () => {
   return (
-    <div>
+    <main>
       <Mypage />
-    </div>
+    </main>
   );
 };
 

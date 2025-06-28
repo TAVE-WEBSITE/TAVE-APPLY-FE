@@ -5,19 +5,19 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Icons from '@/components/Icons';
 import useAuth from '@/hooks/useAuth';
-import { useLoginStore } from '@/store/loginStore';
+import { useMemberStore } from '@/store/memberStore';
 
 const Header = () => {
     const router = useRouter();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
-    const { isLogin } = useLoginStore();
-    const { signout } = useAuth();
+    const { isLogin } = useMemberStore();
+    const { signOut } = useAuth();
 
     const redirectionList = ['RECRUIT', 'FAQ', ...(isLogin ? ['MYPAGE'] : [])];
 
     const handleLoginAndOut = () => {
         if (isLogin) {
-            signout();
+            signOut();
             router.push('/');
         } else {
             router.push('/auth/signin');

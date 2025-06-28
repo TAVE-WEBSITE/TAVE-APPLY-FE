@@ -30,7 +30,7 @@ const page = () => {
             <section className="bg-[#F9FAFB] flex-1">
                 <FlexBox
                     direction="col"
-                    className="md:pt-16 pt-12 md:pb-25 pb-22 md:w-[562px] sm:w-[430px] w-[308px] mx-auto gap-10"
+                    className="md:pt-16 pt-12 md:pb-25 pb-22 md:w-[562px] sm:w-[430px] w-[308px] mx-auto gap-4"
                 >
                     <Faq />
                 </FlexBox>

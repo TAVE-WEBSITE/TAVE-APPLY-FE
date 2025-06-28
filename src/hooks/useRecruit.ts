@@ -7,7 +7,7 @@ export const useRecruit = () => {
 
     const getPersonal = async (memberId: number) => {
         try {
-            const res = await axiosClient.get(`/v1/member/info/temp-save/${memberId}`);
+            const res = await axiosClient.get(`/v1/member/info/${memberId}`);
             if (res.status === 200) {
                 setSchool(res.data.result.school);
                 setMajor(res.data.result.major);
@@ -19,9 +19,23 @@ export const useRecruit = () => {
         }
     };
 
-    const postPersonal = async (body: Personal, memberId: number) => {
+    const modifyPersonal = async (memberId: number) => {
         try {
-            const res = await axiosClient.post(`/v1/member/info/temp-save/${memberId}`, body);
+            const res = await axiosClient.patch(`/v1/member/info/update/${memberId}`);
+            if (res.status === 200) {
+                setSchool(res.data.result.school);
+                setMajor(res.data.result.major);
+                setMinorDouble(res.data.result.minor);
+                setApplyField(res.data.result.field);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const postApplication = async (body: Personal, memberId: number) => {
+        try {
+            const res = await axiosClient.post(`/v1/member/info/${memberId}`, body);
             if (res.status === 200) {
                 console.log('성공');
             }
@@ -30,31 +44,39 @@ export const useRecruit = () => {
         }
     };
 
-      const postResume = async (body: Personal, memberId: number) => {
-        try {
-            const res = await axiosClient.post(`/v1/member/info/${memberId}`, body);
-            if (res.status === 200) {
-                console.log(res.data.result);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-     const getResume = async (resumeId: number) => {
+    const getApplication = async (resumeId: number) => {
         try {
             const res = await axiosClient.get(`/v1/member/resumes/${resumeId}/questions`);
             if (res.status === 200) {
-                console.log(res.data.result);
             }
         } catch (error) {
             console.error(error);
         }
     };
 
-    const getInterview = async (resumeId: number) => {
+    const getTempApplication = async (resumeId: number) => {
         try {
-            const res = await axiosClient.get(`/v1/member/info/${resumeId}/timeslot`);
+            const res = await axiosClient.get(`/v1/member/resume/temp-answer/${resumeId}`);
+            if (res.status === 200) {
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const postTempApplication = async (resumeId: number) => {
+        try {
+            const res = await axiosClient.post(`/v1/member/resume/temp-answer/${resumeId}`);
+            if (res.status === 200) {
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const postResume = async (body: Personal, resumeId: number) => {
+        try {
+            const res = await axiosClient.post(`/v1/member/resumes/${resumeId}`, body);
             if (res.status === 200) {
                 console.log(res.data.result);
             }
@@ -63,16 +85,24 @@ export const useRecruit = () => {
         }
     };
 
-    
-
-
-
+    const getEmail = async (body: Personal, resumeId: number) => {
+        try {
+            const res = await axiosClient.get(`/v1/member/resume/email/${resumeId}`);
+            if (res.status === 200) {
+                console.log(res.data.result);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return {
         getPersonal,
-        postPersonal,
         postResume,
-        getResume,
-        getInterview,
+        modifyPersonal,
+        postApplication,
+        getApplication,
+        getTempApplication,
+        postTempApplication,
     };
 };
