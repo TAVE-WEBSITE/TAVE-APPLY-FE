@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useLoginStore } from '@/store/loginStore';
+import { useMemberStore } from '@/store/memberStore';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -29,7 +29,7 @@ axiosClient.interceptors.response.use(
             !originalRequest.retry
         ) {
             try {
-                const { email } = useLoginStore.getState();
+                const { email } = useMemberStore.getState();
                 const refreshResponse = await axios.post(
                     `${API_BASE_URL}/v1/auth/refresh`,
                     { email },
@@ -41,7 +41,7 @@ axiosClient.interceptors.response.use(
                 return axiosClient(originalRequest);
             } catch (refreshError) {
                 const currentPath = window.location.pathname;
-                useLoginStore.getState().reset();
+                useMemberStore.getState().reset();
                 localStorage.removeItem('accessToken');
                 if (currentPath !== '/auth/signin') {
                     window.location.replace('/auth/signin');

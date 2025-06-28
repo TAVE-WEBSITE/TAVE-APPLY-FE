@@ -6,13 +6,13 @@ import Graph from '@/components/layout/Graph';
 import useResult from '@/hooks/useResult';
 import formatOrdinal from '@/utils/formatOrdinal';
 import { useHomeStore } from '@/store/homeStore';
-import { useLoginStore } from '@/store/loginStore';
+import { useMemberStore } from '@/store/memberStore';
 import { useEffect, useState } from 'react';
 import { ApplicantData } from '@/modules/resultType';
 
 const Mypage = () => {
     const { generation } = useHomeStore();
-    const { resumeState, memberId } = useLoginStore();
+    const { resumeState, memberId } = useMemberStore();
     const { getApplicantHistory } = useResult();
     const [history, setHistory] = useState<ApplicantData[]>([]);
 

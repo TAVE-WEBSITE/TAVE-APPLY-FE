@@ -2,10 +2,10 @@ import axios from 'axios';
 import { useState } from 'react';
 import { axiosClient } from '@/api/axiosClient';
 import { SignUpData, EmailVerification, PasswordReset, Login, LoginResponse } from '@/modules/authType';
-import { useLoginStore } from '@/store/loginStore';
+import { useMemberStore } from '@/store/memberStore';
 
 const useAuth = () => {
-    const { setIsLogin, setEmail, setMemberId, setUsername, setResumeState, reset } = useLoginStore();
+    const { setIsLogin, setEmail, setMemberId, setUsername, setResumeState, reset } = useMemberStore();
     const [isSignInLoading, setIsSignInLoading] = useState(false);
     const [isVerifyEmailLoading, setIsVerifyEmailLoading] = useState(false);
     const [isVerifyConfirmLoading, setIsVerifyConfirmLoading] = useState(false);
