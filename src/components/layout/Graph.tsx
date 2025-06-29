@@ -2,6 +2,7 @@ import FlexBox from '@/components/layout/FlexBox';
 import Icons from '@/components/Icons';
 import Link from 'next/link';
 import { Status, ApplicantData } from '@/modules/resultType';
+import { formattedToRecruitField } from '@/utils/formatField';
 
 interface GraphProps {
     generation: string;
@@ -18,7 +19,7 @@ const Graph = ({ applicantData, generation }: GraphProps) => {
     };
 
     const renderStatus = (item: ApplicantData) => {
-        const isCurrentGen = Number(generation) === item.generation;
+        const isCurrentGen = generation === item.generation;
 
         if (item.applicationStatus === 'DRAFT') {
             return (
@@ -58,9 +59,8 @@ const Graph = ({ applicantData, generation }: GraphProps) => {
             <div className="grid grid-cols-10 pb-4 text-zinc-400 font-medium md:px-2 px-1.5">
                 <p className="col-span-2">기수</p>
                 <p className="col-span-5">파트</p>
-                <p className="col-span-3 text-right">지원상태</p>
+                <p className="col-span-3 text-right">지원 상태</p>
             </div>
-
             {applicantData.length > 0 ? (
                 <>
                     {applicantData.map((item, index) => (
@@ -70,7 +70,7 @@ const Graph = ({ applicantData, generation }: GraphProps) => {
                               ${index === applicantData.length - 1 ? 'mb-1 md:mb-2' : ''} items-center`}
                         >
                             <p className="col-span-2 text-gray-700">{item.generation}</p>
-                            <p className="col-span-5 text-gray-700">{item.fieldType}</p>
+                            <p className="col-span-5 text-gray-700">{formattedToRecruitField(item.fieldType)}</p>
                             <FlexBox className="col-span-3 justify-end">{renderStatus(item)}</FlexBox>
                         </div>
                     ))}
