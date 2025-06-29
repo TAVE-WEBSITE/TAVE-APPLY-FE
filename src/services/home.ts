@@ -1,4 +1,4 @@
-import { axiosServer } from '@/api/axiosServer';
+import { axiosServer } from './axiosServer';
 import { formatSession, formatSetting } from '@/utils/formatHomeData';
 
 export async function applySetting() {
