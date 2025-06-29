@@ -9,7 +9,7 @@ const Complete = () => {
 
     return (
         <FlexBox direction="col" className="items-center justify-center h-full md:gap-8 gap-6 md:mt-4 mt-0">
-            <div className="text-gray-700 sm:text-3xl text-2xl font-bold text-center">
+            <div className="text-gray-700 sm:text-3xl text-2xl font-bold text-center space-y-1">
                 <p>{name}님</p>
                 <p>회원가입이 완료되었습니다!</p>
             </div>
