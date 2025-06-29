@@ -8,7 +8,7 @@ import { targetData } from '@/modules/staticData';
 import { applySession, applySetting } from '@/services/home';
 
 export default async function Home() {
-    const groupedSession = await applySession();
+    const { grouped, first, second } = await applySession();
     const { generation, isDocument, formattedSetting } = await applySetting();
 
     return (
@@ -65,7 +65,7 @@ export default async function Home() {
             </FlexBox>
             <FlexBox direction="col" className="h-dvh justify-center items-center gap-10 md:mx-auto">
                 <h3 className="font-bold md:text-3xl text-2xl">모집 분야</h3>
-                <GroupField isDocument={isDocument} generation={generation} />
+                <GroupField isDocument={isDocument} generation={generation} first={first} second={second} />
             </FlexBox>
             <FlexBox direction="col" className="h-dvh justify-center items-center gap-5 mx-auto">
                 <h3 className="font-bold md:text-3xl text-2xl">주요 세션 일정</h3>
@@ -73,7 +73,7 @@ export default async function Home() {
                     매주 토요일마다 세션 또는 활동이 진행되며,
                     <br className="md:hidden" /> 오프라인으로 진행됩니다.
                 </p>
-                <GroupChip sessions={groupedSession} />
+                <GroupChip sessions={grouped} />
             </FlexBox>
         </div>
     );
