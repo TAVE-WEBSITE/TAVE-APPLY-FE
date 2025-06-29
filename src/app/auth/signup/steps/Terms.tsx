@@ -31,14 +31,14 @@ const Terms = () => {
                 <div className="h-[1.2px] w-full bg-[#E5E7EB]"></div>
                 <FlexBox className="justify-between items-center">
                     <FlexBox className="gap-2 sm:gap-3 items-center">
-                        <CheckBox isChecked={checkService} setIsChecked={setCheckService} />
-                        <p className="font-medium">
-                            TAVE 활동 정책에 동의합니다.
-                            <span className="text-[#ED6661] text-xs font-bold ml-1">(필수)</span>
-                        </p>
+                        <CheckBox isChecked={checkPrivacy} setIsChecked={setCheckPrivacy} />
+                        <span className="font-medium">
+                            개인정보 수집 및 이용에 동의합니다
+                            <span className="text-[#ED6661] text-xs font-bold ml-1"> (필수)</span>
+                        </span>
                     </FlexBox>
                     <a
-                        href="https://alluring-eagle-b3d.notion.site/TAVE-21f8f2c5125080c0a9e2e21ffbbf07da"
+                        href="https://alluring-eagle-b3d.notion.site/TAVE-Recruit-21f8f2c5125080fc9d6fe2de8caf4615"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#4584EE] cursor-pointer font-bold"
@@ -48,14 +48,14 @@ const Terms = () => {
                 </FlexBox>
                 <FlexBox className="justify-between items-center">
                     <FlexBox className="gap-2 sm:gap-3 items-center">
-                        <CheckBox isChecked={checkPrivacy} setIsChecked={setCheckPrivacy} />
-                        <span className="font-medium">
-                            개인정보 수집 및 이용에 동의합니다
-                            <span className="text-[#ED6661] text-xs font-bold ml-1"> (필수)</span>
-                        </span>
+                        <CheckBox isChecked={checkService} setIsChecked={setCheckService} />
+                        <p className="font-medium">
+                            TAVE 활동 정책에 동의합니다.
+                            <span className="text-[#ED6661] text-xs font-bold ml-1">(필수)</span>
+                        </p>
                     </FlexBox>
                     <a
-                        href="https://alluring-eagle-b3d.notion.site/TAVE-Recruit-21f8f2c5125080fc9d6fe2de8caf4615"
+                        href="https://alluring-eagle-b3d.notion.site/TAVE-21f8f2c5125080c0a9e2e21ffbbf07da"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#4584EE] cursor-pointer font-bold"
