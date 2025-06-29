@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { axiosClient } from '@/api/axiosClient';
+import { axiosClient } from '@/services/axiosClient';
 import { SignUpData, EmailVerification, PasswordReset, Login, LoginResponse } from '@/modules/authType';
 import { useMemberStore } from '@/store/memberStore';
 
