@@ -1,13 +1,16 @@
 import { createFieldStore } from './createFieldStore';
 import { withPersist } from './withPersist';
 
-const initState = {
+const initStates = {
     generation: '',
+    isDocument: false,
+    firstSession: { title: '', date: '' },
+    secondSession: { title: '', date: '' },
 };
 
-const homeStore = createFieldStore(initState);
+const homeStore = createFieldStore(initStates);
 
 export const useHomeStore = withPersist(homeStore, {
     name: 'home-store',
-    keys: ['generation'],
+    keys: ['generation', 'isDocument', 'firstSession', 'secondSession'],
 });
