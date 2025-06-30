@@ -22,8 +22,8 @@ export function formatSession(sessions: Session[]): {
 
     return {
         grouped,
-        first: { title: first.title, date: first.eventDay },
-        second: { title: second.title, date: second.eventDay },
+        first: { title: first.title, date: formatDate(first.eventDay, 'only') },
+        second: { title: second.title, date: formatDate(second.eventDay, 'only') },
     };
 }
 

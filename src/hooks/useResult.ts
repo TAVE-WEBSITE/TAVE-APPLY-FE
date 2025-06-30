@@ -34,7 +34,7 @@ const useResult = () => {
             const res = await axios.get('/api/converter', {
                 params: { query: address },
             });
-            return res.data;
+            return res.data.addresses;
         } catch (error) {
             console.error(error);
         }
