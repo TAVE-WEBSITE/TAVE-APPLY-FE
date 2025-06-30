@@ -89,7 +89,7 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
                     <p className="text-xl md:text-2xl font-bold">주의 사항</p>
                     <SectionContainer>
                         <p>
-                            ⚠︎ 면접 시간은 불가피한 경우를 제외하고는
+                            ⚠ 면접 시간은 불가피한 경우를 제외하고는
                             <br className="md:hidden" /> 조정이 어렵습니다.
                         </p>
                     </SectionContainer>
