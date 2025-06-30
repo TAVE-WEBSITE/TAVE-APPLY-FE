@@ -1,7 +1,11 @@
-import { Setting, Session, SessionGrouped } from '@/modules/homeType';
+import { Setting, Session, SessionGrouped, FormattedSession } from '@/modules/homeType';
 
-export function formatSession(sessions: Session[]): SessionGrouped {
-    return sessions.reduce<SessionGrouped>(
+export function formatSession(sessions: Session[]): {
+    grouped: SessionGrouped;
+    first: FormattedSession;
+    second: FormattedSession;
+} {
+    const grouped = sessions.reduce<SessionGrouped>(
         (acc, session) => {
             const periodKey = session.period;
             const date = formatDate(session.eventDay, 'only');
@@ -14,6 +18,13 @@ export function formatSession(sessions: Session[]): SessionGrouped {
             PART2: [],
         }
     );
+    const [first, second] = sessions;
+
+    return {
+        grouped,
+        first: { title: first.title, date: formatDate(first.eventDay, 'only') },
+        second: { title: second.title, date: formatDate(second.eventDay, 'only') },
+    };
 }
 
 export function formatSetting(setting: Setting) {

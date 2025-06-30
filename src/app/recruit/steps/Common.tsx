@@ -1,4 +1,6 @@
-import { useState } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import Disclosure from '@/components/layout/Disclosure';
 import TextArea from '@/components/Input/TextArea';
 import ButtonNavigate from '@/components/Button/ButtonNavigate';
@@ -6,84 +8,136 @@ import Uploader from '@/components/upload/Uploader';
 import TimePicker from '@/components/TimePicker/TimePicker';
 import { useRecruitStore } from '@/store/recruitStore';
 import formatTimeSlot from '@/utils/formatTimeSlot';
+import FlexBox from '@/components/layout/FlexBox';
+import { useRecruit } from '@/hooks/useRecruit';
+import { useMemberStore } from '@/store/memberStore';
+import { ResumeAnswerRequest } from '@/modules/recruitType';
 
 const uploadOptions = ['Github', 'Tech Blog', 'Portfolio'];
 type uploadType = 'text' | 'file';
 
-// 샘플 데이터
-const schedules = [
-    '2025-11-20 13:00',
-    '2025-11-20 13:30',
-    '2025-11-20 14:00',
-    '2025-11-20 14:30',
-    '2025-11-20 15:00',
-    '2025-11-20 15:30',
-    '2025-11-20 16:00',
-    '2025-11-20 16:30',
-];
-
-const formattedSchedule = formatTimeSlot(schedules);
-
 const Common = () => {
     const { setCurrentStep } = useRecruitStore();
-    const [question1, setQuestion1] = useState('');
+    const { resumeId, username } = useMemberStore();
+    const { getApplicationQuestion, getTempApplication, postTempApplication, postResume, getTime, getEmail } =
+        useRecruit();
 
+    const [questions, setQuestions] = useState<{ [id: number]: string }>({});
+    const [questionList, setQuestionList] = useState<any[]>([]);
+
+    // 업로더 상태
     const [selectedOption, setSelectedOption] = useState('');
     const [uploadType, setUploadType] = useState<uploadType>('text');
     const [uploadValue, setUploadValue] = useState<string | File>('');
 
-    // 면접시간관련 상태
-    const [selectedDate, setSelectedDate] = useState('');
-    const [selectedTime, setSelectedTime] = useState('');
+    // 면접시간 선택 상태
+    const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
+    // 상태 추가
+    const [scheduleData, setScheduleData] = useState<{ date: string; timeSlots: { time: string }[] }[]>([]);
 
-    const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    useEffect(() => {
+        const fetchData = async () => {
+            const times = await getTime(resumeId);
+            console.log(times); // 이미 선언된 함수 호출
+            const questions = await getApplicationQuestion(resumeId, 3);
+
+            const initialAnswers: { [id: number]: string } = {};
+            questions.forEach((q: any) => {
+                initialAnswers[q.id] = '';
+            });
+            setQuestionList(questions);
+            setQuestions(initialAnswers);
+
+            if (times && Array.isArray(times)) {
+                const formatted = formatTimeSlot(times); // ex) ['2025-11-20 13:00', ...] → 날짜별 그룹핑
+                setScheduleData(formatted);
+            }
+
+            const temp = await getTempApplication(resumeId);
+
+            if (temp?.page3) {
+                const filled = { ...initialAnswers };
+                temp.page3.answers.forEach((item: any) => {
+                    filled[item.resumeQuestionId] = item.answer ?? '';
+                });
+                setQuestions(filled);
+                if (temp.page3.uploadValue) setUploadValue(temp.page3.uploadValue);
+                if (temp.page3.selectedTimes) setSelectedTimes(temp.page3.selectedTimes);
+            }
+        };
+
+        fetchData();
+    }, [resumeId]);
+
+    const handleAnswerChange = (id: number, value: string) => {
+        setQuestions((prev) => ({
+            ...prev,
+            [id]: value,
+        }));
+    };
+
+    const toggleTimeSelection = (time: string) => {
+        setSelectedTimes((prev) => (prev.includes(time) ? prev.filter((t) => t !== time) : [...prev, time]));
+    };
+
+    const buildRequestBody = (): ResumeAnswerRequest & { uploadValue?: string | File; selectedTimes?: string[] } => ({
+        answers: Object.entries(questions).map(([id, answer]) => ({
+            resumeQuestionId: Number(id),
+            answer,
+        })),
+        languageLevels: null,
+        timeSlots: selectedTimes.map((time) => ({ time })),
+        uploadValue,
+        selectedTimes,
+    });
+
+    const handleTempSave = async () => {
+        await postTempApplication(resumeId, 3, buildRequestBody());
+    };
+
+    const handlePostOnly = async (step: number) => {
+        await postTempApplication(resumeId, 3, buildRequestBody());
+        setCurrentStep(step);
+    };
+
+    const handleSubmit = async () => {
+        await postTempApplication(resumeId, 3, buildRequestBody());
+        await postResume(resumeId, buildRequestBody(), 3);
+
+        try {
+            await getEmail(resumeId); // ⭐ 제출 후 이메일 불러오기
+        } catch (e) {
+            console.error('getEmail error:', e);
+        }
+
+        setCurrentStep(4); // 다음 페이지 이동
+    };
+
+    const handleUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setUploadValue(file.name);
-        } else setUploadValue(e.target.value);
+            setUploadValue(file);
+        } else {
+            setUploadValue(e.target.value);
+        }
     };
 
     return (
-        <>
+        <FlexBox direction="col" className="gap-5">
             <h1 className="font-bold text-2xl text-[#394150] text-center">공통 질문</h1>
-            <Disclosure title={'지원 동기와 TAVE 활동을 통해 얻고 싶은 것을 적어주세요.'} isRequired={true}>
-                <TextArea
-                    value={question1}
-                    setValue={setQuestion1}
-                    placeholder="지원자님의 경험을 공유해주세요"
-                    maxLength={500}
-                />
-            </Disclosure>
-            <Disclosure title={'지원 동기와 TAVE 활동을 통해 얻고 싶은 것을 적어주세요.'} isRequired={true}>
-                <TextArea
-                    value={question1}
-                    setValue={setQuestion1}
-                    placeholder="지원자님의 경험을 공유해주세요"
-                    maxLength={500}
-                />
-            </Disclosure>
-            <Disclosure title={'3개의 키워드로 자신을 표현해주세요.'} isRequired={true}>
-                <TextArea
-                    value={question1}
-                    setValue={setQuestion1}
-                    placeholder="지원자님의 경험을 공유해주세요"
-                    maxLength={500}
-                />
-            </Disclosure>
 
-            <Disclosure title={'이번 학기 계획이 있으신가요?'} isRequired={true}>
-                <TextArea
-                    value={question1}
-                    setValue={setQuestion1}
-                    placeholder="지원자님의 경험을 공유해주세요"
-                    maxLength={500}
-                />
-            </Disclosure>
+            {questionList.map((q) => (
+                <Disclosure key={q.id} title={q.question} isRequired={true} description={`(${q.textLength}자 이내)`}>
+                    <TextArea
+                        value={questions[q.id] ?? ''}
+                        setValue={(val) => handleAnswerChange(q.id, val)}
+                        placeholder="지원자님의 경험을 공유해주세요"
+                        maxLength={q.textLength}
+                    />
+                </Disclosure>
+            ))}
 
-            <Disclosure
-                title={'아래의 목록 중 홍길동님께서 소유하고 있으신 것이 있다면 자유롭게 첨부해주세요 :)'}
-                isRequired={true}
-            >
+            <Disclosure title={'아래의 목록 중 소유하고 있으신 것이 있다면 자유롭게 첨부해주세요 :)'} isRequired>
                 <Uploader
                     options={uploadOptions}
                     selectedOption={selectedOption}
@@ -95,37 +149,33 @@ const Common = () => {
                         type={uploadType}
                         value={uploadValue}
                         setValue={setUploadValue}
-                        onChange={handleUpload}
+                        onChange={handleUploadChange}
                     />
                 </Uploader>
             </Disclosure>
 
-            <Disclosure title={'가능한 오프라인 면접 시간을 모두 체크해주세요'} isRequired={true}>
+            <Disclosure title="가능한 오프라인 면접 시간을 모두 체크해주세요" isRequired>
                 <TimePicker>
-                    {formattedSchedule.map((schedule) => (
+                    {scheduleData.map((schedule) => (
                         <TimePicker.DateRow key={schedule.date} date={schedule.date}>
                             {schedule.timeSlots.map((timeSlot) => (
                                 <TimePicker.TimeSlotButton
                                     key={timeSlot.time}
                                     time={timeSlot.time}
-                                    isSelected={selectedDate === timeSlot.time}
-                                    onClick={() => setSelectedDate(timeSlot.time)}
+                                    isSelected={selectedTimes.includes(timeSlot.time)}
+                                    onClick={() => toggleTimeSelection(timeSlot.time)}
                                 />
                             ))}
                         </TimePicker.DateRow>
                     ))}
                 </TimePicker>
             </Disclosure>
-            <div className="flex flex-col-reverse md:flex-row justify-between my-8">
-                <ButtonNavigate text="이전" onClick={() => setCurrentStep(1)} />
-                <button
-                    className="w-full md:w-[110px] h-[50px] rounded-lg font-bold cursor-pointer md:bg-[#195BFF] md:text-white bg-[#F9FAFB] text-[#B0B3B9]"
-                    onClick={() => setCurrentStep(4)}
-                >
-                    제출하기
-                </button>
-            </div>
-        </>
+
+            <FlexBox className="justify-between mt-8 mb-0 gap-2">
+                <ButtonNavigate text="이전" onClick={() => handlePostOnly(2)} />
+                <ButtonNavigate text="제출하기" onClick={handleSubmit} />
+            </FlexBox>
+        </FlexBox>
     );
 };
 

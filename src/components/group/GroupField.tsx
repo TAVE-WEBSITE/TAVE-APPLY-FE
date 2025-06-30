@@ -10,17 +10,23 @@ import { Navigation, Pagination } from 'swiper/modules';
 import { fieldData } from '@/modules/staticData';
 import { useHomeStore } from '@/store/homeStore';
 import { useEffect } from 'react';
+import { FormattedSession } from '@/modules/homeType';
 
 interface GroupFieldProps {
     generation: string;
     isDocument: boolean;
+    first: FormattedSession;
+    second: FormattedSession;
 }
 
-const GroupField = ({ generation, isDocument }: GroupFieldProps) => {
-    const { setGeneration } = useHomeStore();
+const GroupField = ({ generation, isDocument, first, second }: GroupFieldProps) => {
+    const { setGeneration, setFirstSession, setIsDocument, setSecondSession } = useHomeStore();
 
     useEffect(() => {
         setGeneration(generation);
+        setIsDocument(isDocument);
+        setFirstSession(first);
+        setSecondSession(second);
     }, []);
 
     return (

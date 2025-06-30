@@ -2,21 +2,30 @@ import FlexBox from '@/components/layout/FlexBox';
 import CardNavigate from '@/components/card/CardNavigate';
 import EnterContainer from '@/components/layout/EnterContainer';
 import ButtonInquire from '@/components/Button/ButtonInquire';
+import { FinalData } from '@/modules/resultType';
+import { FormattedSession } from '@/modules/homeType';
 
-const Failed = () => {
+interface FinalPassedProps {
+    username: string;
+    generation: string;
+    firstSession: FormattedSession;
+    final: FinalData;
+}
+
+const FinalPassed = ({ username, generation, final, firstSession }: FinalPassedProps) => {
     return (
         <div className="text-[#394150] text-center">
             <FlexBox direction="col" className="md:gap-28 gap-23">
                 <div>
                     <p className="text-lg md:text-xl font-bold">
-                        TAVE 15기 회원이 되신 것을 <br className="md:hidden" />
+                        TAVE {generation}기 회원이 되신 것을 <br className="md:hidden" />
                         진심으로 축하드립니다!
                     </p>
                     <p className="font-medium text-[13px] md:text-base">
                         <br />
-                        안녕하세요, IT 연합 동아리 TAVE 15기 운영진 입니다.
+                        안녕하세요, IT 연합 동아리 TAVE {generation}기 운영진 입니다.
                         <br />
-                        000님께서 TAVE 15기 회원 모집에
+                        {username}님께서 TAVE {generation}기 회원 모집에
                         <span className="font-bold"> 최종 합격</span>
                         하셨습니다. <br />
                         <br />
@@ -35,16 +44,25 @@ const Failed = () => {
                     </div>
                     <div>
                         <p>
-                            15기 회비는 총<span className="text-[#195bff] font-bold"> 90,000원</span>입니다.
+                            {generation}기 회비는 총
+                            <span className="text-[#195bff] font-bold"> {final?.totalFee}원</span>입니다.
                         </p>
-                        <p className="text-[#394150]/60">(동아리 회비 60,000원 + MT 회비 30,000원)</p>
+                        <p className="text-[#394150]/60">
+                            (동아리 회비 {final.clubFee}원 + MT 회비 {final.mtFee}원)
+                        </p>
                     </div>
                     <p className="md:mb-4">
                         TAVE의 회비의 사용 내역은 투명하게 공개하고,
                         <br className="md:hidden" />
                         정기적으로 회계 결산 발표가 진행됩니다.
                     </p>
-                    <CardNavigate title="회비 입금 마감" buttonText="지금 입금하기" />
+                    <CardNavigate
+                        title="회비 입금 마감"
+                        buttonText="지금 입금하기"
+                        deadline={'07-01'}
+                        type="copy"
+                        value={final.bankName + ' ' + final.accountNumber + ' ' + final.accountHolder}
+                    />
                 </FlexBox>
 
                 <FlexBox direction="col" className="gap-5">
@@ -61,17 +79,23 @@ const Failed = () => {
                         원활한 아지트 초대를 위해 정보 조사를 진행하고 있으니 <br className="md:hidden" />꼭 작성
                         부탁드립니다.
                     </p>
-                    <CardNavigate title="아지트 설문 조사" buttonText="지금 작성하기" />
+                    <CardNavigate
+                        title="아지트 설문 조사"
+                        buttonText="지금 작성하기"
+                        deadline={final.surveyDeadline}
+                        type="link"
+                        value={final.surveyLink}
+                    />
                 </FlexBox>
 
                 <FlexBox direction="col" className="gap-5">
                     <div className="font-bold">
                         <p className="opacity-60 md:text-lg text-base">STEP 03</p>
-                        <p className="md:text-2xl text-xl">OT 공지방 입장</p>
+                        <p className="md:text-2xl text-xl">{firstSession.title} 공지방 입장</p>
                     </div>
                     <p className="font-medium text-sm md:text-base md:mb-4">
-                        0월 0일에 진행될 TAVE 15기의 첫 행사인 <br className="md:hidden" />
-                        ‘OT 및 MT’를 위한 공지방입니다.
+                        {firstSession.date} 에 진행될 TAVE {generation}기의 첫 행사인 <br className="md:hidden" />‘
+                        {firstSession.title}’를 위한 공지방입니다.
                         <br className="md:hidden" />
                         <br />
                         원활한 인원 파악 및 진행을 위해 <br className="md:hidden" />
@@ -103,20 +127,26 @@ const Failed = () => {
                             />
                             <FlexBox direction="col" className="md:gap-4 gap-2">
                                 <EnterContainer label="사담 금지" description="조용히 입장 부탁드립니다" mode="light" />
-                                <EnterContainer label="참여 코드" description="1207" mode="deep" />
+                                <EnterContainer label="참여 코드" description={final.otPassword} mode="deep" />
                             </FlexBox>
                         </div>
                     </div>
-                    <CardNavigate title="공지방 입장" buttonText="지금 입장하기" />
+                    <CardNavigate
+                        title="공지방 입장"
+                        buttonText="지금 입장하기"
+                        deadline={final.otDeadline}
+                        type="link"
+                        value={final.otLink}
+                    />
                 </FlexBox>
 
                 <FlexBox direction="col" className="gap-5 items-center pb-12">
                     <p className="text-xl md:text-2xl font-bold">궁금한 점이 있으신가요?</p>
-                    <ButtonInquire/>
+                    <ButtonInquire />
                 </FlexBox>
             </FlexBox>
         </div>
     );
 };
 
-export default Failed;
+export default FinalPassed;

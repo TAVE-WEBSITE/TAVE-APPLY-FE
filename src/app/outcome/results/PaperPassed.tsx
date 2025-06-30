@@ -1,5 +1,8 @@
+'use client';
+
 import FlexBox from '@/components/layout/FlexBox';
-import Link from 'next/link';
+import NaverMapLoader from '@/components/map/MapLoader';
+import Map from '@/components/map/Map';
 import ButtonInquire from '@/components/Button/ButtonInquire';
 import SectionContainer from '@/components/layout/SectionContainer';
 import { InterviewData } from '@/modules/resultType';
@@ -17,7 +20,7 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
                 <div>
                     <p className="text-lg md:text-xl font-bold">
                         {username}님 <br />
-                        서류 합격을 축하드립니다
+                        <span className="text-[#FF0073]">서류 합격</span>을 축하드립니다
                     </p>
                     <p className="font-medium text-sm md:text-base">
                         <br />
@@ -31,7 +34,7 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
                 </div>
 
                 <div>
-                    <p className="text-lg md:text-xl font-bold">진행 방식</p>
+                    <p className="text-xl md:text-2xl font-bold">진행 방식</p>
                     <p className="font-medium text-sm md:text-base">
                         <br />
                         <span className="font-bold">25 분간</span> 동아리 임원진과 간단하게
@@ -42,16 +45,18 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
                 </div>
 
                 <FlexBox direction="col" className="gap-5">
-                    <p className="text-lg md:text-xl font-bold">장소 및 일정</p>
+                    <p className="text-xl md:text-2xl font-bold">장소 및 일정</p>
+                    <NaverMapLoader />
+                    <Map address={interview.generalAddress} />
                     <p className="font-medium text-sm md:text-base">
-                        {interview.generalAddress} {interview.detailAddress}
+                        {interview?.generalAddress} <br className="md:hidden" /> {interview.detailAddress}
                         <br />
                         {interview.interviewDate} {interview.dayName} {interview.interviewTime}
                     </p>
                 </FlexBox>
 
                 <FlexBox direction="col" className="gap-5 w-full">
-                    <p className="text-lg md:text-xl font-bold">준비 사항</p>
+                    <p className="text-xl md:text-2xl font-bold">준비 사항</p>
                     <SectionContainer>
                         <p>
                             1. 면접 오픈 채팅방에 <span className="font-bold text-[#ff0072]">면접 하루 전</span>까지
@@ -81,22 +86,22 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
                 </FlexBox>
 
                 <FlexBox direction="col" className="gap-5 w-full">
-                    <p className="text-lg md:text-xl font-bold">주의 사항</p>
+                    <p className="text-xl md:text-2xl font-bold">주의 사항</p>
                     <SectionContainer>
                         <p>
-                            면접 시간은 불가피한 경우를 제외하고는
+                            ⚠ 면접 시간은 불가피한 경우를 제외하고는
                             <br className="md:hidden" /> 조정이 어렵습니다.
                         </p>
                     </SectionContainer>
                     <SectionContainer>
                         <p>
-                            면접 시간에 늦을 시<span className="font-bold text-[#ff0072]"> 불이익</span>이 발생할 수
+                            ⚠︎ 면접 시간에 늦을 시<span className="font-bold text-[#ff0072]"> 불이익</span>이 발생할 수
                             있습니다.
                         </p>
                     </SectionContainer>
                     <SectionContainer>
                         <p>
-                            면접 시간 수정이 필요한 경우 카카오 채널로
+                            ⚠︎ 면접 시간 수정이 필요한 경우 카카오 채널로
                             <br className="md:hidden" /> 문의 부탁드립니다.
                         </p>
                     </SectionContainer>

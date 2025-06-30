@@ -32,15 +32,15 @@ const Disclosure = ({
         if (contentRef.current) {
             const el = contentRef.current;
             if (isOpen) {
-                const scrollHeight = el.scrollHeight;
+                el.style.maxHeight = '0px';
                 requestAnimationFrame(() => {
-                    el.style.maxHeight = scrollHeight + 'px';
+                    el.style.maxHeight = el.scrollHeight + 'px';
                 });
             } else {
                 el.style.maxHeight = '0px';
             }
         }
-    }, [isOpen]);
+    }, [isOpen, children]);
 
     return (
         <FlexBox direction="col" className="rounded-[20px] border border-gray-200 p-6 bg-white">

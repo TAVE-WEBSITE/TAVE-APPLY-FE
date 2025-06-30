@@ -10,22 +10,24 @@ interface MemberStates {
     email: string;
     resumeState: 'TEMPORARY' | 'SUBMITTED';
     applicationStatus: OutcomeStatus;
+    resumeId: number;
 }
 
-const initState: MemberStates = {
+const initStates: MemberStates = {
     isLogin: false,
     memberId: 0,
     username: '',
     email: '',
     resumeState: 'TEMPORARY',
-    applicationStatus: 'NO_STATUS'
+    applicationStatus: 'NO_STATUS',
+    resumeId: 0,
 };
 
-const memberStore = createFieldStore(initState);
+const memberStore = createFieldStore(initStates);
 
 const persistedMemberStore = withPersist(memberStore, {
     name: 'member-store',
-    keys: ['isLogin', 'memberId', 'username', 'email', 'resumeState', 'applicationStatus'],
+    keys: ['isLogin', 'memberId', 'username', 'email', 'resumeState', 'applicationStatus', 'resumeId'],
 });
 
-export const useMemberStore = withReset(persistedMemberStore, initState);
+export const useMemberStore = withReset(persistedMemberStore, initStates);

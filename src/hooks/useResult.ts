@@ -1,7 +1,8 @@
-import { axiosClient } from '@/api/axiosClient';
+import axios from 'axios';
+import { axiosClient } from '@/services/axiosClient';
 
 const useResult = () => {
-    const getApplicantHistory = async (memberId: number) => {
+    const applyApplicantHistory = async (memberId: number) => {
         try {
             const res = await axiosClient.get(`/v1/member/applicant/history/${memberId}`);
             return res.data.result;
@@ -10,7 +11,7 @@ const useResult = () => {
         }
     };
 
-    const getInterview = async (generation: number) => {
+    const applyInterview = async (generation: string) => {
         try {
             const res = await axiosClient.get(`/v1/member/interview-final/${generation}`);
             return res.data.result;
@@ -19,7 +20,7 @@ const useResult = () => {
         }
     };
 
-    const getFinal = async () => {
+    const applyFinal = async () => {
         try {
             const res = await axiosClient.get(`/v1/member/final-pass`);
             return res.data.result;
@@ -28,23 +29,22 @@ const useResult = () => {
         }
     };
 
-    /*
-
-    const getMapLet = async (address: string) => {
+    const applyCoordinates = async (address: string) => {
         try {
             const res = await axios.get('/api/converter', {
                 params: { query: address },
             });
-            return res.data;
+            return res.data.addresses;
         } catch (error) {
-            console.error('[getMapLet 에러]', error);
+            console.error(error);
         }
     };
-*/
+
     return {
-        getApplicantHistory,
-        getInterview,
-        getFinal,
+        applyApplicantHistory,
+        applyInterview,
+        applyFinal,
+        applyCoordinates,
     };
 };
 

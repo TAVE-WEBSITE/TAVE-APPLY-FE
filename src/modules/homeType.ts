@@ -28,4 +28,4 @@ type SessionChip = 'START' | 'PART1' | 'PART2';
 
 type SessionGrouped = Record<SessionChip, FormattedSession[]>;
 
-export type { SessionChip, Session, SessionGrouped, Setting };
+export type { SessionChip, Session, SessionGrouped, Setting, FormattedSession };
