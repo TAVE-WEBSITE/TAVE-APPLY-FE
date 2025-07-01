@@ -17,11 +17,21 @@ const page = () => {
                 <h2 className="md:text-3xl text-2xl font-bold">자주 물어보는 질문</h2>
                 <p className="opacity-80 md:text-lg font-medium">자세한 문의는 1:1 문의를 이용해주세요</p>
                 <FlexBox className="justify-center gap-5 md:mt-7 mt-4 font-medium md:text-base text-sm">
-                    <Link href="mailto:t-ave@naver.com" className="flex gap-2 px-4 py-3 rounded-[14px] bg-white/25">
+                    <Link
+                        href="mailto:t-ave@naver.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex gap-2 px-4 py-3 rounded-[14px] bg-white/25"
+                    >
                         <Icons name="mail" width={18} height={18} />
                         메일 문의
                     </Link>
-                    <Link href="http://pf.kakao.com/_wJbyG" className="flex gap-2 px-4 py-3 rounded-[14px] bg-white/25">
+                    <Link
+                        href="http://pf.kakao.com/_wJbyG"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex gap-2 px-4 py-3 rounded-[14px] bg-white/25"
+                    >
                         <Icons name="message" width={18} height={18} />
                         채팅 문의
                     </Link>

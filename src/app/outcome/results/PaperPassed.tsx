@@ -1,8 +1,7 @@
-'use client';
-
 import FlexBox from '@/components/layout/FlexBox';
 import NaverMapLoader from '@/components/map/MapLoader';
 import Map from '@/components/map/Map';
+import Link from 'next/link';
 import ButtonInquire from '@/components/Button/ButtonInquire';
 import SectionContainer from '@/components/layout/SectionContainer';
 import { InterviewData } from '@/modules/resultType';
@@ -14,13 +13,20 @@ interface PaperPassedProps {
 }
 
 const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
+    const formatInterviewDate = (dateStr: string): string => {
+        const date = new Date(dateStr);
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${month}월 ${day}일`;
+    };
+
     return (
         <div className="text-[#394150] text-center">
             <FlexBox direction="col" className="md:gap-28 gap-23">
                 <div>
                     <p className="text-lg md:text-xl font-bold">
                         {username}님 <br />
-                        <span className="text-[#FF0073]">서류 합격</span>을 축하드립니다
+                        <span className="text-pink-600 font-extrabold">서류 합격</span>을 축하드립니다
                     </p>
                     <p className="font-medium text-sm md:text-base">
                         <br />
@@ -44,64 +50,79 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
                     </p>
                 </div>
 
-                <FlexBox direction="col" className="gap-5">
+                <FlexBox direction="col" className="gap-6 z-5">
                     <p className="text-xl md:text-2xl font-bold">장소 및 일정</p>
                     <NaverMapLoader />
                     <Map address={interview.generalAddress} />
                     <p className="font-medium text-sm md:text-base">
-                        {interview?.generalAddress} <br className="md:hidden" /> {interview.detailAddress}
+                        {interview.generalAddress}
+                        <br className="md:hidden" />
+                        <span className="hidden md:inline"> </span>
+                        {interview.detailAddress}
                         <br />
-                        {interview.interviewDate} {interview.dayName} {interview.interviewTime}
+                        {formatInterviewDate(interview.interviewDate)} {interview.dayName} {interview.interviewTime}
                     </p>
                 </FlexBox>
 
                 <FlexBox direction="col" className="gap-5 w-full">
                     <p className="text-xl md:text-2xl font-bold">준비 사항</p>
-                    <SectionContainer>
-                        <p>
-                            1. 면접 오픈 채팅방에 <span className="font-bold text-[#ff0072]">면접 하루 전</span>까지
-                            <br className="md:hidden" />
-                            <span className="font-bold text-[#ff0072]"> 실명</span>으로 접속해주세요.
-                        </p>
-                        <a
+                    <SectionContainer direction="col">
+                        <FlexBox className="gap-1">
+                            <p>1.</p>
+                            <p>
+                                면접 오픈 채팅방에 <span className="font-bold text-[#ff0072]">면접 하루 전</span>
+                                까지
+                                <br className="md:hidden" />
+                                <span className="font-bold text-[#ff0072]"> 실명</span>으로 접속해주세요.
+                            </p>
+                        </FlexBox>
+                        <Link
                             href={interview.openChatLink}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="py-3 px-6.5 md:w-auto md:mx-auto text-center bg-[#195BFF] text-white font-bold rounded-[10px]"
                         >
                             입장하기
-                        </a>
+                        </Link>
                         <p className="text-[#394150]/60 text-center">참여 코드 : {interview.code}</p>
                     </SectionContainer>
                     <SectionContainer>
+                        <p>2.</p>
                         <p>
-                            2. 원활한 면접 진행을 위해 면접 장소에 <br className="md:hidden" />
+                            원활한 면접 진행을 위해 면접 장소에 <br className="md:hidden" />
                             <span className="font-bold text-[#ff0072]"> 10분 전에는 도착</span>
                             해주세요.
                         </p>
                     </SectionContainer>
                     <SectionContainer>
-                        <p>3. 작성하신 지원서를 바탕으로 면접이 진행됩니다.</p>
+                        <p>3.</p>
+                        <p>작성하신 지원서를 바탕으로 면접이 진행됩니다.</p>
                     </SectionContainer>
                 </FlexBox>
 
                 <FlexBox direction="col" className="gap-5 w-full">
                     <p className="text-xl md:text-2xl font-bold">주의 사항</p>
                     <SectionContainer>
+                        <p>⚠</p>
                         <p>
-                            ⚠ 면접 시간은 불가피한 경우를 제외하고는
+                            면접 시간은 불가피한 경우를 제외하고는
                             <br className="md:hidden" /> 조정이 어렵습니다.
                         </p>
                     </SectionContainer>
                     <SectionContainer>
+                        <p>⚠</p>
                         <p>
-                            ⚠︎ 면접 시간에 늦을 시<span className="font-bold text-[#ff0072]"> 불이익</span>이 발생할 수
-                            있습니다.
+                            면접 시간에 늦을 시<span className="font-bold text-[#ff0072]"> 불이익</span>
+                            이 발생할 수 있으니
+                            <br className="md:hidden" />
+                            <span className="hidden md:inline"> </span>
+                            시간 엄수 부탁드립니다.
                         </p>
                     </SectionContainer>
                     <SectionContainer>
+                        <p>⚠︎</p>
                         <p>
-                            ⚠︎ 면접 시간 수정이 필요한 경우 카카오 채널로
+                            면접 시간 수정이 필요한 경우 카카오 채널로
                             <br className="md:hidden" /> 문의 부탁드립니다.
                         </p>
                     </SectionContainer>

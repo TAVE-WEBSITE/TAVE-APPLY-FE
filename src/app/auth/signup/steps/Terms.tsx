@@ -3,6 +3,7 @@
 import CheckBox from '@/components/Input/CheckBox';
 import FlexBox from '@/components/layout/FlexBox';
 import ButtonNavigate from '@/components/Button/ButtonNavigate';
+import Link from 'next/link';
 import { useSignUpStore } from '@/store/signUpStore';
 
 const Terms = () => {
@@ -37,14 +38,14 @@ const Terms = () => {
                             <span className="text-[#ED6661] text-xs font-bold ml-1"> (필수)</span>
                         </span>
                     </FlexBox>
-                    <a
+                    <Link
                         href="https://alluring-eagle-b3d.notion.site/TAVE-Recruit-21f8f2c5125080fc9d6fe2de8caf4615"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#4584EE] cursor-pointer font-bold"
                     >
                         보기
-                    </a>
+                    </Link>
                 </FlexBox>
                 <FlexBox className="justify-between items-center">
                     <FlexBox className="gap-2 sm:gap-3 items-center">
@@ -54,14 +55,14 @@ const Terms = () => {
                             <span className="text-[#ED6661] text-xs font-bold ml-1">(필수)</span>
                         </p>
                     </FlexBox>
-                    <a
+                    <Link
                         href="https://alluring-eagle-b3d.notion.site/TAVE-21f8f2c5125080c0a9e2e21ffbbf07da"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#4584EE] cursor-pointer font-bold"
                     >
                         보기
-                    </a>
+                    </Link>
                 </FlexBox>
             </FlexBox>
             <FlexBox className="justify-end">
