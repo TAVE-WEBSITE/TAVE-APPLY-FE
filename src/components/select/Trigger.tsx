@@ -16,7 +16,7 @@ const Trigger: React.FC<SelectTriggerProps> = ({ children }) => {
   return (
     <div className="relative">
       <button
-        className="w-full flex justify-between border border-[#E5E7EB] text-start p-3 md:p-4 rounded-xl text-[#394150] md:text-base shadow-[0px_0px_24px_0px_#195BFF14]"
+        className="w-full flex justify-between border border-[#E5E7EB] text-start p-3 md:p-4 rounded-xl text-[#394150] md:text-base bg-white"
         onClick={() => setIsOpen(!isOpen)}
       >
         {selectedValue}
