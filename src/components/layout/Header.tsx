@@ -23,7 +23,7 @@ const Header = () => {
             const res = await signOut();
             if (res === 200) {
                 setIsMobileOpen(false);
-                router.push('/');
+                window.location.replace('/');
             }
         }
     };

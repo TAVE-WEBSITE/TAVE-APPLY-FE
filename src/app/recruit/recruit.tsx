@@ -1,16 +1,17 @@
 'use client';
 
 import { JSX } from 'react';
+import { useRecruitStore } from '@/store/recruitStore';
+import { useHomeStore } from '@/store/homeStore';
+import { useMemberStore } from '@/store/memberStore';
 import PersonalInfo from './steps/PersonalInfo';
 import Field from './steps/Field';
 import Common from './steps/Common';
 import Complete from './steps/Complete';
+import Guide from './Guide';
 import FlexBox from '@/components/layout/FlexBox';
 import StepBar from '@/components/layout/StepBar';
 import formatOrdinal from '@/utils/formatOrdinal';
-import { useRecruitStore } from '@/store/recruitStore';
-import { useHomeStore } from '@/store/homeStore';
-import { useMemberStore } from '@/store/memberStore';
 
 const recruitMap: Record<number, JSX.Element> = {
     1: <PersonalInfo />,
@@ -19,10 +20,10 @@ const recruitMap: Record<number, JSX.Element> = {
     4: <Complete />,
 };
 
-const maxStep = Object.keys(recruitMap).length;
+const stepCount = Object.keys(recruitMap).length;
 
 const Recruit = () => {
-    const { currentStep } = useRecruitStore();
+    const { currentStep, isClickedFourth } = useRecruitStore();
     const { generation } = useHomeStore();
     const { resumeState } = useMemberStore();
 
@@ -31,18 +32,25 @@ const Recruit = () => {
     return (
         <FlexBox direction="col" className="min-h-screen">
             <div
-                className="pt-26 pb-13 md:pt-28 md:pb-16"
+                className="pt-26 pb-13 md:pt-28 md:pb-15"
                 style={{
                     backgroundImage: 'url(/background/middle-bg.png)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                 }}
             >
-                <StepBar title={title} maxStep={maxStep} currentStep={currentStep} />
+                {resumeState === 'SUBMITTED' && isClickedFourth ? (
+                    <h2 className="md:text-3xl text-2xl font-bold text-center">TAVE APPLICATION INFO</h2>
+                ) : (
+                    <StepBar title={title} maxStep={stepCount} currentStep={currentStep} />
+                )}
             </div>
-            <section className="bg-[#F9FAFB] flex-1">
-                <FlexBox className="pt-12 pb-16 md:w-[570px] sm:w-[360px] w-[308px] mx-auto" direction="col">
-                    {resumeState === 'SUBMITTED' ? recruitMap[4] : recruitMap[currentStep]}
+            <section className="bg-[#F9FAFB] flex-1 flex">
+                <FlexBox
+                    direction="col"
+                    className="md:pt-12 pt-10 md:pb-26 pb-16 md:w-[570px] sm:w-[400px] w-[314px] mx-auto"
+                >
+                    {resumeState === 'SUBMITTED' && isClickedFourth ? <Guide type="submit" /> : recruitMap[currentStep]}
                 </FlexBox>
             </section>
         </FlexBox>

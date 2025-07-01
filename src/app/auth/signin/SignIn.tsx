@@ -30,7 +30,7 @@ const SignIn = () => {
             password,
         });
         if (res === 200) {
-            router.push('/');
+            router.replace('/');
         } else if (res?.message === '아이디 혹은 비밀번호가 일치하지 않습니다.') {
             setLoginError(true);
             setEmail('');
