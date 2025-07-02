@@ -56,7 +56,7 @@ const Mypage = () => {
                 {resumeState === 'TEMPORARY' && (
                     <Link
                         href="/recruit"
-                        className="bg-white/25 px-3.5 py-2.5 rounded-xl cursor-pointer md:text-base text-sm"
+                        className="bg-blue-600/80  px-3.5 py-2.5 rounded-xl cursor-pointer md:text-base text-sm"
                     >
                         지원하러 가기
                     </Link>
