@@ -227,7 +227,7 @@ const Common = () => {
             <button
                 onClick={handleTempSave}
                 disabled={!canTempSave}
-                className="cursor-pointer hidden md:block absolute right-15 top-70 rounded-lg border border-[#E5E7EB] bg-white text-[#394150] p-3"
+                className="disabled:cursor-not-allowed cursor-pointer hidden md:block absolute right-15 top-70 rounded-lg border border-[#E5E7EB] bg-white text-[#394150] p-3"
             >
                 임시 저장
             </button>
@@ -249,42 +249,6 @@ const Common = () => {
                         />
                     </Disclosure>
                 ))}
-
-                <Disclosure title={'아래의 목록 중 소유하고 있으신 것이 있다면 자유롭게 첨부해주세요 :)'} isRequired>
-                    <Uploader
-                        options={uploadOptions}
-                        selectedOption={selectedOption}
-                        setSelectedOption={handleOptionChange}
-                        setUploadType={setUploadType}
-                        uploadValues={uploadValues}
-                        onSaveUpload={async (option) => {
-                            const val = uploadValues[option];
-                            if (!val) return;
-
-                            try {
-                                if (option === 'Portfolio' && val instanceof File) {
-                                    await postURL(resumeId, val);
-                                } else if (typeof val === 'string') {
-                                    const githubUrl = option === 'Github' ? val : '';
-                                    const blogUrl = option === 'Tech Blog' ? val : '';
-                                    await postSocialLinks(resumeId, githubUrl, blogUrl);
-                                } else {
-                                }
-                            } catch (e) {
-                                console.error(e);
-                            }
-                        }}
-                    >
-                        <Uploader.UploadField
-                            key={selectedOption}
-                            type={uploadType}
-                            value={uploadValues[selectedOption] ?? ''}
-                            onChange={handleUploadChange}
-                            setValue={(val) => setUploadValues((prev) => ({ ...prev, [selectedOption]: val }))}
-                        />
-                    </Uploader>
-                </Disclosure>
-
                 <Disclosure title="가능한 오프라인 면접 시간을 모두 체크해주세요" isRequired>
                     <TimePicker>
                         {scheduleData.map((schedule) => (
