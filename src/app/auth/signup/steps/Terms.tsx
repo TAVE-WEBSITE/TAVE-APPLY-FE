@@ -34,8 +34,8 @@ const Terms = () => {
                     <FlexBox className="gap-2 sm:gap-3 items-center">
                         <CheckBox isChecked={checkPrivacy} setIsChecked={setCheckPrivacy} />
                         <span className="font-medium">
-                            개인정보 수집 및 이용에 동의합니다
-                            <span className="text-[#ED6661] text-xs font-bold ml-1"> (필수)</span>
+                            개인정보 수집 및 이용에 동의합니다.
+                            <span className="text-[#ED6661] text-xs font-bold ml-1">(필수)</span>
                         </span>
                     </FlexBox>
                     <Link

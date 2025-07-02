@@ -10,16 +10,19 @@ import { useRecruitStore } from '@/store/recruitStore';
 import { useRecruit } from '@/hooks/useRecruit';
 import { useMemberStore } from '@/store/memberStore';
 import { ResumeAnswerRequest } from '@/modules/recruitType';
+import { recruitToFormattedField } from '@/utils/formatField';
 
 const programmingLevel = ['입문', '초급', '중급', '상급', '전문가'];
 
 const Field = () => {
     const { setCurrentStep, applyField } = useRecruitStore();
-    const { getApplicationQuestion, getTempApplication, postTempApplication, postResume } = useRecruit();
     const { resumeId, username } = useMemberStore();
+    const { getApplicationQuestion, getTempApplication, postTempApplication, postResume, applyProgrammingLevel } =
+        useRecruit();
 
     const [questions, setQuestions] = useState<{ [id: number]: string }>({});
     const [questionList, setQuestionList] = useState<any[]>([]);
+    const [language, setLanguages] = useState([]);
     const languages = ['Javascript', 'Python', 'C++', 'SQL', 'Java'];
     const [levels, setLevels] = useState<number[]>(Array(languages.length).fill(0));
     const [visibleCount, setVisibleCount] = useState(1);
@@ -30,6 +33,11 @@ const Field = () => {
     useEffect(() => {
         const fetchData = async () => {
             const questions = await getApplicationQuestion(resumeId, 1);
+            //const programming = await applyProgrammingLevel(recruitToFormattedField(applyField));
+            //const up = programming.result.data;
+            //const langu = up.map((item: { language: string }) => item.language);
+            //setLanguages(langu);
+
             if (!questions) return;
 
             const initialAnswers: { [id: number]: string } = {};
@@ -98,6 +106,7 @@ const Field = () => {
     const checkCanNext = (currentQuestions: { [id: number]: string }, currentLevels: number[]) => {
         // 질문 모두 작성
         const allQuestionsFilled = questionList.every((q) => {
+            if (!q.required) return true;
             const val = currentQuestions[q.id];
             return val !== undefined && val.trim() !== '';
         });
@@ -123,16 +132,26 @@ const Field = () => {
             language: lang,
             level: levels[idx].toString(), // number → string 변환
         })),
-        timeSlots: null,
+        timeSlots: [],
     });
 
     // 임시 저장
     const handleTempSave = async () => {
-        await postTempApplication(resumeId, 2, buildRequestBody());
+        await postTempApplication(resumeId, 1, buildRequestBody());
     };
 
     // 이전 단계 이동 (임시 저장 후)
     const handlePostOnly = async (step: number) => {
+        const isAllAnswersEmpty = Object.values(questions).every((val) => val.trim() === '');
+        const isAllLevelsEmpty = levels.every((level) => level === 0);
+
+        // 아무 값도 입력되지 않았을 경우 → API 호출 없이 이전 스텝만 이동
+        if (isAllAnswersEmpty && isAllLevelsEmpty) {
+            setCurrentStep(step);
+            return;
+        }
+
+        // 일부라도 입력되어 있으면 임시 저장 후 이전 스텝 이동
         await postTempApplication(resumeId, 2, buildRequestBody());
         setCurrentStep(step);
     };
@@ -171,7 +190,12 @@ const Field = () => {
                 </Disclosure>
 
                 {questionList.map((q) => (
-                    <Disclosure key={q.id} title={q.question} isRequired description={` (${q.textLength}자 이내)`}>
+                    <Disclosure
+                        key={q.id}
+                        title={q.question}
+                        isRequired={q.required}
+                        description={` (${q.textLength}자 이내)`}
+                    >
                         <TextArea
                             value={questions[q.id] ?? ''}
                             setValue={(val) => handleAnswerChange(q.id, val)}

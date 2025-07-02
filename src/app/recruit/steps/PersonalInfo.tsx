@@ -44,7 +44,7 @@ const PersonalInfo = () => {
                 {
                     school,
                     major,
-                    minor,
+                    minor: minor ?? '',
                     field: recruitToFormattedField(applyField),
                     generation,
                 },
@@ -65,8 +65,7 @@ const PersonalInfo = () => {
     ];
 
     const handleCheck = () => {
-        console.log(applyField);
-        if (school.length && major.length && options.includes(applyField as RecruitField)) return true;
+        if ((school ?? '').trim().length && (major ?? '').trim().length && applyField !== undefined) return true;
         else return false;
     };
 
@@ -99,13 +98,13 @@ const PersonalInfo = () => {
                     </Select>
                 </InputContainer>
                 <InputContainer label="학교">
-                    <InputField value={school} setValue={setSchool} placeholder="학교를 입력해주세요" />
+                    <InputField value={school ?? ''} setValue={setSchool} placeholder="학교를 입력해주세요" />
                 </InputContainer>
                 <InputContainer label="전공">
-                    <InputField value={major} setValue={setMajor} placeholder="전공을 입력해주세요" />
+                    <InputField value={major ?? ''} setValue={setMajor} placeholder="전공을 입력해주세요" />
                 </InputContainer>
                 <InputContainer label="부전공/복수전공" isRequired={false}>
-                    <InputField value={minor} setValue={setMinor} placeholder="부전공/복수전공을 입력해주세요" />
+                    <InputField value={minor ?? ''} setValue={setMinor} placeholder="부전공/복수전공을 입력해주세요" />
                 </InputContainer>
                 <FlexBox className="justify-end mt-3 md:mt-2">
                     <ButtonNavigate text="다음" onClick={handleApplication} isActive={handleCheck()} />

@@ -8,7 +8,7 @@ const formattedToRecruitMap: Record<FormattedField | string, RecruitField | stri
     DATAANALYSIS: '데이터분석',
     DEEPLEARNING: '딥러닝',
     '' : '선택'
-};
+}; 
 
 const recruitToFormattedMap: Record<RecruitField | string, FormattedField | string> = {
     디자인: 'DESIGN',

@@ -6,6 +6,8 @@ type UploaderProps = {
   selectedOption: string;
   setSelectedOption: (option: string) => void;
   setUploadType: (type: any) => void;
+  onSaveUpload: (option: string) => Promise<void>;  // 저장 함수 prop 추가
+  uploadValues: { [key: string]: string | File };   // 현재 값 상태
   children: React.ReactNode;
 };
 
@@ -14,6 +16,8 @@ const Uploader = ({
   selectedOption,
   setSelectedOption,
   setUploadType,
+  onSaveUpload,
+  uploadValues,
   children,
 }: UploaderProps) => {
   const handleChange = (option: string) => {
@@ -43,6 +47,18 @@ const Uploader = ({
         ))}
       </FlexBox>
       {children}
+      <button
+        type="button"
+        className="mt-2 px-4 py-2 bg-blue-600 text-white rounded disabled:bg-gray-300"
+        disabled={
+          !uploadValues[selectedOption] ||
+          (uploadValues[selectedOption] instanceof File &&
+            uploadValues[selectedOption].size === 0)
+        }
+        onClick={() => onSaveUpload(selectedOption)}
+      >
+        저장하기
+      </button>
     </FlexBox>
   );
 };
