@@ -227,7 +227,7 @@ const Common = () => {
             <button
                 onClick={handleTempSave}
                 disabled={!canTempSave}
-                className="hidden md:block absolute right-15 top-70 rounded-lg border border-[#E5E7EB] bg-white text-[#394150] p-3"
+                className="cursor-pointer hidden md:block absolute right-15 top-70 rounded-lg border border-[#E5E7EB] bg-white text-[#394150] p-3"
             >
                 임시 저장
             </button>

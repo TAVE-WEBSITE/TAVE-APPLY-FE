@@ -82,7 +82,7 @@ const InputField = <T extends string | number>({
             {errorMessage && <p className="md:text-sm text-xs text-pink-600/80">{errorMessage}</p>}
             {isPassed && <p className="md:text-sm text-xs text-emerald-600">{passMessage}</p>}
             {isCounting && (
-                <p className="absolute bottom-[-20px] right-0 md:text-sm text-xs text-blue-300">
+                <p className="absolute bottom-[-20px] right-2 md:text-sm text-xs text-blue-400">
                     {formatTime(remainingTime)}
                 </p>
             )}
