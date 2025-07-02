@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useMemberStore } from '@/store/memberStore';
 import Link from 'next/link';
 import Icons from '@/components/Icons';
 import useAuth from '@/hooks/useAuth';
-import { useMemberStore } from '@/store/memberStore';
 
 const Header = () => {
     const router = useRouter();
@@ -13,38 +13,37 @@ const Header = () => {
     const { isLogin } = useMemberStore();
     const { signOut } = useAuth();
 
-    const redirectionList = ['RECRUIT', 'FAQ', ...(isLogin ? ['MYPAGE'] : [])];
+    const redirectionList = [...(isLogin ? ['RECRUIT'] : []), 'FAQ', ...(isLogin ? ['MYPAGE'] : [])];
 
-    const handleLoginAndOut = () => {
-        if (isLogin) {
-            signOut();
-            router.push('/');
-        } else {
+    const handleLoginAndOut = async () => {
+        if (!isLogin) {
+            setIsMobileOpen(false);
             router.push('/auth/signin');
+        } else {
+            const res = await signOut();
+            if (res === 200) {
+                setIsMobileOpen(false);
+                window.location.replace('/');
+            }
         }
     };
 
     return (
-        <header
-            className="fixed top-0 w-full z-50
-              bg-gradient-to-b from-[#121212] from-30% to-transparent"
-        >
+        <header className="fixed top-0 w-full z-50 bg-gradient-to-b from-[#121212] from-25% to-transparent">
             <div className="hidden md:flex items-center justify-between py-7 px-16 z-50">
-                <Link href="/" className="z-50">
+                <Link href="/">
                     <Icons name="logo" width={101} height={45} />
                 </Link>
                 <nav>
                     <ul className="flex gap-x-12 font-bold items-center">
                         {redirectionList.map((item, index) => (
                             <li key={index}>
-                                <Link href={`/${item.toLowerCase()}`} className="relative z-50">
-                                    {item}
-                                </Link>
+                                <Link href={`/${item.toLowerCase()}`}>{item}</Link>
                             </li>
                         ))}
                         <li>
                             <button
-                                className="relative z-50 bg-gradient-to-br from-[#1A5BFF] to-[#60AFFF] py-2 px-4 rounded-[10px] cursor-pointer"
+                                className="bg-gradient-to-br from-blue-600 to-blue-400 py-2 px-4 rounded-[10px] cursor-pointer"
                                 onClick={handleLoginAndOut}
                             >
                                 {isLogin ? 'LOGOUT' : 'LOGIN'}
@@ -54,11 +53,10 @@ const Header = () => {
                 </nav>
             </div>
             <div
-                className={`fixed w-full flex md:hidden items-center justify-between p-7 z-50 ${
-                    isMobileOpen ? 'bg-transparent' : 'bg-gradient-to-b from-black from-30% to-transparent'
-                }`}
+                className="fixed w-full flex md:hidden items-center justify-between p-7 z-50
+                bg-gradient-to-b from-black from-25% to-transparent"
             >
-                <Link href="/">
+                <Link href="/" onClick={() => setIsMobileOpen(false)}>
                     <Icons name="logo" width={101} height={45} />
                 </Link>
                 <button
@@ -87,25 +85,27 @@ const Header = () => {
             <>
                 {isMobileOpen && (
                     <div
-                        className="fixed inset-0 bg-[#121212]/0 z-10"
+                        className="fixed inset-0 bg-transparent z-10 md:hidden"
                         onClick={() => {
                             setIsMobileOpen(!isMobileOpen);
                         }}
                     />
                 )}
                 <ul
-                    className={`fixed top-0 w-full bg-[#121212] pt-20 pl-7 pb-5 z-30 transition-all duration-500 ease-in-out transform font-bold ${
+                    className={`md:hidden fixed top-0 w-full bg-[#121212] pt-20 pl-7 pb-5 z-30 transition-all duration-500 ease-in-out transform font-bold ${
                         isMobileOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
                     }`}
                 >
                     {redirectionList.map((item, index) => (
-                        <li key={index} className="py-3 ">
-                            <Link href={`/${item.toLowerCase()}`}>{item}</Link>
+                        <li key={index} className="py-3">
+                            <Link onClick={() => setIsMobileOpen(false)} href={`/${item.toLowerCase()}`}>
+                                {item}
+                            </Link>
                         </li>
                     ))}
-                    <li className="py-6">
+                    <li className="py-5">
                         <button
-                            className="relative z-50 bg-gradient-to-br from-[#1A5BFF] to-[#60AFFF] py-2 px-4 rounded-[10px]"
+                            className="bg-gradient-to-br from-blue-600 to-blue-400 py-2 px-4 rounded-[10px] cursor-pointer"
                             onClick={handleLoginAndOut}
                         >
                             {isLogin ? 'LOGOUT' : 'LOGIN'}

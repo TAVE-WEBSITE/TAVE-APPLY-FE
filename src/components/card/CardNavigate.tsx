@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
-import FlexBox from '../layout/FlexBox';
+import FlexBox from '@/components/layout/FlexBox';
 
 interface CardNavigateProps {
     title: string;
@@ -19,36 +19,28 @@ const CardNavigate = ({ title, buttonText, deadline, type, value }: CardNavigate
     const copyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-        // 현재 연도 기준으로 날짜 포맷 보정
-        const parseDeadline = () => {
-            if (/^\d{4}-\d{2}-\d{2}$/.test(deadline)) {
-                return deadline; // 이미 연도 포함된 날짜
-            }
-
-            const thisYear = new Date().getFullYear();
-            return `${thisYear}-${deadline}`; // ex: '06-08' → '2025-06-08'
-        };
-
-        const endTime = new Date(`${parseDeadline()}T23:59:59`);
+        const endTime = new Date(`${deadline}T23:59:59`);
 
         const updateRemainingTime = () => {
             const now = new Date();
             const diff = endTime.getTime() - now.getTime();
 
             if (diff <= 0) {
-                setRemaining('');
+                setRemaining('00일 00시간 00분 00초');
                 setIsEnded(true);
                 return;
             }
 
             setIsEnded(false);
 
+            const format = (num: number) => num.toString().padStart(2, '0');
+
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
             const seconds = Math.floor((diff / 1000) % 60);
 
-            setRemaining(`${days}일 ${hours}시간 ${minutes}분 ${seconds}초`);
+            setRemaining(`${format(days)}일 ${format(hours)}시간 ${format(minutes)}분 ${format(seconds)}초`);
         };
 
         updateRemainingTime();
@@ -61,56 +53,42 @@ const CardNavigate = ({ title, buttonText, deadline, type, value }: CardNavigate
     }, [deadline]);
 
     const handleCopy = async () => {
-        try {
-            await navigator.clipboard.writeText(value);
-            setCopyStatus('copied');
-            if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
-            copyTimeoutRef.current = setTimeout(() => setCopyStatus('idle'), 2000);
-        } catch {
-            alert('복사에 실패했습니다.');
-        }
+        await navigator.clipboard.writeText(value);
+        setCopyStatus('copied');
+        if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+        copyTimeoutRef.current = setTimeout(() => setCopyStatus('idle'), 1000);
     };
 
-    const baseBtnClass = `${copyStatus === 'copied' ? 'opacity-40 bg-blue-700' : ''}  w-full md:w-auto py-2 px-3 rounded-lg text-sm text-nowrap text-center text-white`;
-    const activeBtnClass = `bg-blue-600 hover:bg-blue-700 cursor-pointer`;
-    const disabledBtnClass = 'bg-gray-400 cursor-not-allowed px-9.5';
+    const baseBtnClass = `w-full md:w-[140px] py-2 rounded-lg text-sm text-nowrap text-center font-bold text-white
+    ${copyStatus === 'copied' ? 'bg-blue-600 opacity-60' : ''} `;
+    const activeBtnClass = `bg-blue-600 cursor-pointer`;
+    const disabledBtnClass = 'bg-[#898989] cursor-not-allowed';
+    const finalClass = `${isEnded ? disabledBtnClass : activeBtnClass} ${baseBtnClass}`;
 
     return (
-        <div className="flex flex-col md:flex-row gap-4 md:gap-0 w-full md:w-4/5 mx-auto bg-white border border-[#E5E7EB] p-4 rounded-xl justify-between items-center shadow-md">
-            <FlexBox direction="col" className="w-full text-xs md:text-sm items-start font-medium">
+        <div
+            className="flex flex-col md:flex-row gap-4 w-full md:w-4/5 mx-auto
+        bg-white border border-gray-200 p-3.5 rounded-xl text-sm md:text-base items-center"
+        >
+            <FlexBox direction="col" className="w-full items-start font-medium text-gray-700">
                 <p>{title}</p>
-                <p className="text-black">
-                    {isEnded ? (
-                        <span className="text-blue-600 font-bold">00일 00시간 00분 00초 </span>
-                    ) : (
-                        <span className="text-blue-600 font-bold">{remaining} </span>
-                    )}
-                    남았습니다.
+                <p>
+                    <span className="text-blue-600 font-bold">{remaining}</span> 남았습니다.
                 </p>
             </FlexBox>
 
             {type === 'link' ? (
                 <Link
-                    href={isEnded ? '#' : value}
+                    href={value}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`${baseBtnClass} ${isEnded ? disabledBtnClass : activeBtnClass}`}
+                    className={finalClass}
                     onClick={(e) => isEnded && e.preventDefault()}
-                    aria-disabled={isEnded}
-                    tabIndex={isEnded ? -1 : 0}
                 >
                     {isEnded ? '마감' : buttonText}
                 </Link>
             ) : (
-                <button
-                    type="button"
-                    onClick={handleCopy}
-                    disabled={isEnded}
-                    className={`${baseBtnClass} ${
-                        isEnded ? disabledBtnClass : copyStatus === 'copied' ? '계좌 복사 완료' : activeBtnClass
-                    }`}
-                    aria-disabled={isEnded}
-                >
+                <button onClick={handleCopy} disabled={isEnded} className={finalClass}>
                     {isEnded ? '마감' : copyStatus === 'copied' ? '계좌 복사 완료' : buttonText}
                 </button>
             )}

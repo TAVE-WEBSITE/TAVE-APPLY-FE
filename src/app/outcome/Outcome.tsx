@@ -1,6 +1,7 @@
 'use client';
 
 import { JSX, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { FinalData, InterviewData, OutcomeStatus } from '@/modules/resultType';
 import { useMemberStore } from '@/store/memberStore';
 import { useHomeStore } from '@/store/homeStore';
@@ -12,6 +13,7 @@ import formatOrdinal from '@/utils/formatOrdinal';
 import useResult from '@/hooks/useResult';
 
 const Outcome = () => {
+    const router = useRouter();
     const { generation, firstSession } = useHomeStore();
     const { applicationStatus, username } = useMemberStore();
     const [final, setFinal] = useState<FinalData>();
@@ -20,6 +22,11 @@ const Outcome = () => {
 
     useEffect(() => {
         if (!generation || !applicationStatus) return;
+
+        if (applicationStatus === 'NO_STATUS') {
+            router.replace('/mypage');
+            return;
+        }
 
         const fetchOutcome = async () => {
             if (applicationStatus === 'FINAL_ACCEPTED') {
@@ -34,7 +41,7 @@ const Outcome = () => {
         fetchOutcome();
     }, [generation, applicationStatus]);
 
-    const outcomeMap: Record<OutcomeStatus, JSX.Element> = {
+    const outcomeMap: Partial<Record<OutcomeStatus, JSX.Element>> = {
         FINAL_ACCEPTED: final ? (
             <FinalPassed username={username} generation={generation} final={final} firstSession={firstSession} />
         ) : (
@@ -46,14 +53,12 @@ const Outcome = () => {
             <></>
         ),
         REJECTED: <Failed username={username} generation={generation} />,
-        NO_STATUS: <></>,
     };
 
-    const titleMap: Record<OutcomeStatus, string> = {
+    const titleMap: Partial<Record<OutcomeStatus, string>> = {
         FINAL_ACCEPTED: `WELCOME TO ${formatOrdinal(generation)} TAVE`,
         DOCUMENT_PASSED: `${formatOrdinal(generation)} TAVY\nOFFLINE INTERVIEW`,
         REJECTED: `${formatOrdinal(generation)} TAVE\nAPPLICATION RESULT`,
-        NO_STATUS: '',
     };
 
     return (
@@ -71,7 +76,11 @@ const Outcome = () => {
                 </h2>
             </div>
             <section className="bg-[#F9FAFB] flex-1">
-                <FlexBox direction="col" className="md:py-22 py-12 md:w-[562px] w-[312px] mx-auto">
+                <FlexBox
+                    direction="col"
+                    className={`md:w-[562px] w-[312px] mx-auto
+                        ${applicationStatus === 'REJECTED' ? 'sm:w-[450px] md:py-16 py-11' : 'md:py-22 py-12'}`}
+                >
                     {outcomeMap[applicationStatus]}
                 </FlexBox>
             </section>

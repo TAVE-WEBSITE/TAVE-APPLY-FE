@@ -2,25 +2,21 @@ import { createFieldStore } from './createFieldStore';
 import { FormattedField, RecruitField } from '@/modules/recruitType';
 
 interface RecruitStates {
-    sex: string;
-    birthday: string;
-    phoneNumber: string;
     currentStep: number;
     school: string;
     major: string;
-    minorDouble: string;
+    minor: string;
+    isClickedFourth: boolean;
     applyField: string | RecruitField | FormattedField;
 }
 
 const initStates: RecruitStates = {
-    sex: '',
-    birthday: '',
-    phoneNumber: '',
     currentStep: 1,
     school: '',
     major: '',
-    minorDouble: '',
+    minor: '',
     applyField: '',
+    isClickedFourth: true,
 };
 
 export const useRecruitStore = createFieldStore(initStates);

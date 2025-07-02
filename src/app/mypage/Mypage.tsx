@@ -11,7 +11,7 @@ import { ApplicantData } from '@/modules/resultType';
 import { useEffect, useState } from 'react';
 
 const Mypage = () => {
-    const { generation, isDocument } = useHomeStore();
+    const { generation } = useHomeStore();
     const { resumeState, memberId, setApplicationStatus } = useMemberStore();
     const [history, setHistory] = useState<ApplicantData[]>([]);
     const { applyApplicantHistory } = useResult();
@@ -53,7 +53,7 @@ const Mypage = () => {
                 <h2 className="md:text-3xl text-2xl font-bold text-center whitespace-pre-line">
                     {`${formatOrdinal(generation)} TAVY\nRECRUITING`}
                 </h2>
-                {resumeState === 'TEMPORARY' && isDocument && (
+                {resumeState === 'TEMPORARY' && (
                     <Link
                         href="/recruit"
                         className="bg-white/25 px-3.5 py-2.5 rounded-xl cursor-pointer md:text-base text-sm"

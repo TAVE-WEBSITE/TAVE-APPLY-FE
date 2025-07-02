@@ -13,8 +13,8 @@ export async function GET(req: NextRequest) {
         const res = await axios.get('https://maps.apigw.ntruss.com/map-geocode/v2/geocode', {
             params: { query },
             headers: {
-                'x-ncp-apigw-api-key-id': process.env.NEXT_PUBLIC_NAVER_API_KEY_ID,
-                'x-ncp-apigw-api-key': process.env.NEXT_PUBLIC_NAVER_API_KEY,
+                'x-ncp-apigw-api-key-id': process.env.NEXT_PUBLIC_NAVER_API_CLIENT,
+                'x-ncp-apigw-api-key': process.env.NAVER_API_SERVER,
                 Accept: 'application/json',
             },
         });

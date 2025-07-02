@@ -17,30 +17,60 @@ const uploadOptions = ['Github', 'Tech Blog', 'Portfolio'];
 type uploadType = 'text' | 'file';
 
 const Common = () => {
-    const { setCurrentStep } = useRecruitStore();
-    const { resumeId, username } = useMemberStore();
-    const { getApplicationQuestion, getTempApplication, postTempApplication, postResume, getTime, getEmail } =
-        useRecruit();
+    const { setCurrentStep, setIsClickedFourth } = useRecruitStore();
+    const { resumeId } = useMemberStore();
+    const {
+        getApplicationQuestion,
+        getTempApplication,
+        postTempApplication,
+        postResume,
+        getTime,
+        getEmail,
+        postSocialLinks,
+        postURL,
+    } = useRecruit();
 
     const [questions, setQuestions] = useState<{ [id: number]: string }>({});
     const [questionList, setQuestionList] = useState<any[]>([]);
 
-    // 업로더 상태
-    const [selectedOption, setSelectedOption] = useState('');
-    const [uploadType, setUploadType] = useState<uploadType>('text');
-    const [uploadValue, setUploadValue] = useState<string | File>('');
+    // 업로더 상태 - 옵션별 값 저장
+    const [uploadValues, setUploadValues] = useState<{ [key: string]: string | File }>({
+        Github: '',
+        'Tech Blog': '',
+        Portfolio: '',
+    });
+
+    // 선택된 옵션
+    const [selectedOption, setSelectedOption] = useState(uploadOptions[0]);
+
+    // 업로드 타입 (선택 옵션에 따라 결정)
+    const [uploadType, setUploadType] = useState<uploadType>(uploadOptions[0] === 'Portfolio' ? 'file' : 'text');
 
     // 면접시간 선택 상태
     const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
-    // 상태 추가
     const [scheduleData, setScheduleData] = useState<{ date: string; timeSlots: { time: string }[] }[]>([]);
+
+    const [isNextEnabled, setIsNextEnabled] = useState(false);
+
+    useEffect(() => {
+        const requiredQuestionsFilled = questionList
+            .filter((q) => q.required)
+            .every((q) => {
+                const val = questions[q.id];
+                return val !== undefined && val.trim() !== '';
+            });
+
+        const hasSelectedTime = selectedTimes.length > 0;
+
+        setIsNextEnabled(requiredQuestionsFilled && hasSelectedTime);
+    }, [questions, questionList, selectedTimes]);
 
     useEffect(() => {
         const fetchData = async () => {
             const times = await getTime(resumeId);
-            console.log(times); // 이미 선언된 함수 호출
-            const questions = await getApplicationQuestion(resumeId, 3);
+            const questions = await getApplicationQuestion(resumeId, 2);
 
+            // 질문 초기화
             const initialAnswers: { [id: number]: string } = {};
             questions.forEach((q: any) => {
                 initialAnswers[q.id] = '';
@@ -48,26 +78,64 @@ const Common = () => {
             setQuestionList(questions);
             setQuestions(initialAnswers);
 
-            if (times && Array.isArray(times)) {
-                const formatted = formatTimeSlot(times); // ex) ['2025-11-20 13:00', ...] → 날짜별 그룹핑
+            if (times && Array.isArray(times) && times.length > 0) {
+                const formatted = formatTimeSlot(times);
                 setScheduleData(formatted);
+            } else {
+                // 예시 시간 데이터
+                const dummyTime = [
+                    { date: '2025-07-05', timeSlots: [{ time: '10:00' }, { time: '14:00' }] },
+                    { date: '2025-07-06', timeSlots: [{ time: '09:00' }, { time: '13:00' }, { time: '16:00' }] },
+                ];
+                setScheduleData(dummyTime);
             }
 
             const temp = await getTempApplication(resumeId);
 
             if (temp?.page3) {
+                // 질문 답변 채우기
                 const filled = { ...initialAnswers };
                 temp.page3.answers.forEach((item: any) => {
                     filled[item.resumeQuestionId] = item.answer ?? '';
                 });
                 setQuestions(filled);
-                if (temp.page3.uploadValue) setUploadValue(temp.page3.uploadValue);
-                if (temp.page3.selectedTimes) setSelectedTimes(temp.page3.selectedTimes);
+
+                // uploadValues가 객체로 들어왔다면 세팅
+                if (temp.page3.uploadValues && typeof temp.page3.uploadValues === 'object') {
+                    setUploadValues(temp.page3.uploadValues);
+                } else if (temp.page3.uploadValue) {
+                    // 이전 버전 호환용 (단일 값)
+                    setUploadValues((prev) => ({
+                        ...prev,
+                        [uploadOptions[0]]: temp.page3.uploadValue,
+                    }));
+                }
+
+                // 면접 시간 처리
+                if (temp.page3.timeSlots && Array.isArray(temp.page3.timeSlots)) {
+                    if (typeof temp.page3.timeSlots[0] === 'string') {
+                        setSelectedTimes(temp.page3.timeSlots);
+                    } else if (temp.page3.timeSlots[0]?.time) {
+                        setSelectedTimes(temp.page3.timeSlots.map((t: any) => t.time));
+                    } else {
+                        setSelectedTimes([]);
+                    }
+                } else {
+                    setSelectedTimes([]);
+                }
             }
         };
 
         fetchData();
     }, [resumeId]);
+
+    // 날짜+시간 문자열 생성 후 토글 처리
+    const toggleTimeSelection = (date: string, time: string) => {
+        const dateTime = `${date}T${time}`;
+        setSelectedTimes((prev) =>
+            prev.includes(dateTime) ? prev.filter((t) => t !== dateTime) : [...prev, dateTime]
+        );
+    };
 
     const handleAnswerChange = (id: number, value: string) => {
         setQuestions((prev) => ({
@@ -76,19 +144,40 @@ const Common = () => {
         }));
     };
 
-    const toggleTimeSelection = (time: string) => {
-        setSelectedTimes((prev) => (prev.includes(time) ? prev.filter((t) => t !== time) : [...prev, time]));
+    // 선택 옵션 변경시 업로드 타입과 선택값 세팅
+    const handleOptionChange = (option: string) => {
+        setSelectedOption(option);
+        setUploadType(option === 'Portfolio' ? 'file' : 'text');
     };
 
-    const buildRequestBody = (): ResumeAnswerRequest & { uploadValue?: string | File; selectedTimes?: string[] } => ({
+    // 업로더 필드 값 변경 핸들러
+    const handleUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (uploadType === 'file') {
+            const file = e.target.files?.[0];
+            setUploadValues((prev) => ({
+                ...prev,
+                [selectedOption]: file ?? '',
+            }));
+        } else {
+            setUploadValues((prev) => ({
+                ...prev,
+                [selectedOption]: e.target.value,
+            }));
+        }
+    };
+
+    const buildRequestBody = (): ResumeAnswerRequest & {
+        uploadValues: { [key: string]: string | File };
+        timeSlots: { time: string }[];
+        languageLevels: any[];
+    } => ({
         answers: Object.entries(questions).map(([id, answer]) => ({
             resumeQuestionId: Number(id),
             answer,
         })),
-        languageLevels: null,
-        timeSlots: selectedTimes.map((time) => ({ time })),
-        uploadValue,
-        selectedTimes,
+        languageLevels: [], // 2페이지에서 처리할 부분 (여기는 빈 배열)
+        timeSlots: selectedTimes.length > 0 ? selectedTimes.map((time) => ({ time })) : [],
+        uploadValues,
     });
 
     const handleTempSave = async () => {
@@ -96,6 +185,16 @@ const Common = () => {
     };
 
     const handlePostOnly = async (step: number) => {
+        const isAllAnswersEmpty = Object.values(questions).every((val) => val.trim() === '');
+        const hasNoSelectedTime = selectedTimes.length === 0;
+
+        // 질문도 없고 시간도 선택 안 했으면 저장 없이 넘어감
+        if (isAllAnswersEmpty && hasNoSelectedTime) {
+            setCurrentStep(step);
+            return;
+        }
+
+        // 하나라도 있으면 저장
         await postTempApplication(resumeId, 3, buildRequestBody());
         setCurrentStep(step);
     };
@@ -105,21 +204,12 @@ const Common = () => {
         await postResume(resumeId, buildRequestBody(), 3);
 
         try {
-            await getEmail(resumeId); // ⭐ 제출 후 이메일 불러오기
+            await getEmail(resumeId);
         } catch (e) {
             console.error('getEmail error:', e);
         }
-
-        setCurrentStep(4); // 다음 페이지 이동
-    };
-
-    const handleUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setUploadValue(file);
-        } else {
-            setUploadValue(e.target.value);
-        }
+        setIsClickedFourth(true);
+        setCurrentStep(4);
     };
 
     return (
@@ -141,31 +231,56 @@ const Common = () => {
                 <Uploader
                     options={uploadOptions}
                     selectedOption={selectedOption}
-                    setSelectedOption={setSelectedOption}
+                    setSelectedOption={handleOptionChange}
                     setUploadType={setUploadType}
+                    uploadValues={uploadValues}
+                    onSaveUpload={async (option) => {
+                        const val = uploadValues[option];
+                        if (!val) return;
+
+                        try {
+                            if (option === 'Portfolio' && val instanceof File) {
+                                await postURL(resumeId, val);
+                            } else if (typeof val === 'string') {
+                                const githubUrl = option === 'Github' ? val : '';
+                                const blogUrl = option === 'Tech Blog' ? val : '';
+                                await postSocialLinks(resumeId, githubUrl, blogUrl);
+                            } else {
+                                throw new Error('텍스트 링크가 아닌 값입니다.');
+                            }
+                            alert(`${option} 저장 성공!`);
+                        } catch (e) {
+                            console.error(e);
+                            alert(`${option} 저장 실패!`);
+                        }
+                    }}
                 >
                     <Uploader.UploadField
                         key={selectedOption}
                         type={uploadType}
-                        value={uploadValue}
-                        setValue={setUploadValue}
+                        value={uploadValues[selectedOption] ?? ''}
                         onChange={handleUploadChange}
+                        setValue={(val) => setUploadValues((prev) => ({ ...prev, [selectedOption]: val }))}
                     />
                 </Uploader>
+                ;
             </Disclosure>
 
             <Disclosure title="가능한 오프라인 면접 시간을 모두 체크해주세요" isRequired>
                 <TimePicker>
                     {scheduleData.map((schedule) => (
                         <TimePicker.DateRow key={schedule.date} date={schedule.date}>
-                            {schedule.timeSlots.map((timeSlot) => (
-                                <TimePicker.TimeSlotButton
-                                    key={timeSlot.time}
-                                    time={timeSlot.time}
-                                    isSelected={selectedTimes.includes(timeSlot.time)}
-                                    onClick={() => toggleTimeSelection(timeSlot.time)}
-                                />
-                            ))}
+                            {schedule.timeSlots.map((timeSlot) => {
+                                const dateTime = `${schedule.date}T${timeSlot.time}`;
+                                return (
+                                    <TimePicker.TimeSlotButton
+                                        key={timeSlot.time}
+                                        time={timeSlot.time}
+                                        isSelected={selectedTimes.includes(dateTime)}
+                                        onClick={() => toggleTimeSelection(schedule.date, timeSlot.time)}
+                                    />
+                                );
+                            })}
                         </TimePicker.DateRow>
                     ))}
                 </TimePicker>

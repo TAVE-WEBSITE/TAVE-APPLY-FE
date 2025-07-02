@@ -1,4 +1,4 @@
-import FlexBox from './FlexBox';
+import FlexBox from '@/components/layout/FlexBox';
 
 interface EnterContainerProps {
     label: string;

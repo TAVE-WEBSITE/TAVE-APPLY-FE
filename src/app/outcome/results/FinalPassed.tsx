@@ -26,7 +26,7 @@ const FinalPassed = ({ username, generation, final, firstSession }: FinalPassedP
                         안녕하세요, IT 연합 동아리 TAVE {generation}기 운영진 입니다.
                         <br />
                         {username}님께서 TAVE {generation}기 회원 모집에
-                        <span className="font-bold"> 최종 합격</span>
+                        <span className="text-pink-600 font-extrabold"> 최종 합격</span>
                         하셨습니다. <br />
                         <br />
                         아래 사항을 차근차근 읽고 이행해주시면 감사하겠습니다. <br />
@@ -45,7 +45,7 @@ const FinalPassed = ({ username, generation, final, firstSession }: FinalPassedP
                     <div>
                         <p>
                             {generation}기 회비는 총
-                            <span className="text-[#195bff] font-bold"> {final?.totalFee}원</span>입니다.
+                            <span className="text-[#195bff] font-bold"> {final.totalFee}원</span>입니다.
                         </p>
                         <p className="text-[#394150]/60">
                             (동아리 회비 {final.clubFee}원 + MT 회비 {final.mtFee}원)
@@ -59,7 +59,7 @@ const FinalPassed = ({ username, generation, final, firstSession }: FinalPassedP
                     <CardNavigate
                         title="회비 입금 마감"
                         buttonText="지금 입금하기"
-                        deadline={'07-01'}
+                        deadline={final.feeDeadline}
                         type="copy"
                         value={final.bankName + ' ' + final.accountNumber + ' ' + final.accountHolder}
                     />
@@ -94,7 +94,7 @@ const FinalPassed = ({ username, generation, final, firstSession }: FinalPassedP
                         <p className="md:text-2xl text-xl">{firstSession.title} 공지방 입장</p>
                     </div>
                     <p className="font-medium text-sm md:text-base md:mb-4">
-                        {firstSession.date} 에 진행될 TAVE {generation}기의 첫 행사인 <br className="md:hidden" />‘
+                        {firstSession.date}에 진행될 TAVE {generation}기의 첫 행사인 <br className="md:hidden" />‘
                         {firstSession.title}’를 위한 공지방입니다.
                         <br className="md:hidden" />
                         <br />

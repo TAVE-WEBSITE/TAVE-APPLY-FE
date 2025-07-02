@@ -20,11 +20,10 @@ interface GroupFieldProps {
 }
 
 const GroupField = ({ generation, isDocument, first, second }: GroupFieldProps) => {
-    const { setGeneration, setFirstSession, setIsDocument, setSecondSession } = useHomeStore();
+    const { setGeneration, setFirstSession, setSecondSession } = useHomeStore();
 
     useEffect(() => {
         setGeneration(generation);
-        setIsDocument(isDocument);
         setFirstSession(first);
         setSecondSession(second);
     }, []);
