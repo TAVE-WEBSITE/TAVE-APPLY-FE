@@ -9,7 +9,7 @@ interface FailedProps {
 const Failed = ({ username, generation }: FailedProps) => {
     return (
         <FlexBox direction="col" className="text-[#394150] items-center gap-5">
-            <p className="text-lg md:text-xl font-bold text-center md:text-left md:self-start">
+            <p className="text-lg md:text-xl font-bold text-center">
                 {username}님
                 <br />
                 {generation}기 지원 결과 안내드립니다.
