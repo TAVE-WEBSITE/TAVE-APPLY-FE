@@ -17,16 +17,16 @@ const FinalPassed = ({ username, generation, final, firstSession }: FinalPassedP
         <div className="text-[#394150] text-center">
             <FlexBox direction="col" className="md:gap-28 gap-23">
                 <div>
-                    <p className="text-lg md:text-xl font-bold">
+                    <p className="text-2xl md:text-3xl font-bold mb-4">
                         TAVE {generation}기 회원이 되신 것을 <br className="md:hidden" />
                         진심으로 축하드립니다!
                     </p>
-                    <p className="font-medium text-[13px] md:text-base">
+                    <p className="font-medium text-[13px] md:text-base leading-[22px]">
                         <br />
                         안녕하세요, IT 연합 동아리 TAVE {generation}기 운영진 입니다.
                         <br />
                         {username}님께서 TAVE {generation}기 회원 모집에
-                        <span className="text-pink-600 font-extrabold"> 최종 합격</span>
+                        <span className="text-blue-600 font-extrabold"> 최종 합격</span>
                         하셨습니다. <br />
                         <br />
                         아래 사항을 차근차근 읽고 이행해주시면 감사하겠습니다. <br />
@@ -39,8 +39,8 @@ const FinalPassed = ({ username, generation, final, firstSession }: FinalPassedP
 
                 <FlexBox direction="col" className="gap-5 font-medium text-sm md:text-base leading-normal">
                     <div className="font-bold">
-                        <p className="opacity-60 md:text-lg text-base">STEP 01</p>
-                        <p className="md:text-2xl text-xl">회비 입금</p>
+                        <p className="opacity-60 md:text-xl text-lg">STEP 01</p>
+                        <p className="md:text-3xl text-2xl">회비 입금</p>
                     </div>
                     <div>
                         <p>
@@ -59,7 +59,7 @@ const FinalPassed = ({ username, generation, final, firstSession }: FinalPassedP
                     <CardNavigate
                         title="회비 입금 마감"
                         buttonText="지금 입금하기"
-                        deadline={final.feeDeadline}
+                        deadline="2025-07-03"
                         type="copy"
                         value={final.bankName + ' ' + final.accountNumber + ' ' + final.accountHolder}
                     />
@@ -67,8 +67,8 @@ const FinalPassed = ({ username, generation, final, firstSession }: FinalPassedP
 
                 <FlexBox direction="col" className="gap-5">
                     <div className="font-bold">
-                        <p className="opacity-60 md:text-lg text-base">STEP 02</p>
-                        <p className="md:text-2xl text-xl">아지트 초대 설문 조사</p>
+                        <p className="opacity-60 md:text-xl text-lg">STEP 02</p>
+                        <p className="md:text-3xl text-2xl">아지트 초대 설문 조사</p>
                     </div>
                     <p className="font-medium text-sm md:text-base md:mb-4">
                         온라인 플랫폼
@@ -90,8 +90,8 @@ const FinalPassed = ({ username, generation, final, firstSession }: FinalPassedP
 
                 <FlexBox direction="col" className="gap-5">
                     <div className="font-bold">
-                        <p className="opacity-60 md:text-lg text-base">STEP 03</p>
-                        <p className="md:text-2xl text-xl">{firstSession.title} 공지방 입장</p>
+                        <p className="opacity-60 md:text-xl text-lg">STEP 03</p>
+                        <p className="md:text-3xl text-2xl">{firstSession.title} 공지방 입장</p>
                     </div>
                     <p className="font-medium text-sm md:text-base md:mb-4">
                         {firstSession.date}에 진행될 TAVE {generation}기의 첫 행사인 <br className="md:hidden" />‘

@@ -39,7 +39,7 @@ const Map = ({ address }: MapProps) => {
         });
     }, [coords]);
 
-    return <div ref={mapRef} className="w-full md:h-[300px] h-[240px]" />;
+    return <div ref={mapRef} className="w-full md:h-[300px] h-[240px] border border-gray-300" />;
 };
 
 export default Map;

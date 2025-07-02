@@ -27,7 +27,7 @@ export const useRecruit = () => {
 
     const applyProgrammingLevel = async (field: FormattedField | string) => {
         try {
-            const res = await axiosClient.get(`/v1/manager/lan/${field}`);
+            const res = await axiosClient.get(`/v1/member/lan/field/${field}`);
             console.log(res.data);
             return res.data.result;
         } catch (error) {
@@ -131,9 +131,9 @@ export const useRecruit = () => {
         }
     };
 
-    const getTime = async (resumeId: number) => {
+    const getTime = async () => {
         try {
-            const res = await axiosClient.get(`/v1/member/info/${resumeId}/timeslot`);
+            const res = await axiosClient.get(`/v1/member/config/interview-time`);
             if (res.status === 200) {
                 return res.data.result;
             }

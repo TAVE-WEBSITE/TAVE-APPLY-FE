@@ -22,9 +22,13 @@ const Field = () => {
 
     const [questions, setQuestions] = useState<{ [id: number]: string }>({});
     const [questionList, setQuestionList] = useState<any[]>([]);
-    const [language, setLanguages] = useState([]);
-    const languages = ['Javascript', 'Python', 'C++', 'SQL', 'Java'];
-    const [levels, setLevels] = useState<number[]>(Array(languages.length).fill(0));
+    const [languages, setLanguages] = useState<string[]>([]);
+    const [levels, setLevels] = useState<number[]>([]);
+
+    useEffect(() => {
+        setLevels(Array(languages.length).fill(0));
+    }, [languages]);
+
     const [visibleCount, setVisibleCount] = useState(1);
 
     // 다음 버튼 활성화 여부
@@ -32,20 +36,20 @@ const Field = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const questions = await getApplicationQuestion(resumeId, 1);
-            //const programming = await applyProgrammingLevel(recruitToFormattedField(applyField));
-            //const up = programming.result.data;
-            //const langu = up.map((item: { language: string }) => item.language);
-            //setLanguages(langu);
+            const questio = await getApplicationQuestion(resumeId, 1);
+            const programming = await applyProgrammingLevel(recruitToFormattedField(applyField));
 
-            if (!questions) return;
+            const langu = programming.map((item: { language: string }) => item.language);
+            setLanguages(langu);
+
+            if (!questio) return;
 
             const initialAnswers: { [id: number]: string } = {};
-            questions.forEach((q: any) => {
+            questio.forEach((q: any) => {
                 initialAnswers[q.id] = '';
             });
 
-            setQuestionList(questions);
+            setQuestionList(questio);
             setQuestions(initialAnswers);
 
             const temp = await getTempApplication(resumeId);
@@ -62,17 +66,14 @@ const Field = () => {
                     Array.isArray(temp.page2.languageLevels) &&
                     temp.page2.languageLevels.length > 0
                 ) {
-                    // languages 배열과 맞춰서 levels 상태 만들기
-                    const loadedLevels = languages.map((lang) => {
-                        const found = temp.page2.languageLevels.find((item: any) => item.language === lang);
+                    const loadedLevels = programming.map((item: { language: string }) => {
+                        const found = temp.page2.languageLevels.find((lvl: any) => lvl.language === item.language);
                         return found ? Number(found.level) : 0;
                     });
-
                     setLevels(loadedLevels);
 
-                    // 0인 곳 처음 발견 위치 기준 visibleCount 설정
-                    const firstZeroIndex = loadedLevels.findIndex((l) => l === 0);
-                    setVisibleCount(firstZeroIndex === -1 ? languages.length : firstZeroIndex + 1);
+                    const firstZeroIndex = loadedLevels.findIndex((l: number) => l === 0);
+                    setVisibleCount(firstZeroIndex === -1 ? programming.length : firstZeroIndex + 1);
                 }
             }
         };
@@ -95,7 +96,14 @@ const Field = () => {
         newLevels[index] = level;
         setLevels(newLevels);
 
-        if (level > 0 && visibleCount === index + 1 && visibleCount < languages.length) {
+        // 현재 visibleCount가 index + 1 (현재 레벨까지 보임)일 때만 다음 레벨 보이도록
+        // 그리고 다음 레벨이 존재할 때만 visibleCount 올리기
+        if (
+            level > 0 &&
+            visibleCount === index + 1 &&
+            visibleCount < languages.length &&
+            !newLevels[index + 1] // 다음 레벨이 아직 0일 때만 보이게 함 (중복 증가 방지)
+        ) {
             setVisibleCount(visibleCount + 1);
         }
 
@@ -137,7 +145,7 @@ const Field = () => {
 
     // 임시 저장
     const handleTempSave = async () => {
-        await postTempApplication(resumeId, 1, buildRequestBody());
+        await postTempApplication(resumeId, 2, buildRequestBody());
     };
 
     // 이전 단계 이동 (임시 저장 후)
@@ -163,18 +171,27 @@ const Field = () => {
         setCurrentStep(3);
     };
 
+    const titledi = `${username}님의 프로그래밍 실력은 어느 정도 인가요?`;
+
+    const canTempSave = () => {
+        const hasAnyAnswer = Object.values(questions).some((val) => val.trim() !== '');
+        const hasAnyLevel = levels.some((level) => level > 0);
+        return hasAnyAnswer || hasAnyLevel;
+    };
+
     return (
-        <>
+        <div className="w-full h-full">
             <button
                 onClick={handleTempSave}
-                className="hidden md:block absolute right-15 rounded-lg border border-[#E5E7EB] bg-white text-[#394150] p-3"
+                disabled={!canTempSave()}
+                className="hidden md:block absolute right-15 top-70 rounded-lg border border-[#E5E7EB] bg-white text-[#394150] p-3"
             >
                 임시 저장
             </button>
             <FlexBox direction="col" className="gap-5 relative">
                 <h1 className="font-bold text-2xl text-[#394150] text-center">{applyField} 분야</h1>
 
-                <Disclosure title="언어별 프로그래밍 실력" isRequired>
+                <Disclosure title={titledi} isRequired>
                     <FlexBox direction="col" className="gap-4 pt-2">
                         {languages.slice(0, visibleCount).map((lang, idx) => (
                             <StepCounter
@@ -199,7 +216,7 @@ const Field = () => {
                         <TextArea
                             value={questions[q.id] ?? ''}
                             setValue={(val) => handleAnswerChange(q.id, val)}
-                            placeholder="지원자님의 경험을 공유해주세요"
+                            placeholder="내용을 입력해주세요"
                             maxLength={q.textLength}
                         />
                     </Disclosure>
@@ -211,10 +228,15 @@ const Field = () => {
                 </FlexBox>
 
                 <div className="md:hidden">
-                    <ButtonNavigate text="임시저장" onClick={handleTempSave} hasBackGround={false} />
+                    <ButtonNavigate
+                        text="임시저장"
+                        onClick={handleTempSave}
+                        isActive={canTempSave()}
+                        hasBackGround={false}
+                    />
                 </div>
             </FlexBox>
-        </>
+        </div>
     );
 };
 

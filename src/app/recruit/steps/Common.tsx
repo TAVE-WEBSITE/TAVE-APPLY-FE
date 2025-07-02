@@ -7,7 +7,7 @@ import ButtonNavigate from '@/components/Button/ButtonNavigate';
 import Uploader from '@/components/upload/Uploader';
 import TimePicker from '@/components/TimePicker/TimePicker';
 import { useRecruitStore } from '@/store/recruitStore';
-import formatTimeSlot from '@/utils/formatTimeSlot';
+import formatTimeSlot, { formatToSelectedTimes } from '@/utils/formatTimeSlot';
 import FlexBox from '@/components/layout/FlexBox';
 import { useRecruit } from '@/hooks/useRecruit';
 import { useMemberStore } from '@/store/memberStore';
@@ -17,6 +17,7 @@ const uploadOptions = ['Github', 'Tech Blog', 'Portfolio'];
 type uploadType = 'text' | 'file';
 
 const Common = () => {
+    const { setResumeState } = useMemberStore();
     const { setCurrentStep, setIsClickedFourth } = useRecruitStore();
     const { resumeId } = useMemberStore();
     const {
@@ -54,7 +55,7 @@ const Common = () => {
 
     useEffect(() => {
         const requiredQuestionsFilled = questionList
-            .filter((q) => q.required)
+            .filter((q) => q.isRequired)
             .every((q) => {
                 const val = questions[q.id];
                 return val !== undefined && val.trim() !== '';
@@ -63,14 +64,32 @@ const Common = () => {
         const hasSelectedTime = selectedTimes.length > 0;
 
         setIsNextEnabled(requiredQuestionsFilled && hasSelectedTime);
+        console.log(buildTimeSlots(selectedTimes));
     }, [questions, questionList, selectedTimes]);
+
+    const buildTimeSlots = (selectedTimes: string[]): { time: string }[] => {
+        return selectedTimes.map((datetimeStr) => {
+            const [datePart, timePart] = datetimeStr.split('T'); // "07/03 (목)", "14:45"
+            const cleanDate = datePart.trim().split(' ')[0]; // "07/03"
+            const [month, day] = cleanDate.split('/').map(Number);
+            const [hour, minute] = timePart.split(':').map(Number);
+
+            const date = new Date(2025, month - 1, day, hour, minute); // 2025 고정
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            const hh = String(date.getHours()).padStart(2, '0');
+            const mi = String(date.getMinutes()).padStart(2, '0');
+
+            return { time: `${yyyy}-${mm}-${dd}T${hh}:${mi}` };
+        });
+    };
 
     useEffect(() => {
         const fetchData = async () => {
-            const times = await getTime(resumeId);
+            const times = await getTime();
             const questions = await getApplicationQuestion(resumeId, 2);
 
-            // 질문 초기화
             const initialAnswers: { [id: number]: string } = {};
             questions.forEach((q: any) => {
                 initialAnswers[q.id] = '';
@@ -80,14 +99,8 @@ const Common = () => {
 
             if (times && Array.isArray(times) && times.length > 0) {
                 const formatted = formatTimeSlot(times);
+
                 setScheduleData(formatted);
-            } else {
-                // 예시 시간 데이터
-                const dummyTime = [
-                    { date: '2025-07-05', timeSlots: [{ time: '10:00' }, { time: '14:00' }] },
-                    { date: '2025-07-06', timeSlots: [{ time: '09:00' }, { time: '13:00' }, { time: '16:00' }] },
-                ];
-                setScheduleData(dummyTime);
             }
 
             const temp = await getTempApplication(resumeId);
@@ -100,7 +113,7 @@ const Common = () => {
                 });
                 setQuestions(filled);
 
-                // uploadValues가 객체로 들어왔다면 세팅
+                // 여기 확인
                 if (temp.page3.uploadValues && typeof temp.page3.uploadValues === 'object') {
                     setUploadValues(temp.page3.uploadValues);
                 } else if (temp.page3.uploadValue) {
@@ -112,16 +125,12 @@ const Common = () => {
                 }
 
                 // 면접 시간 처리
-                if (temp.page3.timeSlots && Array.isArray(temp.page3.timeSlots)) {
+                if (temp?.page3?.timeSlots && Array.isArray(temp.page3.timeSlots)) {
                     if (typeof temp.page3.timeSlots[0] === 'string') {
                         setSelectedTimes(temp.page3.timeSlots);
                     } else if (temp.page3.timeSlots[0]?.time) {
-                        setSelectedTimes(temp.page3.timeSlots.map((t: any) => t.time));
-                    } else {
-                        setSelectedTimes([]);
+                        setSelectedTimes(formatToSelectedTimes(temp.page3.timeSlots));
                     }
-                } else {
-                    setSelectedTimes([]);
                 }
             }
         };
@@ -144,13 +153,13 @@ const Common = () => {
         }));
     };
 
-    // 선택 옵션 변경시 업로드 타입과 선택값 세팅
+    // 확인
     const handleOptionChange = (option: string) => {
         setSelectedOption(option);
         setUploadType(option === 'Portfolio' ? 'file' : 'text');
     };
 
-    // 업로더 필드 값 변경 핸들러
+    // 확인
     const handleUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (uploadType === 'file') {
             const file = e.target.files?.[0];
@@ -167,7 +176,6 @@ const Common = () => {
     };
 
     const buildRequestBody = (): ResumeAnswerRequest & {
-        uploadValues: { [key: string]: string | File };
         timeSlots: { time: string }[];
         languageLevels: any[];
     } => ({
@@ -175,9 +183,8 @@ const Common = () => {
             resumeQuestionId: Number(id),
             answer,
         })),
-        languageLevels: [], // 2페이지에서 처리할 부분 (여기는 빈 배열)
-        timeSlots: selectedTimes.length > 0 ? selectedTimes.map((time) => ({ time })) : [],
-        uploadValues,
+        languageLevels: [],
+        timeSlots: buildTimeSlots(selectedTimes), // ← 여기!
     });
 
     const handleTempSave = async () => {
@@ -194,30 +201,45 @@ const Common = () => {
             return;
         }
 
-        // 하나라도 있으면 저장
+        console.log(buildTimeSlots(selectedTimes));
+
         await postTempApplication(resumeId, 3, buildRequestBody());
         setCurrentStep(step);
     };
 
     const handleSubmit = async () => {
-        await postTempApplication(resumeId, 3, buildRequestBody());
-        await postResume(resumeId, buildRequestBody(), 3);
-
         try {
+            await postResume(resumeId, buildRequestBody(), 3);
             await getEmail(resumeId);
+
+            setIsClickedFourth(false);
+            setResumeState('SUBMITTED');
+            setCurrentStep(4);
         } catch (e) {
-            console.error('getEmail error:', e);
+            console.error('제출 또는 이메일 전송 실패:', e);
         }
-        setIsClickedFourth(true);
-        setCurrentStep(4);
     };
 
+    const canTempSave = Object.values(questions).some((val) => val.trim() !== '') || selectedTimes.length > 0;
+
     return (
-        <FlexBox direction="col" className="gap-5">
+        <FlexBox direction="col" className="gap-5 relative">
+            <button
+                onClick={handleTempSave}
+                disabled={!canTempSave}
+                className="hidden md:block absolute right-15 rounded-lg border border-[#E5E7EB] bg-white text-[#394150] p-3"
+            >
+                임시 저장
+            </button>
             <h1 className="font-bold text-2xl text-[#394150] text-center">공통 질문</h1>
 
             {questionList.map((q) => (
-                <Disclosure key={q.id} title={q.question} isRequired={true} description={`(${q.textLength}자 이내)`}>
+                <Disclosure
+                    key={q.id}
+                    title={q.question}
+                    isRequired={q.isRequired}
+                    description={`(${q.textLength}자 이내)`}
+                >
                     <TextArea
                         value={questions[q.id] ?? ''}
                         setValue={(val) => handleAnswerChange(q.id, val)}
@@ -246,12 +268,9 @@ const Common = () => {
                                 const blogUrl = option === 'Tech Blog' ? val : '';
                                 await postSocialLinks(resumeId, githubUrl, blogUrl);
                             } else {
-                                throw new Error('텍스트 링크가 아닌 값입니다.');
                             }
-                            alert(`${option} 저장 성공!`);
                         } catch (e) {
                             console.error(e);
-                            alert(`${option} 저장 실패!`);
                         }
                     }}
                 >
@@ -263,7 +282,6 @@ const Common = () => {
                         setValue={(val) => setUploadValues((prev) => ({ ...prev, [selectedOption]: val }))}
                     />
                 </Uploader>
-                ;
             </Disclosure>
 
             <Disclosure title="가능한 오프라인 면접 시간을 모두 체크해주세요" isRequired>

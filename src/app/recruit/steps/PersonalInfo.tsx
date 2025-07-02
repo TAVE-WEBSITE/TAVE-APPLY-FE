@@ -72,7 +72,7 @@ const PersonalInfo = () => {
     return (
         <>
             <p className="font-bold md:text-2xl text-xl text-[#394150] text-center mb-4 md:mb-7">개인 정보 입력</p>
-            <FlexBox direction="col" className="md:gap-6 gap-5">
+            <FlexBox direction="col" className="md:gap-4 gap-3">
                 {personalFields.map(({ label, value }) => (
                     <InputContainer key={label} label={label} isRequired={false}>
                         <div

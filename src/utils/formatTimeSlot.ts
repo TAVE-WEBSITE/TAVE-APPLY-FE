@@ -1,61 +1,69 @@
-import { Schedule } from "@/modules/recruitType";
+// formatTimeSlot.ts
+import { Schedule } from '@/modules/recruitType';
 
-export default function formatTimeSlot(times: string[]) {
-  const dateMap = new Map<string, Set<string>>();
+/**
+ * formatTimeSlot: API 응답 값을 UI에서 사용할 수 있도록 가공 (MM/DD (요일), HH:mm 형태로)
+ */
+export default function formatTimeSlot(times: { time: string }[]): Schedule[] {
+    const dateMap = new Map<string, Set<string>>();
 
-  for (const datetime of times) {
-    const date = new Date(datetime.replace(" ", "T"));
-    const dateKey = formatDateKey(date);
-    const timeStr = toTimeString(date);
+    for (const item of times) {
+        const datetime = item.time;
+        const date = new Date(datetime);
+        const dateKey = formatDateKey(date);
+        const timeStr = toTimeString(date);
 
-    if (!dateMap.has(dateKey)) {
-      dateMap.set(dateKey, new Set());
+        if (!dateMap.has(dateKey)) {
+            dateMap.set(dateKey, new Set());
+        }
+        dateMap.get(dateKey)!.add(timeStr);
     }
-    dateMap.get(dateKey)!.add(timeStr);
-  }
 
-  // 전체 시간 슬롯 집합 수집
-  const allTimeSlots = new Set<string>();
-  for (const timeSet of dateMap.values()) {
-    for (const time of timeSet) {
-      allTimeSlots.add(time);
+    const allTimeSlots = new Set<string>();
+    for (const timeSet of dateMap.values()) {
+        for (const time of timeSet) {
+            allTimeSlots.add(time);
+        }
     }
-  }
 
-  // 정렬된 시간 슬롯 배열
-  const sortedTimeSlots = [...allTimeSlots].sort(compareTimeStrings);
+    const sortedTimeSlots = [...allTimeSlots].sort(compareTimeStrings);
 
-  // 날짜별 결과 구성
-  const result: Schedule[] = [];
-  for (const [dateKey, timeSet] of dateMap.entries()) {
-    const timeSlots = sortedTimeSlots.map((time) => ({
-      time,
-    }));
+    const result: Schedule[] = [];
+    for (const [dateKey, timeSet] of dateMap.entries()) {
+        const timeSlots = sortedTimeSlots.filter((time) => timeSet.has(time)).map((time) => ({ time }));
 
-    result.push({ date: dateKey, timeSlots });
-  }
+        result.push({ date: dateKey, timeSlots });
+    }
 
-  return result;
+    return result;
 }
 
-// 날짜: "MM/DD TUE"
 function formatDateKey(date: Date): string {
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  const day = ["(일)", "(월)", "(화)", "(수)", "(목)", "(금)", "(토)"][
-    date.getDay()
-  ];
-  return `${mm}/${dd} ${day}`;
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const day = ['(일)', '(월)', '(화)', '(수)', '(목)', '(금)', '(토)'][date.getDay()];
+    return `${mm}/${dd} ${day}`;
 }
 
-// 시간: "HH:mm"
 function toTimeString(date: Date): string {
-  return date.toTimeString().slice(0, 5); // "HH:mm"
+    return date.toTimeString().slice(0, 5); // HH:mm
 }
 
-// 시간 문자열 정렬용: "13:30" -> 숫자로 비교
 function compareTimeStrings(a: string, b: string) {
-  const [ah, am] = a.split(":").map(Number);
-  const [bh, bm] = b.split(":").map(Number);
-  return ah !== bh ? ah - bh : am - bm;
+    const [ah, am] = a.split(':').map(Number);
+    const [bh, bm] = b.split(':').map(Number);
+    return ah !== bh ? ah - bh : am - bm;
+}
+
+// utils/parseTimeSlot.ts
+export function formatToSelectedTimes(timeSlots: { time: string }[]): string[] {
+    return timeSlots.map(({ time }) => {
+        const date = new Date(time);
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        const weekday = ['(일)', '(월)', '(화)', '(수)', '(목)', '(금)', '(토)'][date.getDay()];
+        const hh = String(date.getHours()).padStart(2, '0');
+        const mi = String(date.getMinutes()).padStart(2, '0');
+        return `${mm}/${dd} ${weekday}T${hh}:${mi}`;
+    });
 }
