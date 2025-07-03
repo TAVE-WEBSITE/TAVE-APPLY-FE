@@ -55,7 +55,7 @@ const Common = () => {
 
     useEffect(() => {
         const requiredQuestionsFilled = questionList
-            .filter((q) => q.isRequired)
+            .filter((q) => q.required)
             .every((q) => {
                 const val = questions[q.id];
                 return val !== undefined && val.trim() !== '';
@@ -227,7 +227,7 @@ const Common = () => {
             <button
                 onClick={handleTempSave}
                 disabled={!canTempSave}
-                className="disabled:cursor-not-allowed cursor-pointer hidden md:block absolute right-15 top-70 rounded-lg border border-[#E5E7EB] bg-white text-[#394150] p-3"
+                className="disabled:cursor-not-allowed cursor-pointer hidden md:block absolute right-15 top-60 rounded-lg border border-[#E5E7EB] bg-white text-[#394150] p-3"
             >
                 임시 저장
             </button>
@@ -238,7 +238,7 @@ const Common = () => {
                     <Disclosure
                         key={q.id}
                         title={q.question}
-                        isRequired={q.isRequired}
+                        isRequired={q.required}
                         description={`(${q.textLength}자 이내)`}
                     >
                         <TextArea
@@ -271,8 +271,16 @@ const Common = () => {
 
                 <FlexBox className="justify-between mt-8 mb-0 gap-2">
                     <ButtonNavigate text="이전" onClick={() => handlePostOnly(2)} />
-                    <ButtonNavigate text="제출하기" onClick={handleSubmit} />
+                    <ButtonNavigate text="제출하기" onClick={handleSubmit} isActive={isNextEnabled} />
                 </FlexBox>
+                <div className="md:hidden">
+                    <ButtonNavigate
+                        text="임시저장"
+                        onClick={handleTempSave}
+                        isActive={canTempSave}
+                        hasBackGround={false}
+                    />
+                </div>
             </FlexBox>
         </div>
     );
