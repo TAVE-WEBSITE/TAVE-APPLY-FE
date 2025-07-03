@@ -51,7 +51,7 @@ const Recruit = () => {
                     backgroundPosition: 'center',
                 }}
             >
-                {resumeState === 'SUBMITTED' && isClickedFourth ? (
+                {(resumeState === 'SUBMITTED' && isClickedFourth) || !isDocument ? (
                     <h2 className="md:text-3xl text-2xl font-bold text-center">TAVE APPLICATION INFO</h2>
                 ) : (
                     <StepBar title={title} maxStep={stepCount} currentStep={currentStep} />
@@ -64,7 +64,7 @@ const Recruit = () => {
                 >
                     {isDocument ? (
                         resumeState === 'SUBMITTED' && isClickedFourth ? (
-                            recruitMap[currentStep]
+                            <Guide type="submit" />
                         ) : (
                             recruitMap[currentStep]
                         )
