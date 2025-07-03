@@ -40,11 +40,21 @@ const useResult = () => {
         }
     };
 
+    const applyIsDocument = async () => {
+        try {
+            const res = await axiosClient.get('/v1/member/apply-recruit/expiration');
+            return res.data.result;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return {
         applyApplicantHistory,
         applyInterview,
         applyFinal,
         applyCoordinates,
+        applyIsDocument,
     };
 };
 

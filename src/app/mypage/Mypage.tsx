@@ -14,19 +14,24 @@ const Mypage = () => {
     const { generation } = useHomeStore();
     const { resumeState, memberId, setApplicationStatus } = useMemberStore();
     const [history, setHistory] = useState<ApplicantData[]>([]);
-    const { applyApplicantHistory } = useResult();
+    const [isDocument, setIsDocument] = useState<boolean>(false);
+    const { applyApplicantHistory, applyIsDocument } = useResult();
 
     useEffect(() => {
         if (!memberId || !generation) return;
 
-        const fetchHistory = async () => {
-            const data = await applyApplicantHistory(memberId);
-            const sortedData = data.sort(
-                (a: ApplicantData, b: ApplicantData) => Number(b.generation) - Number(a.generation)
-            );
+        const fetchData = async () => {
+            const historyData = await applyApplicantHistory(memberId);
+            const documentData = await applyIsDocument();
+            const sortedData = historyData
+                .filter((item: ApplicantData) => {
+                    !documentData && item.applicationStatus === 'DRAFT';
+                })
+                .sort((a: ApplicantData, b: ApplicantData) => Number(b.generation) - Number(a.generation));
             setHistory(sortedData);
+            setIsDocument(documentData);
 
-            const current = data.find(
+            const current = historyData.find(
                 (item: ApplicantData) =>
                     item.generation === generation &&
                     ['DOCUMENT_PASSED', 'REJECTED', 'FINAL_ACCEPTED'].includes(item.applicationStatus)
@@ -37,7 +42,7 @@ const Mypage = () => {
             }
         };
 
-        fetchHistory();
+        fetchData();
     }, [memberId, generation]);
 
     return (
@@ -53,7 +58,7 @@ const Mypage = () => {
                 <h2 className="md:text-3xl text-2xl font-bold text-center whitespace-pre-line">
                     {`${formatOrdinal(generation)} TAVY\nRECRUITING`}
                 </h2>
-                {resumeState === 'TEMPORARY' && (
+                {resumeState === 'TEMPORARY' && isDocument && (
                     <Link
                         href="/recruit"
                         className="bg-blue-600/80  px-3.5 py-2.5 rounded-xl cursor-pointer md:text-base text-sm"
