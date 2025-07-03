@@ -2,7 +2,7 @@
 
 import FlexBox from '@/components/layout/FlexBox';
 import { StaticImageData } from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface CardFieldProps {
     imgSrc: StaticImageData;
@@ -17,6 +17,11 @@ const CardField = ({ title, imgSrc, subTitle, hoverSrc, description, state }: Ca
     const [isHovered, setIsHovered] = useState(false);
     const cardSrc = isHovered ? hoverSrc : imgSrc;
     const filteredSub = subTitle.toLowerCase().includes('frontend') ? subTitle.replace(/frontend/gi, '') : subTitle;
+
+    useEffect(() => {
+        const img = new Image();
+        img.src = hoverSrc.src;
+    }, [hoverSrc]);
 
     return (
         <FlexBox direction="col" className="lg:w-[250px] w-[230px] gap-4">
