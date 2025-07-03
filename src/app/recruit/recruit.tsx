@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import { useRecruitStore } from '@/store/recruitStore';
 import { useHomeStore } from '@/store/homeStore';
 import { useMemberStore } from '@/store/memberStore';
@@ -12,6 +12,7 @@ import Guide from './Guide';
 import FlexBox from '@/components/layout/FlexBox';
 import StepBar from '@/components/layout/StepBar';
 import formatOrdinal from '@/utils/formatOrdinal';
+import useResult from '@/hooks/useResult';
 
 const recruitMap: Record<number, JSX.Element> = {
     1: <PersonalInfo />,
@@ -23,11 +24,22 @@ const recruitMap: Record<number, JSX.Element> = {
 const stepCount = Object.keys(recruitMap).length;
 
 const Recruit = () => {
+    const [isDocument, setIsDocument] = useState(true);
     const { currentStep, isClickedFourth } = useRecruitStore();
+    const { applyIsDocument } = useResult();
     const { generation } = useHomeStore();
     const { resumeState } = useMemberStore();
 
     const title = `${formatOrdinal(generation)} TAVE APPLY STEP`;
+
+    useEffect(() => {
+        const fetchIsDocument = async () => {
+            const documentData = await applyIsDocument();
+            setIsDocument(documentData);
+        };
+
+        fetchIsDocument();
+    }, []);
 
     return (
         <FlexBox direction="col" className="min-h-screen">
@@ -50,7 +62,15 @@ const Recruit = () => {
                     direction="col"
                     className="md:pt-12 pt-10 md:pb-26 pb-16 md:w-[570px] sm:w-[400px] w-[314px] mx-auto"
                 >
-                    {resumeState === 'SUBMITTED' && isClickedFourth ? <Guide type="submit" /> : recruitMap[currentStep]}
+                    {isDocument ? (
+                        resumeState === 'SUBMITTED' && isClickedFourth ? (
+                            recruitMap[currentStep]
+                        ) : (
+                            recruitMap[currentStep]
+                        )
+                    ) : (
+                        <Guide type="period" />
+                    )}
                 </FlexBox>
             </section>
         </FlexBox>
