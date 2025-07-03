@@ -25,7 +25,10 @@ const Mypage = () => {
             const documentData = await applyIsDocument();
             const sortedData = historyData
                 .filter((item: ApplicantData) => {
-                    !documentData && item.applicationStatus === 'DRAFT';
+                    if (!documentData && item.applicationStatus === 'DRAFT') {
+                        return false;
+                    }
+                    return true;
                 })
                 .sort((a: ApplicantData, b: ApplicantData) => Number(b.generation) - Number(a.generation));
             setHistory(sortedData);
