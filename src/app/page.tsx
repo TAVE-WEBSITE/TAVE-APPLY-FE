@@ -7,6 +7,8 @@ import GroupChip from '@/components/group/GroupChip';
 import { targetData } from '@/modules/staticData';
 import { applySession, applySetting } from '@/services/home';
 
+export const revalidate = 0;
+
 export default async function Home() {
     const { grouped, first, second } = await applySession();
     const { generation, isDocument, formattedSetting } = await applySetting();

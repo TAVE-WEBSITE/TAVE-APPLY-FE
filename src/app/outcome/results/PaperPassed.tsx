@@ -28,7 +28,7 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
                         {username}님 <br />
                         <span className="text-blue-600 font-extrabold">서류 합격</span>을 축하드립니다
                     </p>
-                    <p className="font-medium text-sm md:text-base leading-[23px]">
+                    <p className="font-medium text-sm md:text-base leading-[23px] mt-5">
                         <br />
                         안녕하세요, IT 연합 동아리 TAVE {generation}기 운영진 입니다.
                         <br />
