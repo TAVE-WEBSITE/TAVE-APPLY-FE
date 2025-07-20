@@ -4,9 +4,10 @@ interface InputLabelProps {
     label: string;
     isRequired: boolean;
     description?: string;
+    isStress?: boolean;
 }
 
-const InputLabel = ({ label, isRequired, description }: InputLabelProps) => {
+const InputLabel = ({ label, isRequired, description, isStress = false }: InputLabelProps) => {
     return (
         <label className="text-[#394150]">
             {isRequired ? (
@@ -15,7 +16,11 @@ const InputLabel = ({ label, isRequired, description }: InputLabelProps) => {
                         <span>{label}</span>
                         <span className="text-pink-600/80">*</span>
                     </FlexBox>
-                    {description && <span className="text-[#81818A] md:text-sm text-xs">{description}</span>}
+                    {description && (
+                        <span className={` md:text-sm text-xs ${isStress ? 'text-pink-600/80' : 'text-[#81818A]'}`}>
+                            {description}
+                        </span>
+                    )}
                 </div>
             ) : (
                 `${label}`

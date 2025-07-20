@@ -6,6 +6,7 @@ interface InputContainerProps {
   label: string;
   isRequired?: boolean;
   description?: string;
+  isStress?: boolean;
 }
  
 const InputContainer = ({
@@ -13,6 +14,7 @@ const InputContainer = ({
   label,
   isRequired = true,
   description,
+  isStress = false
 }: InputContainerProps) => {
   return (
     <FlexBox
@@ -23,6 +25,7 @@ const InputContainer = ({
         label={label}
         isRequired={isRequired}
         description={description}
+        isStress={isStress}
       />
       {children}
     </FlexBox>
