@@ -32,7 +32,7 @@ const TextArea = <T extends string | number>({
                 }
             }}
             readOnly={readonly}
-            className={`w-full h-[158px] border border-[#E5E7EB] resize-none
+            className={`w-full h-[200px] md:h-[250px] border border-[#E5E7EB] resize-none
         p-3 md:p-4 rounded-xl text-[#394150] md:text-base shadow-[0px_0px_24px_0px_#195BFF14] ${
             readonly ? 'bg-[#F3F4F6] text-[#394150] opacity-50' : ''
         } ${className}`}

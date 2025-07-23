@@ -11,6 +11,7 @@ import { useRecruit } from '@/hooks/useRecruit';
 import { useMemberStore } from '@/store/memberStore';
 import { ResumeAnswerRequest } from '@/modules/recruitType';
 import { recruitToFormattedField } from '@/utils/formatField';
+import ToastMessage from '@/components/ToastMessage';
 
 const programmingLevel = ['입문', '초급', '중급', '상급', '전문가'];
 
@@ -24,6 +25,8 @@ const Field = () => {
     const [questionList, setQuestionList] = useState<any[]>([]);
     const [languages, setLanguages] = useState<string[]>([]);
     const [levels, setLevels] = useState<number[]>([]);
+    const [isToastOpen, setIsToastOpen] = useState(false);
+    const [toast, setToast] = useState({ message: '', isError: false });
 
     useEffect(() => {
         setLevels(Array(languages.length).fill(0));
@@ -145,7 +148,9 @@ const Field = () => {
 
     // 임시 저장
     const handleTempSave = async () => {
+        setToast({ message: '임시저장이 완료되었습니다.', isError: false });
         await postTempApplication(resumeId, 2, buildRequestBody());
+        setIsToastOpen(true);
     };
 
     // 이전 단계 이동 (임시 저장 후)
@@ -236,6 +241,14 @@ const Field = () => {
                     />
                 </div>
             </FlexBox>
+            {isToastOpen && (
+                <ToastMessage
+                    isOpen={isToastOpen}
+                    isError={toast.isError}
+                    setIsOpen={setIsToastOpen}
+                    message={toast.message}
+                />
+            )}
         </div>
     );
 };
