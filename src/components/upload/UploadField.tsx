@@ -27,7 +27,7 @@ export default function UploadField({ type = 'text', value, onChange, setValue }
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            {value.split('/').pop()}
+                            파일 확인
                         </a>
                     ) : (
                         <>
