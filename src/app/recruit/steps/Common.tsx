@@ -12,6 +12,7 @@ import FlexBox from '@/components/layout/FlexBox';
 import { useRecruit } from '@/hooks/useRecruit';
 import { useMemberStore } from '@/store/memberStore';
 import { ResumeAnswerRequest } from '@/modules/recruitType';
+import ToastMessage from '@/components/ToastMessage';
 
 const uploadOptions = ['Github', 'Tech Blog', 'Portfolio'];
 type uploadType = 'text' | 'file';
@@ -108,21 +109,20 @@ const Common = () => {
             if (temp?.page3) {
                 // 질문 답변 채우기
                 const filled = { ...initialAnswers };
-                temp.page3.answers.forEach((item: any) => {
-                    filled[item.resumeQuestionId] = item.answer ?? '';
-                });
+                if (Array.isArray(temp.page3.answers)) {
+                    temp.page3.answers.forEach((item: any) => {
+                        filled[item.resumeQuestionId] = item.answer ?? '';
+                    });
+                }
                 setQuestions(filled);
 
                 // 여기 확인
-                if (temp.page3.uploadValues && typeof temp.page3.uploadValues === 'object') {
-                    setUploadValues(temp.page3.uploadValues);
-                } else if (temp.page3.uploadValue) {
-                    // 이전 버전 호환용 (단일 값)
-                    setUploadValues((prev) => ({
-                        ...prev,
-                        [uploadOptions[0]]: temp.page3.uploadValue,
-                    }));
-                }
+                setUploadValues((prev) => ({
+                    ...prev,
+                    ...(temp.page3.githubUrl && { Github: temp.page3.githubUrl }),
+                    ...(temp.page3.blogUrl && { 'Tech Blog': temp.page3.blogUrl }),
+                    ...(temp.page3.portfolioUrl && { Portfolio: temp.page3.portfolioUrl }),
+                }));
 
                 // 면접 시간 처리
                 if (temp?.page3?.timeSlots && Array.isArray(temp.page3.timeSlots)) {
@@ -188,7 +188,9 @@ const Common = () => {
     });
 
     const handleTempSave = async () => {
+        setToast({ message: '임시저장이 완료되었습니다.', isError: false });
         await postTempApplication(resumeId, 3, buildRequestBody());
+        setIsToastOpen(true);
     };
 
     const handlePostOnly = async (step: number) => {
@@ -222,6 +224,9 @@ const Common = () => {
 
     const canTempSave = Object.values(questions).some((val) => val.trim() !== '') || selectedTimes.length > 0;
 
+    const [isToastOpen, setIsToastOpen] = useState(false);
+    const [toast, setToast] = useState({ message: '', isError: false });
+
     return (
         <div className="w-full h-full">
             <button
@@ -249,6 +254,45 @@ const Common = () => {
                         />
                     </Disclosure>
                 ))}
+
+                <Disclosure title={'아래의 목록 중 소유하고 있으신 것이 있다면 자유롭게 첨부해주세요 :)'} isRequired>
+                    <Uploader
+                        options={uploadOptions}
+                        selectedOption={selectedOption}
+                        setSelectedOption={handleOptionChange}
+                        setUploadType={setUploadType}
+                        uploadValues={uploadValues}
+                        onSaveUpload={async (option) => {
+                            const val = uploadValues[option];
+                            if (!val) return;
+
+                            try {
+                                if (option === 'Portfolio' && val instanceof File) {
+                                    await postURL(resumeId, val);
+                                } else {
+                                    // Github과 Tech Blog는 항상 string이므로, 안전하게 처리
+                                    const githubUrl =
+                                        option === 'Github' ? (val as string) : (uploadValues['Github'] as string);
+                                    const blogUrl =
+                                        option === 'Tech Blog'
+                                            ? (val as string)
+                                            : (uploadValues['Tech Blog'] as string);
+                                    await postSocialLinks(resumeId, githubUrl, blogUrl);
+                                }
+                            } catch (e) {
+                                console.error(e);
+                            }
+                        }}
+                    >
+                        <Uploader.UploadField
+                            key={selectedOption}
+                            type={uploadType}
+                            value={uploadValues[selectedOption] ?? ''}
+                            onChange={handleUploadChange}
+                            setValue={(val) => setUploadValues((prev) => ({ ...prev, [selectedOption]: val }))}
+                        />
+                    </Uploader>
+                </Disclosure>
                 <Disclosure title="가능한 오프라인 면접 시간을 모두 체크해주세요" isRequired>
                     <TimePicker>
                         {scheduleData.map((schedule) => (
@@ -282,6 +326,14 @@ const Common = () => {
                     />
                 </div>
             </FlexBox>
+            {isToastOpen && (
+                <ToastMessage
+                    isOpen={isToastOpen}
+                    isError={toast.isError}
+                    setIsOpen={setIsToastOpen}
+                    message={toast.message}
+                />
+            )}
         </div>
     );
 };
