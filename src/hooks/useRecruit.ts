@@ -1,5 +1,5 @@
 import { axiosClient } from '@/services/axiosClient';
-import { FormattedField, Personal, ResumeAnswerRequest } from '@/modules/recruitType';
+import { PersonalData, FormattedField, ResumeData } from '@/modules/recruitType';
 import { useMemberStore } from '@/store/memberStore';
 
 export const useRecruit = () => {
@@ -14,7 +14,7 @@ export const useRecruit = () => {
         }
     };
 
-    const makeApplication = async (body: Personal, memberId: number) => {
+    const makeApplication = async (body: PersonalData, memberId: number) => {
         try {
             const res = await axiosClient.post(`/v1/member/info/${memberId}`, body);
             setResumeId(res.data.result.resumeId);
@@ -25,17 +25,25 @@ export const useRecruit = () => {
         }
     };
 
-    const applyProgrammingLevel = async (field: FormattedField | string) => {
+    const applyProgrammingLevel = async (field: FormattedField) => {
         try {
             const res = await axiosClient.get(`/v1/member/lan/field/${field}`);
-            console.log(res.data);
             return res.data.result;
         } catch (error) {
             console.error(error);
         }
     };
 
-    const getApplicationQuestion = async (resumeId: number, page: number = 1) => {
+    const applySchedule = async () => {
+        try {
+            const res = await axiosClient.get(`/v1/member/config/interview-time`);
+            return res.data.result;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const applyApplicationData = async (resumeId: number, page: number) => {
         try {
             const res = await axiosClient.get(`/v1/member/resumes/${resumeId}/questions`, {
                 params: {
@@ -48,7 +56,7 @@ export const useRecruit = () => {
         }
     };
 
-    const getTempApplication = async (resumeId: number) => {
+    const applyTempApplication = async (resumeId: number) => {
         try {
             const res = await axiosClient.get(`/v1/member/resume/temp-answer/${resumeId}`);
             return res.data.result;
@@ -57,7 +65,7 @@ export const useRecruit = () => {
         }
     };
 
-    const postTempApplication = async (resumeId: number, page: number = 1, body: ResumeAnswerRequest) => {
+    const postTempApplication = async (resumeId: number, page: number, body: ResumeData) => {
         try {
             const res = await axiosClient.post(`/v1/member/resume/temp-answer/${resumeId}`, body, {
                 params: {
@@ -67,10 +75,11 @@ export const useRecruit = () => {
             return res.status;
         } catch (error) {
             console.error(error);
+            return error;
         }
     };
 
-    const postResume = async (resumeId: number, body: ResumeAnswerRequest, page: number = 1) => {
+    const postResume = async (resumeId: number, body: ResumeData, page: number) => {
         try {
             const res = await axiosClient.post(`/v1/member/resumes/${resumeId}`, body, {
                 params: {
@@ -80,65 +89,46 @@ export const useRecruit = () => {
             return res.status;
         } catch (error) {
             console.error(error);
+            return error;
         }
     };
 
-    const getEmail = async (resumeId: number) => {
+    const applyCompleteEmail = async (resumeId: number) => {
         try {
             const res = await axiosClient.get(`/v1/member/resume/email/${resumeId}`);
-            if (res.status === 200) {
-                return res.data.result;
-            }
+            return res.status;
         } catch (error) {
             console.error(error);
+            return error;
         }
     };
 
-    const postSocialLinks = async (resumeId: number, blogUrl: string, githubUrl: string) => {
+    const applySocialLinks = async (resumeId: number, blogUrl: string, githubUrl: string) => {
         try {
             const res = await axiosClient.post(`/v1/member/resume/${resumeId}/social-links`, {
                 blogUrl,
                 githubUrl,
             });
-
-            if (res.status === 200) {
-                return res.data.result;
-            }
+            return res.status;
         } catch (error) {
             console.error(error);
+            return error;
         }
     };
 
-    const postURL = async (resumeId: number, file: File) => {
+    const applyPortfolio = async (resumeId: number, portfolio: File) => {
         try {
-            const formData = new FormData();
-            formData.append('file', file); // 서버가 기대하는 key 이름에 맞게 설정
-
-            // 만약 다른 필드가 필요하면 추가 가능
-            // formData.append('otherField', 'value');
-
-            const res = await axiosClient.post(`/v1/member/resume/${resumeId}/portfolio`, formData, {
+            const file = new FormData();
+            file.append('file', portfolio);
+            const res = await axiosClient.post(`/v1/member/resume/${resumeId}/portfolio`, file, {
                 headers: {
-                    'Content-Type': 'multipart/form-data', // 반드시 설정
+                    'Content-Type': undefined,
                 },
             });
-
-            if (res.status === 200) {
-                return res.data.result;
-            }
+            return res.status;
         } catch (error) {
             console.error(error);
-        }
-    };
-
-    const getTime = async () => {
-        try {
-            const res = await axiosClient.get(`/v1/member/config/interview-time`);
-            if (res.status === 200) {
-                return res.data.result;
-            }
-        } catch (error) {
-            console.error(error);
+            return error;
         }
     };
 
@@ -146,13 +136,13 @@ export const useRecruit = () => {
         applyPersonal,
         makeApplication,
         postResume,
-        getApplicationQuestion,
-        getTempApplication,
+        applyApplicationData,
+        applyTempApplication,
         postTempApplication,
-        getTime,
-        getEmail,
+        applySchedule,
+        applyCompleteEmail,
         applyProgrammingLevel,
-        postSocialLinks,
-        postURL,
+        applySocialLinks,
+        applyPortfolio,
     };
 };

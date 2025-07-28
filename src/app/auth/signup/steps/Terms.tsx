@@ -29,7 +29,7 @@ const Terms = () => {
                     <CheckBox isChecked={checkAll} setIsChecked={handleCheckAll} />
                     <p className="font-bold">모두 동의합니다</p>
                 </FlexBox>
-                <div className="h-[1.2px] w-full bg-[#E5E7EB]"></div>
+                <div className="h-[1.2px] w-full bg-[#E5E7EB]" />
                 <FlexBox className="justify-between items-center">
                     <FlexBox className="gap-2 sm:gap-3 items-center">
                         <CheckBox isChecked={checkPrivacy} setIsChecked={setCheckPrivacy} />
