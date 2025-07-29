@@ -42,7 +42,7 @@ const FindPassword = () => {
     };
 
     const verifyCheck = () => {
-        if (email.length && name.length && isValidBirth(birth)) return true;
+        if (email.length && name.trim().length && isValidBirth(birth)) return true;
         else return false;
     };
 
@@ -130,7 +130,7 @@ const FindPassword = () => {
                     />
                 </FlexBox>
             </InputContainer>
-            <FlexBox className="mt-6 md:mt-5 justify-center">
+            <FlexBox className="mt-6 md:mt-5 justify-end">
                 <ButtonNavigate text="다음" onClick={() => setCurrentStep(2)} isActive={handleCheck()} />
             </FlexBox>
             {isToastOpen && (

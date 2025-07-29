@@ -1,13 +1,13 @@
 import { createFieldStore } from './createFieldStore';
-import { FormattedField, RecruitField } from '@/modules/recruitType';
+import { RecruitField } from '@/modules/recruitType';
 
 interface RecruitStates {
     currentStep: number;
     school: string;
     major: string;
     minor: string;
+    applyField: RecruitField | '';
     isClickedFourth: boolean;
-    applyField: string | RecruitField | FormattedField;
 }
 
 const initStates: RecruitStates = {

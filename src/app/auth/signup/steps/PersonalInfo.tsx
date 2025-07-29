@@ -48,7 +48,7 @@ const PersonalInfo = () => {
     };
 
     const handleCheck = () => {
-        if (!name.length) {
+        if (!name.trim().length) {
             return '이름을 입력해주세요.';
         } else if (!isValidPhoneNumber(phoneNumber)) {
             return '전화번호를 올바르게 입력해주세요.';

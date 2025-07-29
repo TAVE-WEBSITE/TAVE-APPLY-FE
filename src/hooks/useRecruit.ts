@@ -2,7 +2,7 @@ import { axiosClient } from '@/services/axiosClient';
 import { PersonalData, FormattedField, ResumeData } from '@/modules/recruitType';
 import { useMemberStore } from '@/store/memberStore';
 
-export const useRecruit = () => {
+const useRecruit = () => {
     const { setResumeId } = useMemberStore();
 
     const applyPersonal = async (memberId: number) => {
@@ -146,3 +146,5 @@ export const useRecruit = () => {
         applyPortfolio,
     };
 };
+
+export default useRecruit;
