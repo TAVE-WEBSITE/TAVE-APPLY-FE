@@ -80,4 +80,6 @@ const Disclosure = forwardRef<HTMLDivElement, DisclosureProps>(
     }
 );
 
+Disclosure.displayName = 'Disclosure';
+
 export default Disclosure;
