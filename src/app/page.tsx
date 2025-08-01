@@ -22,19 +22,14 @@ export default async function Home() {
                 backgroundPosition: 'top',
             }}
         >
-            <FlexBox direction="col" className="h-dvh justify-between">
-                <FlexBox direction="col" className="h-full justify-center items-center">
-                    <Icons name="logo" height={44} width={87} />
-                    <p className="opacity-50 font-medium">The new technology wave</p>
-                    <h2 className="font-bold md:text-4xl text-2xl mt-6 leading-snug text-center">
-                        기술의 물결 속에서 함께 성장할
-                        <br />
-                        {generation}기 TAVY를 기다립니다
-                    </h2>
-                </FlexBox>
-                <FlexBox className="justify-center pb-10">
-                    <Icons name="circleArrow" height={40} width={40} />
-                </FlexBox>
+            <FlexBox direction="col" className="h-dvh justify-center items-center">
+                <Icons name="logo" height={44} width={87} />
+                <p className="opacity-50 font-medium">The new technology wave</p>
+                <h2 className="font-bold md:text-4xl text-2xl mt-6 leading-snug text-center">
+                    기술의 물결 속에서 함께 성장할
+                    <br />
+                    {generation}기 TAVY를 기다립니다
+                </h2>
             </FlexBox>
             <FlexBox direction="col" className="h-dvh justify-center items-center gap-10">
                 <h3 className="font-bold md:text-3xl text-2xl">{generation}기 모집 일정</h3>

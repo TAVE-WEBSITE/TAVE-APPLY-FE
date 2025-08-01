@@ -24,11 +24,11 @@ function TimePicker({ children }: TimePickerProps) {
 // 날짜 행 컴포넌트
 const DateRow = ({ date, children }: DateRowProps) => {
     return (
-        <div className="flex border-b border-gray-200 py-4 text-[#394150] md:gap-0 gap-5">
+        <div className="flex border-b border-gray-200 py-4 text-[#394150] justify-between">
             <div className="w-32 flex flex-col justify-center font-semibold text-center">
                 <div>{date}</div>
             </div>
-            <div className="flex flex-wrap gap-4 md:justify-end justify-start">{children}</div>
+            <div className="grid md:grid-cols-4 grid-cols-2 gap-4 justify-start">{children}</div>
         </div>
     );
 };

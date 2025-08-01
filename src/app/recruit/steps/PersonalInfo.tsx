@@ -5,46 +5,54 @@ import InputField from '@/components/Input/InputField';
 import FlexBox from '@/components/layout/FlexBox';
 import Select from '@/components/select/Select';
 import ButtonNavigate from '@/components/Button/ButtonNavigate';
-import { PersonalResponse, RecruitField } from '@/modules/recruitType';
+import useRecruit from '@/hooks/useRecruit';
 import { useEffect, useState } from 'react';
-import { useRecruit } from '@/hooks/useRecruit';
 import { useHomeStore } from '@/store/homeStore';
 import { useRecruitStore } from '@/store/recruitStore';
-import { formattedToRecruitField, recruitToFormattedField } from '@/utils/formatField';
 import { useMemberStore } from '@/store/memberStore';
+import { PersonalResponse, RecruitField } from '@/modules/recruitType';
+import { formattedToRecruitField, recruitToFormattedField } from '@/utils/formatField';
 
 const PersonalInfo = () => {
     const { generation } = useHomeStore();
     const { memberId } = useMemberStore();
     const [personal, setPersonal] = useState<PersonalResponse>();
     const { applyPersonal, makeApplication } = useRecruit();
-    const { applyField, school, major, minor, setSchool, setMajor, setMinor, setApplyField, setCurrentStep } =
+    const { applyField, school, major, minor, setApplyField, setSchool, setMajor, setMinor, setCurrentStep } =
         useRecruitStore();
 
     const options: RecruitField[] = ['디자인', '웹 프론트엔드', '앱 프론트엔드', '백엔드', '데이터분석', '딥러닝'];
+
+    const personalFields = [
+        { label: '이름', value: personal?.username },
+        { label: '성별', value: personal?.sex === 'FEMALE' ? '여성' : '남성' },
+        { label: '생년월일', value: personal?.birthday },
+        { label: '전화번호', value: personal?.phoneNumber },
+        { label: '이메일 주소', value: personal?.email },
+    ];
 
     useEffect(() => {
         if (!memberId) return;
 
         const fetchPersonal = async () => {
-            const data = await applyPersonal(memberId);
-            setPersonal(data);
-            setMajor(data.major);
-            setMinor(data.minor);
-            setSchool(data.school);
-            setApplyField(formattedToRecruitField(data.field));
+            const personalData = await applyPersonal(memberId);
+            setPersonal(personalData);
+            setMajor(personalData.major);
+            setMinor(personalData.minor);
+            setSchool(personalData.school);
+            setApplyField(formattedToRecruitField(personalData.field));
         };
 
         fetchPersonal();
     }, [memberId]);
 
     const handleApplication = async () => {
-        if (applyField !== '선택') {
+        if (applyField !== '') {
             const res = await makeApplication(
                 {
                     school,
                     major,
-                    minor: minor ?? '',
+                    minor,
                     field: recruitToFormattedField(applyField),
                     generation,
                 },
@@ -56,22 +64,14 @@ const PersonalInfo = () => {
         }
     };
 
-    const personalFields = [
-        { label: '이름', value: personal?.username },
-        { label: '성별', value: personal?.sex === 'FEMALE' ? '여성' : '남성' },
-        { label: '생년월일', value: personal?.birthday },
-        { label: '전화번호', value: personal?.phoneNumber },
-        { label: '이메일 주소', value: personal?.email },
-    ];
-
     const handleCheck = () => {
-        if ((school ?? '').trim().length && (major ?? '').trim().length && applyField !== undefined) return true;
+        if (school.trim().length && major.trim().length && applyField !== '') return true;
         else return false;
     };
 
     return (
         <>
-            <p className="font-bold md:text-2xl text-xl text-[#394150] text-center mb-4 md:mb-7">개인 정보 입력</p>
+            <p className="font-bold md:text-2xl text-xl text-gray-700 text-center mb-4 md:mb-7">개인 정보 입력</p>
             <FlexBox direction="col" className="md:gap-4 gap-3">
                 {personalFields.map(({ label, value }) => (
                     <InputContainer key={label} label={label} isRequired={false}>
@@ -98,17 +98,17 @@ const PersonalInfo = () => {
                     </Select>
                 </InputContainer>
                 <InputContainer label="학교">
-                    <InputField value={school ?? ''} setValue={setSchool} placeholder="학교를 입력해주세요" />
+                    <InputField value={school} setValue={setSchool} placeholder="학교를 입력해주세요" />
                 </InputContainer>
                 <InputContainer label="전공">
-                    <InputField value={major ?? ''} setValue={setMajor} placeholder="전공을 입력해주세요" />
+                    <InputField value={major} setValue={setMajor} placeholder="전공을 입력해주세요" />
                 </InputContainer>
                 <InputContainer label="부전공/복수전공" isRequired={false}>
-                    <InputField value={minor ?? ''} setValue={setMinor} placeholder="부전공/복수전공을 입력해주세요" />
+                    <InputField value={minor} setValue={setMinor} placeholder="부전공/복수전공을 입력해주세요" />
                 </InputContainer>
-                <FlexBox className="justify-end mt-3 md:mt-2">
-                    <ButtonNavigate text="다음" onClick={handleApplication} isActive={handleCheck()} />
-                </FlexBox>
+            </FlexBox>
+            <FlexBox className="justify-end mt-7">
+                <ButtonNavigate text="다음" onClick={handleApplication} isActive={handleCheck()} />
             </FlexBox>
         </>
     );

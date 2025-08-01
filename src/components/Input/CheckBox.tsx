@@ -3,12 +3,14 @@ import Icons from '@/components/Icons';
 interface CheckBoxProps {
     isChecked: boolean;
     setIsChecked: (isChecked: boolean) => void;
+    id: string;
 }
 
-const CheckBox = ({ isChecked = false, setIsChecked }: CheckBoxProps) => {
+const CheckBox = ({ isChecked = false, setIsChecked, id }: CheckBoxProps) => {
     return (
-        <label className="md:w-6 md:h-6 w-5 h-5 relative inline-block">
+        <div className="md:w-6 md:h-6 w-5 h-5 relative inline-block">
             <input
+                id={id}
                 type="checkbox"
                 checked={isChecked}
                 onChange={(e) => setIsChecked(e.target.checked)}
@@ -21,7 +23,7 @@ const CheckBox = ({ isChecked = false, setIsChecked }: CheckBoxProps) => {
                 height={15}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none"
             />
-        </label>
+        </div>
     );
 };
 

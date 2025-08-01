@@ -24,11 +24,11 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
         <div className="text-[#394150] text-center">
             <FlexBox direction="col" className="md:gap-23 gap-18">
                 <div>
-                    <p className="text-2xl md:text-3xl font-bold leading-[38px]">
+                    <p className="text-2xl md:text-[27px] font-bold leading-[38px]">
                         {username}님 <br />
-                        <span className="text-blue-600 font-extrabold">서류 합격</span>을 축하드립니다
+                        <span className="text-[#195bff] font-extrabold">서류 합격</span>을 축하드립니다
                     </p>
-                    <p className="font-medium text-sm md:text-base leading-[23px] mt-5">
+                    <p className="font-medium text-sm md:text-base md:leading-normal leading-[23px] mt-2">
                         <br />
                         안녕하세요, IT 연합 동아리 TAVE {generation}기 운영진 입니다.
                         <br />
@@ -41,7 +41,7 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
 
                 <div>
                     <p className="text-xl md:text-2xl font-bold">진행 방식</p>
-                    <p className="font-medium text-sm md:text-base leading-[23px]">
+                    <p className="font-medium text-sm md:text-base  md:leading-normal leading-[23px]">
                         <br />
                         <span className="font-bold">25 분간</span> 동아리 임원진과 간단하게
                         <br className="md:hidden" /> 이야기를 나누는 형식이며,
@@ -54,7 +54,7 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
                     <p className="text-xl md:text-2xl font-bold">장소 및 일정</p>
                     <NaverMapLoader />
                     <Map address={interview.generalAddress} />
-                    <p className="font-medium text-sm md:text-base leading-[23px]">
+                    <p className="font-medium text-sm md:text-base md:leading-normal leading-[23px]">
                         {interview.generalAddress}
                         <br className="md:hidden" />
                         <span className="hidden md:inline"> </span>
@@ -65,7 +65,7 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
                 </FlexBox>
 
                 <FlexBox direction="col" className="gap-3 w-full">
-                    <p className="text-xl md:text-2xl font-bold mb-2">준비 사항</p>
+                    <p className="text-xl md:text-2xl font-bold mb-3">준비 사항</p>
                     <SectionContainer direction="col">
                         <FlexBox className="gap-1">
                             <p>1.</p>
@@ -101,7 +101,7 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
                 </FlexBox>
 
                 <FlexBox direction="col" className="gap-3 w-full">
-                    <p className="text-xl md:text-2xl font-bold mb-2">주의 사항</p>
+                    <p className="text-xl md:text-2xl font-bold mb-3">주의 사항</p>
                     <SectionContainer>
                         <p>⚠</p>
                         <p>
@@ -126,7 +126,7 @@ const PaperPassed = ({ username, generation, interview }: PaperPassedProps) => {
                             <br className="md:hidden" /> 문의 부탁드립니다.
                         </p>
                     </SectionContainer>
-                    <FlexBox className="justify-center pb-12 mt-13">
+                    <FlexBox className="justify-center pb-12 mt-10">
                         <ButtonInquire />
                     </FlexBox>
                 </FlexBox>

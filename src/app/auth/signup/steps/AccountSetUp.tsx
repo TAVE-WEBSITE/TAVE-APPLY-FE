@@ -46,30 +46,22 @@ const AccountSetUp = () => {
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
     const handleCheck = () => {
-        if (
-            password.length &&
-            passwordConfirm.length &&
-            passwordError.length === 0 &&
-            confirmError.length === 0 &&
-            isConfirmState === 'SUCCESS'
-        )
-            return true;
-        else return false;
+        if (isConfirmState !== 'SUCCESS') {
+            return '이메일 인증을 완료해주세요.';
+        } else if (!password.length) {
+            return '비밀번호를 입력해주세요.';
+        } else if (!passwordConfirm.length) {
+            return '비밀번호 확인을 입력해주세요.';
+        } else if (passwordError.length !== 0) {
+            return '비밀번호 안전 기준을 충족해주세요.';
+        } else if (confirmError.length !== 0) {
+            return '비밀번호와 확인란을 동일하게 입력해주세요.';
+        }
     };
 
     const handleSignUp = async () => {
-        if (!handleCheck()) {
-            let errorMsg = '';
-            if (isConfirmState !== 'SUCCESS') {
-                errorMsg = '이메일 인증을 완료해주세요.';
-            } else if (!password.length) {
-                errorMsg = '비밀번호를 입력해주세요.';
-            } else if (!passwordConfirm.length) {
-                errorMsg = '비밀번호 확인을 입력해주세요.';
-            } else {
-                errorMsg = '입력 정보를 확인해주세요.';
-            }
-
+        const errorMsg = handleCheck();
+        if (errorMsg) {
             setToast({ message: errorMsg, isError: true });
             setIsToastOpen(true);
             return;
@@ -131,7 +123,7 @@ const AccountSetUp = () => {
                 label="이메일 주소"
                 description={
                     descriptionChange && isConfirmState !== 'SUCCESS'
-                        ? '메일을 받지 못하셨다면 스팸함도 함께 확인해보세요. :)'
+                        ? '메일이 보이지 않는다면 스팸함도 함께 확인해보세요. :)'
                         : '자주 사용하는 이메일로 가입해주세요 :)'
                 }
                 isStress={descriptionChange && isConfirmState !== 'SUCCESS'}

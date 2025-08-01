@@ -5,11 +5,11 @@ import InputField from '@/components/Input/InputField';
 import FlexBox from '@/components/layout/FlexBox';
 import ButtonNavigate from '@/components/Button/ButtonNavigate';
 import SelectOptions from '@/components/Input/SelectOptions';
+import ToastMessage from '@/components/ToastMessage';
 import { handleBirthInput } from '@/utils/formatBirth';
 import { isValidPhoneNumber, isValidBirth } from '@/utils/validate';
 import { useSignUpStore } from '@/store/signUpStore';
 import { useState } from 'react';
-import ToastMessage from '@/components/ToastMessage';
 
 const PersonalInfo = () => {
     const {
@@ -27,7 +27,7 @@ const PersonalInfo = () => {
     const gender = ['남성', '여성'];
 
     const [isToastOpen, setIsToastOpen] = useState(false);
-    const [toast, setToast] = useState({ message: '', isError: false });
+    const [toastMessage, setToastMessage] = useState('');
 
     const formatPhoneNumber = (value: string) => {
         const numbers = value.replace(/[^\d]/g, '');
@@ -48,27 +48,21 @@ const PersonalInfo = () => {
     };
 
     const handleCheck = () => {
-        if (name.length && isValidPhoneNumber(phoneNumber) && isValidBirth(birth) && selectedGender.length) {
-            return true;
-        } else return false;
+        if (!name.trim().length) {
+            return '이름을 입력해주세요.';
+        } else if (!isValidPhoneNumber(phoneNumber)) {
+            return '전화번호를 올바르게 입력해주세요.';
+        } else if (!isValidBirth(birth)) {
+            return '생일을 올바르게 입력해주세요.';
+        } else if (!selectedGender.length) {
+            return '성별을 선택해주세요.';
+        }
     };
 
     const handleNext = async () => {
-        if (!handleCheck()) {
-            let errorMsg = '';
-            if (!name.length) {
-                errorMsg = '이름을 입력해주세요.';
-            } else if (!isValidPhoneNumber(phoneNumber)) {
-                errorMsg = '전화번호를 올바르게 입력해주세요.';
-            } else if (!isValidBirth(birth)) {
-                errorMsg = '생일을 올바르게 입력해주세요';
-            } else if (!selectedGender.length) {
-                errorMsg = '성별을 선택해주세요';
-            } else {
-                errorMsg = '입력 정보를 확인해주세요.';
-            }
-
-            setToast({ message: errorMsg, isError: true });
+        const errorMsg = handleCheck();
+        if (errorMsg) {
+            setToastMessage(errorMsg);
             setIsToastOpen(true);
             return;
         }
@@ -98,14 +92,7 @@ const PersonalInfo = () => {
                 <ButtonNavigate text="이전" hasBackGround={false} onClick={() => setCurrentStep(1)} />
                 <ButtonNavigate text="다음" onClick={handleNext} />
             </div>
-            {isToastOpen && (
-                <ToastMessage
-                    isOpen={isToastOpen}
-                    isError={toast.isError}
-                    setIsOpen={setIsToastOpen}
-                    message={toast.message}
-                />
-            )}
+            {isToastOpen && <ToastMessage isOpen={isToastOpen} setIsOpen={setIsToastOpen} message={toastMessage} />}
         </FlexBox>
     );
 };

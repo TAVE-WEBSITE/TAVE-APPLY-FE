@@ -1,208 +1,202 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import ButtonNavigate from '@/components/Button/ButtonNavigate';
 import Disclosure from '@/components/layout/Disclosure';
 import TextArea from '@/components/Input/TextArea';
 import FlexBox from '@/components/layout/FlexBox';
 import StepCounter from '@/components/StepCounter';
-import { useRecruitStore } from '@/store/recruitStore';
-import { useRecruit } from '@/hooks/useRecruit';
-import { useMemberStore } from '@/store/memberStore';
-import { ResumeAnswerRequest } from '@/modules/recruitType';
-import { recruitToFormattedField } from '@/utils/formatField';
 import ToastMessage from '@/components/ToastMessage';
-
-const programmingLevel = ['입문', '초급', '중급', '상급', '전문가'];
+import useRecruit from '@/hooks/useRecruit';
+import { useEffect, useState, useRef } from 'react';
+import { useRecruitStore } from '@/store/recruitStore';
+import { useMemberStore } from '@/store/memberStore';
+import { ResumeData, QuestionResponse, LanguageLevel, Answer } from '@/modules/recruitType';
+import { recruitToFormattedField } from '@/utils/formatField';
 
 const Field = () => {
     const { setCurrentStep, applyField } = useRecruitStore();
     const { resumeId, username } = useMemberStore();
-    const { getApplicationQuestion, getTempApplication, postTempApplication, postResume, applyProgrammingLevel } =
+    const { applyApplicationQuestion, applyTempApplication, postTempApplication, postResume, applyProgrammingLevel } =
         useRecruit();
-
-    const [questions, setQuestions] = useState<{ [id: number]: string }>({});
-    const [questionList, setQuestionList] = useState<any[]>([]);
-    const [languages, setLanguages] = useState<string[]>([]);
-    const [levels, setLevels] = useState<number[]>([]);
+    const [answers, setAnswers] = useState<{ [id: number]: string }>({});
+    const [highlightQuestions, setHighlightQuestions] = useState<{ [id: number]: boolean }>({});
+    const [questionList, setQuestionList] = useState<QuestionResponse[]>([]);
+    const [languageLevels, setLanguageLevels] = useState<LanguageLevel[]>([]);
     const [isToastOpen, setIsToastOpen] = useState(false);
+    const [highlightProgramming, setHighlightProgramming] = useState(false);
     const [toast, setToast] = useState({ message: '', isError: false });
-
-    useEffect(() => {
-        setLevels(Array(languages.length).fill(0));
-    }, [languages]);
-
     const [visibleCount, setVisibleCount] = useState(1);
 
-    // 다음 버튼 활성화 여부
-    const [isNextEnabled, setIsNextEnabled] = useState(false);
+    const programmingLevel = ['입문', '초급', '중급', '상급', '전문가'];
+
+    const programmingTitle = `${username}님의 프로그래밍 실력은 어느 정도 인가요?`;
+
+    const programmingRef = useRef<HTMLDivElement>(null);
+    const questionRefs = useRef<{ [id: number]: HTMLDivElement | null }>({});
 
     useEffect(() => {
+        if (!resumeId || applyField === '') return;
+
         const fetchData = async () => {
-            const questio = await getApplicationQuestion(resumeId, 1);
-            const programming = await applyProgrammingLevel(recruitToFormattedField(applyField));
+            const questionData = await applyApplicationQuestion(resumeId, 1);
+            const languageData = await applyProgrammingLevel(recruitToFormattedField(applyField));
 
-            const langu = programming.map((item: { language: string }) => item.language);
-            setLanguages(langu);
+            setQuestionList(questionData);
 
-            if (!questio) return;
+            const initialLanguageLevels: LanguageLevel[] = languageData.map((item: { language: string }) => ({
+                language: item.language,
+                level: 0,
+            }));
 
-            const initialAnswers: { [id: number]: string } = {};
-            questio.forEach((q: any) => {
-                initialAnswers[q.id] = '';
+            setLanguageLevels(initialLanguageLevels);
+
+            const initialAnswers = questionData.reduce((acc: { [id: number]: string }, q: QuestionResponse) => {
+                acc[q.id] = '';
+                return acc;
+            }, {});
+
+            setAnswers(initialAnswers);
+
+            const tempData = await applyTempApplication(resumeId);
+
+            const filledAnswers = { ...initialAnswers };
+            tempData.page2.answers.forEach((item: Answer) => {
+                filledAnswers[item.resumeQuestionId] = item.answer ?? '';
             });
 
-            setQuestionList(questio);
-            setQuestions(initialAnswers);
+            setAnswers(filledAnswers);
 
-            const temp = await getTempApplication(resumeId);
-            if (temp?.page2) {
-                const filled = { ...initialAnswers };
-                temp.page2.answers.forEach((item: any) => {
-                    filled[item.resumeQuestionId] = item.answer ?? '';
+            if (tempData.page2.languageLevels.length > 0) {
+                const loadedLevels = initialLanguageLevels.map((item: LanguageLevel) => {
+                    const found = tempData.page2.languageLevels.find(
+                        (languageLevel: LanguageLevel) => languageLevel.language === item.language
+                    );
+                    return {
+                        language: item.language,
+                        level: found ? found.level : 0,
+                    };
                 });
-                setQuestions(filled);
+                setLanguageLevels(loadedLevels);
 
-                // languageLevels가 array이고 object 배열이면 처리
-                if (
-                    temp.page2.languageLevels &&
-                    Array.isArray(temp.page2.languageLevels) &&
-                    temp.page2.languageLevels.length > 0
-                ) {
-                    const loadedLevels = programming.map((item: { language: string }) => {
-                        const found = temp.page2.languageLevels.find((lvl: any) => lvl.language === item.language);
-                        return found ? Number(found.level) : 0;
-                    });
-                    setLevels(loadedLevels);
-
-                    const firstZeroIndex = loadedLevels.findIndex((l: number) => l === 0);
-                    setVisibleCount(firstZeroIndex === -1 ? programming.length : firstZeroIndex + 1);
-                }
+                const firstZeroIndex = loadedLevels.findIndex((l: LanguageLevel) => l.level === 0);
+                setVisibleCount(firstZeroIndex === -1 ? loadedLevels.length : firstZeroIndex + 1);
             }
         };
 
         fetchData();
-    }, [resumeId]);
+    }, [resumeId, applyField]);
 
-    // 질문 답변 변경 시
     const handleAnswerChange = (id: number, value: string) => {
-        setQuestions((prev) => {
-            const newQ = { ...prev, [id]: value };
-            checkCanNext(newQ, levels);
-            return newQ;
-        });
+        setAnswers((prev) => ({
+            ...prev,
+            [id]: value,
+        }));
     };
 
-    // 프로그래밍 레벨 변경 시
     const handleLevelChange = (index: number, level: number) => {
-        const newLevels = [...levels];
-        newLevels[index] = level;
-        setLevels(newLevels);
+        const newLanguageLevels = [...languageLevels];
+        newLanguageLevels[index] = {
+            ...newLanguageLevels[index],
+            level,
+        };
+        setLanguageLevels(newLanguageLevels);
 
-        // 현재 visibleCount가 index + 1 (현재 레벨까지 보임)일 때만 다음 레벨 보이도록
-        // 그리고 다음 레벨이 존재할 때만 visibleCount 올리기
         if (
             level > 0 &&
             visibleCount === index + 1 &&
-            visibleCount < languages.length &&
-            !newLevels[index + 1] // 다음 레벨이 아직 0일 때만 보이게 함 (중복 증가 방지)
+            visibleCount < newLanguageLevels.length &&
+            newLanguageLevels[index + 1].level === 0
         ) {
             setVisibleCount(visibleCount + 1);
         }
-
-        checkCanNext(questions, newLevels);
     };
 
-    // 다음 버튼 활성화 체크
-    const checkCanNext = (currentQuestions: { [id: number]: string }, currentLevels: number[]) => {
-        // 질문 모두 작성
-        const allQuestionsFilled = questionList.every((q) => {
-            if (!q.required) return true;
-            const val = currentQuestions[q.id];
-            return val !== undefined && val.trim() !== '';
-        });
-
-        // 보이는 레벨 모두 1 이상
-        const allLevelsFilled = currentLevels.slice(0, visibleCount).every((level) => level > 0);
-
-        setIsNextEnabled(allQuestionsFilled && allLevelsFilled);
-    };
-
-    // 초기 렌더링 또는 상태 변경 시 체크
-    useEffect(() => {
-        checkCanNext(questions, levels);
-    }, [questions, levels, visibleCount, questionList]);
-
-    // API 요청용 객체 생성
-    const buildRequestBody = (): ResumeAnswerRequest => ({
-        answers: Object.entries(questions).map(([id, answer]) => ({
+    const buildPostBody = (): ResumeData => ({
+        answers: Object.entries(answers).map(([id, answer]) => ({
             resumeQuestionId: Number(id),
             answer,
         })),
-        languageLevels: languages.map((lang, idx) => ({
-            language: lang,
-            level: levels[idx].toString(), // number → string 변환
-        })),
+        languageLevels,
         timeSlots: [],
     });
 
-    // 임시 저장
     const handleTempSave = async () => {
-        setToast({ message: '임시저장이 완료되었습니다.', isError: false });
-        await postTempApplication(resumeId, 2, buildRequestBody());
+        const res = await postTempApplication(resumeId, 2, buildPostBody());
+        if (res === 200) {
+            setToast({ message: '임시저장이 완료되었습니다.', isError: false });
+        } else {
+            setToast({ message: '임시저장에 실패하였습니다.', isError: true });
+        }
         setIsToastOpen(true);
     };
 
-    // 이전 단계 이동 (임시 저장 후)
-    const handlePostOnly = async (step: number) => {
-        const isAllAnswersEmpty = Object.values(questions).every((val) => val.trim() === '');
-        const isAllLevelsEmpty = levels.every((level) => level === 0);
-
-        // 아무 값도 입력되지 않았을 경우 → API 호출 없이 이전 스텝만 이동
-        if (isAllAnswersEmpty && isAllLevelsEmpty) {
-            setCurrentStep(step);
-            return;
-        }
-
-        // 일부라도 입력되어 있으면 임시 저장 후 이전 스텝 이동
-        await postTempApplication(resumeId, 2, buildRequestBody());
-        setCurrentStep(step);
-    };
-
-    // 저장 후 다음 단계 이동
-    const handleBothPostAndTemp = async () => {
-        await postTempApplication(resumeId, 2, buildRequestBody());
-        await postResume(resumeId, buildRequestBody(), 2);
-        setCurrentStep(3);
-    };
-
-    const titledi = `${username}님의 프로그래밍 실력은 어느 정도 인가요?`;
-
     const canTempSave = () => {
-        const hasAnyAnswer = Object.values(questions).some((val) => val.trim() !== '');
-        const hasAnyLevel = levels.some((level) => level > 0);
+        const hasAnyAnswer = Object.values(answers).some((val) => val.trim() !== '');
+        const hasAnyLevel = languageLevels.some((item) => item.level > 0);
         return hasAnyAnswer || hasAnyLevel;
     };
 
+    const handleBeforeTemp = async () => {
+        if (!canTempSave()) {
+            setCurrentStep(1);
+            return;
+        }
+        const res = await postTempApplication(resumeId, 2, buildPostBody());
+        if (res === 200) {
+            setCurrentStep(1);
+        }
+    };
+
+    const handlePostAndTemp = async () => {
+        const notFilledLevel = languageLevels.slice(0, visibleCount).some((item) => item.level === 0);
+
+        if (notFilledLevel) {
+            programmingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setHighlightProgramming(true);
+            setTimeout(() => setHighlightProgramming(false), 3000);
+            return;
+        }
+
+        const emptyRequiredQuestion = questionList.find(
+            (q) => q.required && (!answers[q.id] || answers[q.id].trim() === '')
+        );
+
+        if (emptyRequiredQuestion) {
+            const ref = questionRefs.current[emptyRequiredQuestion.id];
+            ref?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setHighlightQuestions((prev) => ({ ...prev, [emptyRequiredQuestion.id]: true }));
+            setTimeout(() => {
+                setHighlightQuestions((prev) => ({ ...prev, [emptyRequiredQuestion.id]: false }));
+            }, 3000);
+            return;
+        }
+        const tempRes = await postTempApplication(resumeId, 2, buildPostBody());
+        const resumeRes = await postResume(resumeId, buildPostBody(), 2);
+        if (tempRes === 200 && resumeRes === 200) {
+            setCurrentStep(3);
+        }
+    };
+
     return (
-        <div className="w-full h-full">
+        <>
             <button
                 onClick={handleTempSave}
                 disabled={!canTempSave()}
-                className="disabled:cursor-not-allowed cursor-pointer hidden md:block absolute right-15 top-70 rounded-lg border border-[#E5E7EB] bg-white text-[#394150] p-3"
+                className="disabled:cursor-not-allowed cursor-pointer hidden md:block absolute
+                right-15 top-60 rounded-lg border border-[#E5E7EB] bg-white text-[#394150]
+                disabled:text-[#394150]/50 p-3"
             >
                 임시 저장
             </button>
-            <FlexBox direction="col" className="gap-5 relative">
-                <h1 className="font-bold text-2xl text-[#394150] text-center">{applyField} 분야</h1>
-
-                <Disclosure title={titledi} isRequired>
-                    <FlexBox direction="col" className="gap-4 pt-2">
-                        {languages.slice(0, visibleCount).map((lang, idx) => (
+            <FlexBox direction="col" className="gap-5">
+                <p className="font-bold md:text-2xl text-xl text-gray-700 text-center md:mb-3">{applyField} 분야</p>
+                <Disclosure ref={programmingRef} title={programmingTitle} highlight={highlightProgramming} isRequired>
+                    <FlexBox direction="col" className="gap-4">
+                        {languageLevels.slice(0, visibleCount).map((item, idx) => (
                             <StepCounter
-                                key={lang}
-                                title={lang}
-                                currentStep={levels[idx]}
+                                key={idx}
+                                title={item.language}
+                                currentStep={item.level}
                                 setCurrentStep={(level) => handleLevelChange(idx, level)}
                                 maxStep={5}
                                 stepLabels={programmingLevel}
@@ -210,36 +204,39 @@ const Field = () => {
                         ))}
                     </FlexBox>
                 </Disclosure>
-
                 {questionList.map((q) => (
                     <Disclosure
                         key={q.id}
+                        ref={(el) => {
+                            questionRefs.current[q.id] = el;
+                        }}
                         title={q.question}
                         isRequired={q.required}
                         description={` (${q.textLength}자 이내)`}
+                        highlight={highlightQuestions[q.id]}
                     >
                         <TextArea
-                            value={questions[q.id] ?? ''}
+                            value={answers[q.id] ?? ''}
                             setValue={(val) => handleAnswerChange(q.id, val)}
                             placeholder="내용을 입력해주세요"
                             maxLength={q.textLength}
                         />
                     </Disclosure>
                 ))}
-
-                <FlexBox className="justify-between mt-8 mb-0 gap-2">
-                    <ButtonNavigate text="이전" onClick={() => handlePostOnly(1)} />
-                    <ButtonNavigate text="다음" onClick={handleBothPostAndTemp} isActive={isNextEnabled} />
+                <FlexBox direction="col" className="gap-3">
+                    <FlexBox className="justify-between mt-4 gap-2">
+                        <ButtonNavigate text="이전" onClick={handleBeforeTemp} />
+                        <ButtonNavigate text="다음" onClick={handlePostAndTemp} />
+                    </FlexBox>
+                    <div className="md:hidden">
+                        <ButtonNavigate
+                            text="임시저장"
+                            onClick={handleTempSave}
+                            isActive={canTempSave()}
+                            hasBackGround={false}
+                        />
+                    </div>
                 </FlexBox>
-
-                <div className="md:hidden">
-                    <ButtonNavigate
-                        text="임시저장"
-                        onClick={handleTempSave}
-                        isActive={canTempSave()}
-                        hasBackGround={false}
-                    />
-                </div>
             </FlexBox>
             {isToastOpen && (
                 <ToastMessage
@@ -249,7 +246,7 @@ const Field = () => {
                     message={toast.message}
                 />
             )}
-        </div>
+        </>
     );
 };
 

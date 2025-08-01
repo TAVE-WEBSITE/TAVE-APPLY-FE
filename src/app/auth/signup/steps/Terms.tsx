@@ -26,17 +26,19 @@ const Terms = () => {
                 text-gray-700 md:text-base sm:text-sm text-xs"
             >
                 <FlexBox className="gap-2 sm:gap-3 items-center">
-                    <CheckBox isChecked={checkAll} setIsChecked={handleCheckAll} />
-                    <p className="font-bold">모두 동의합니다</p>
+                    <CheckBox id="all" isChecked={checkAll} setIsChecked={handleCheckAll} />
+                    <label htmlFor="all" className="font-bold cursor-pointer">
+                        모두 동의합니다
+                    </label>
                 </FlexBox>
-                <div className="h-[1.2px] w-full bg-[#E5E7EB]"></div>
+                <div className="h-[1.2px] w-full bg-[#E5E7EB]" />
                 <FlexBox className="justify-between items-center">
                     <FlexBox className="gap-2 sm:gap-3 items-center">
-                        <CheckBox isChecked={checkPrivacy} setIsChecked={setCheckPrivacy} />
-                        <span className="font-medium">
+                        <CheckBox id="privacy" isChecked={checkPrivacy} setIsChecked={setCheckPrivacy} />
+                        <label htmlFor="privacy" className="font-medium cursor-pointer">
                             개인정보 수집 및 이용에 동의합니다.
                             <span className="text-[#ED6661] text-xs font-bold ml-1">(필수)</span>
-                        </span>
+                        </label>
                     </FlexBox>
                     <Link
                         href="https://alluring-eagle-b3d.notion.site/TAVE-Recruit-21f8f2c5125080fc9d6fe2de8caf4615"
@@ -49,11 +51,11 @@ const Terms = () => {
                 </FlexBox>
                 <FlexBox className="justify-between items-center">
                     <FlexBox className="gap-2 sm:gap-3 items-center">
-                        <CheckBox isChecked={checkService} setIsChecked={setCheckService} />
-                        <p className="font-medium">
+                        <CheckBox id="service" isChecked={checkService} setIsChecked={setCheckService} />
+                        <label htmlFor="service" className="font-medium cursor-pointer">
                             TAVE 활동 정책에 동의합니다.
                             <span className="text-[#ED6661] text-xs font-bold ml-1">(필수)</span>
-                        </p>
+                        </label>
                     </FlexBox>
                     <Link
                         href="https://alluring-eagle-b3d.notion.site/TAVE-21f8f2c5125080c0a9e2e21ffbbf07da"

@@ -24,7 +24,7 @@ const recruitMap: Record<number, JSX.Element> = {
 const stepCount = Object.keys(recruitMap).length;
 
 const Recruit = () => {
-    const [isDocument, setIsDocument] = useState(true);
+    const [isDocument, setIsDocument] = useState(false);
     const { currentStep, isClickedFourth } = useRecruitStore();
     const { applyIsDocument } = useResult();
     const { generation } = useHomeStore();
@@ -33,12 +33,12 @@ const Recruit = () => {
     const title = `${formatOrdinal(generation)} TAVE APPLY STEP`;
 
     useEffect(() => {
-        const fetchIsDocument = async () => {
+        const fetchDocument = async () => {
             const documentData = await applyIsDocument();
             setIsDocument(documentData);
         };
 
-        fetchIsDocument();
+        fetchDocument();
     }, []);
 
     return (
@@ -64,12 +64,12 @@ const Recruit = () => {
                 >
                     {isDocument ? (
                         resumeState === 'SUBMITTED' && isClickedFourth ? (
-                            <Guide type="submit" />
+                            recruitMap[currentStep]
                         ) : (
                             recruitMap[currentStep]
                         )
                     ) : (
-                        <Guide type="period" />
+                        recruitMap[currentStep]
                     )}
                 </FlexBox>
             </section>

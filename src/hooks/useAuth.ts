@@ -5,7 +5,7 @@ import { SignUpData, EmailVerification, PasswordReset, Login, LoginResponse } fr
 import { useMemberStore } from '@/store/memberStore';
 
 const useAuth = () => {
-    const { setIsLogin, setEmail, setMemberId, setUsername, setResumeState, reset } = useMemberStore();
+    const { setIsLogin, setEmail, setMemberId, setUsername, setResumeState, setResumeId, reset } = useMemberStore();
     const [isSignInLoading, setIsSignInLoading] = useState(false);
     const [isVerifyEmailLoading, setIsVerifyEmailLoading] = useState(false);
     const [isVerifyConfirmLoading, setIsVerifyConfirmLoading] = useState(false);
@@ -22,6 +22,7 @@ const useAuth = () => {
             setMemberId(data.memberId);
             setUsername(data.username);
             setResumeState(data.resumeState);
+            setResumeId(data.resumeId);
             return res.status;
         } catch (error) {
             console.error(error);
