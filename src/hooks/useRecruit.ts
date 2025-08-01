@@ -43,7 +43,7 @@ const useRecruit = () => {
         }
     };
 
-    const applyApplicationData = async (resumeId: number, page: number) => {
+    const applyApplicationQuestion = async (resumeId: number, page: number) => {
         try {
             const res = await axiosClient.get(`/v1/member/resumes/${resumeId}/questions`, {
                 params: {
@@ -103,7 +103,7 @@ const useRecruit = () => {
         }
     };
 
-    const applySocialLinks = async (resumeId: number, blogUrl: string, githubUrl: string) => {
+    const postSocialLinks = async (resumeId: number, blogUrl: string, githubUrl: string) => {
         try {
             const res = await axiosClient.post(`/v1/member/resume/${resumeId}/social-links`, {
                 blogUrl,
@@ -116,7 +116,7 @@ const useRecruit = () => {
         }
     };
 
-    const applyPortfolio = async (resumeId: number, portfolio: File) => {
+    const postPortfolio = async (resumeId: number, portfolio: File) => {
         try {
             const file = new FormData();
             file.append('file', portfolio);
@@ -132,18 +132,28 @@ const useRecruit = () => {
         }
     };
 
+    const applyUrl = async (resumeId: number) => {
+        try {
+            const res = await axiosClient.get(`/v1/member/resume/${resumeId}/social-links/detail`);
+            return res.data.result;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return {
         applyPersonal,
         makeApplication,
         postResume,
-        applyApplicationData,
+        applyApplicationQuestion,
         applyTempApplication,
         postTempApplication,
         applySchedule,
         applyCompleteEmail,
         applyProgrammingLevel,
-        applySocialLinks,
-        applyPortfolio,
+        postSocialLinks,
+        postPortfolio,
+        applyUrl,
     };
 };
 

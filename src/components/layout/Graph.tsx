@@ -45,6 +45,18 @@ const Graph = ({ applicantData, generation }: GraphProps) => {
             );
         }
 
+        if (item.applicationStatus === 'SUBMITTED') {
+            return (
+                <Link
+                    href="/mypage/submit"
+                    className="text-white md:text-[15px] text-[13px] font-bold py-2 px-3
+                    bg-blue-600 rounded-lg"
+                >
+                    서류 확인
+                </Link>
+            );
+        }
+
         return (
             <p className={`${statusMeta[item.applicationStatus].color}`}>{statusMeta[item.applicationStatus].text}</p>
         );

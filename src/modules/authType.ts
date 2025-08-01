@@ -23,6 +23,7 @@ interface LoginResponse {
     generation: string;
     department: string;
     job: string;
+    resumeId: number;
     resumeState: 'SUBMITTED' | 'TEMPORARY';
 }
 

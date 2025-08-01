@@ -18,7 +18,7 @@ export default function UploadField({ type = 'text', value, onChange, setValue }
         return (
             <FlexBox className="items-center gap-3 border border-[#E5E7EB] rounded-xl px-4 py-3 md:py-4 w-full justify-between">
                 <FlexBox className="items-center gap-3">
-                    <Icons name={isUploaded ? 'fileGray' : 'upload'} width={20} height={20} />
+                    <Icons name={isUploaded ? 'fileGray' : 'upload'} width={16} height={16} />
                     {isUploaded ? (
                         <a
                             href={value}
@@ -32,7 +32,7 @@ export default function UploadField({ type = 'text', value, onChange, setValue }
                     ) : (
                         <>
                             <label htmlFor="file-input" className="text-[#394150] md:text-base cursor-pointer">
-                                {value?.name ? value.name : '파일 선택'}
+                                {value?.name ? value.name : '파일 선택 (100MB 이내)'}
                             </label>
                             <input id="file-input" ref={inputRef} type="file" onChange={onChange} className="hidden" />
                         </>

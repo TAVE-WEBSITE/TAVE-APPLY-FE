@@ -13,7 +13,7 @@ interface ResumeData {
 
 interface LanguageLevel {
     language: string;
-    level: string;
+    level: number;
 }
 
 interface TimeSlot {
@@ -42,8 +42,31 @@ interface PersonalResponse {
     field: FormattedField;
 }
 
+interface QuestionResponse {
+    id: number;
+    question: string;
+    answer: string | null;
+    fieldType: FormattedField;
+    ordered: number;
+    answerType: string;
+    textLength: number;
+    required: boolean;
+    common: boolean;
+}
+
 type RecruitField = '디자인' | '웹 프론트엔드' | '앱 프론트엔드' | '백엔드' | '데이터분석' | '딥러닝';
 
 type FormattedField = 'DESIGN' | 'DEEPLEARNING' | 'DATAANALYSIS' | 'WEBFRONTEND' | 'APPFRONTEND' | 'BACKEND';
 
-export type { RecruitField, Schedule, PersonalData, FormattedField, ResumeData, PersonalResponse };
+export type {
+    RecruitField,
+    Schedule,
+    PersonalData,
+    FormattedField,
+    ResumeData,
+    PersonalResponse,
+    QuestionResponse,
+    LanguageLevel,
+    Answer,
+    TimeSlot,
+};

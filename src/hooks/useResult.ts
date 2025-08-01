@@ -49,12 +49,22 @@ const useResult = () => {
         }
     };
 
+    const applyResumeHistory = async (resumeId: number) => {
+        try {
+            const res = await axiosClient.get(`/v1/member/resumes/${resumeId}/details`);
+            return res.data.result;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return {
         applyApplicantHistory,
         applyInterview,
         applyFinal,
         applyCoordinates,
         applyIsDocument,
+        applyResumeHistory,
     };
 };
 

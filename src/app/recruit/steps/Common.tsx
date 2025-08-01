@@ -1,144 +1,106 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Disclosure from '@/components/layout/Disclosure';
 import TextArea from '@/components/Input/TextArea';
 import ButtonNavigate from '@/components/Button/ButtonNavigate';
 import Uploader from '@/components/upload/Uploader';
 import TimePicker from '@/components/TimePicker/TimePicker';
-import { useRecruitStore } from '@/store/recruitStore';
-import formatTimeSlot, { formatToSelectedTimes } from '@/utils/formatTimeSlot';
-import FlexBox from '@/components/layout/FlexBox';
-import { useRecruit } from '@/hooks/useRecruit';
-import { useMemberStore } from '@/store/memberStore';
-import { ResumeAnswerRequest } from '@/modules/recruitType';
 import ToastMessage from '@/components/ToastMessage';
-
-const uploadOptions = ['Github', 'Tech Blog', 'Portfolio'];
-type uploadType = 'text' | 'file';
+import FlexBox from '@/components/layout/FlexBox';
+import { formatTimeSlot, formatSelectedTimes, buildTimeSlot } from '@/utils/formatTimeSlot';
+import useRecruit from '@/hooks/useRecruit';
+import { useEffect, useRef, useState } from 'react';
+import { useMemberStore } from '@/store/memberStore';
+import { useRecruitStore } from '@/store/recruitStore';
+import { Answer, QuestionResponse, ResumeData, Schedule } from '@/modules/recruitType';
 
 const Common = () => {
-    const { setResumeState } = useMemberStore();
+    const { setResumeState, username } = useMemberStore();
     const { setCurrentStep, setIsClickedFourth } = useRecruitStore();
     const { resumeId } = useMemberStore();
     const {
-        getApplicationQuestion,
-        getTempApplication,
+        applyApplicationQuestion,
+        applyTempApplication,
         postTempApplication,
         postResume,
-        getTime,
-        getEmail,
+        applySchedule,
+        applyCompleteEmail,
         postSocialLinks,
-        postURL,
+        postPortfolio,
+        applyUrl,
     } = useRecruit();
 
-    const [questions, setQuestions] = useState<{ [id: number]: string }>({});
-    const [questionList, setQuestionList] = useState<any[]>([]);
+    type UploadType = 'text' | 'file';
+    const uploadOptions = ['Github', 'TechBlog', 'Portfolio'];
 
-    // 업로더 상태 - 옵션별 값 저장
-    const [uploadValues, setUploadValues] = useState<{ [key: string]: string | File }>({
+    const [selectedOption, setSelectedOption] = useState(uploadOptions[0]);
+    const uploadType: UploadType = selectedOption === 'Portfolio' ? 'file' : 'text';
+
+    const [uploadValues, setUploadValues] = useState<Record<string, string | File>>({
         Github: '',
-        'Tech Blog': '',
+        TechBlog: '',
         Portfolio: '',
     });
 
-    // 선택된 옵션
-    const [selectedOption, setSelectedOption] = useState(uploadOptions[0]);
-
-    // 업로드 타입 (선택 옵션에 따라 결정)
-    const [uploadType, setUploadType] = useState<uploadType>(uploadOptions[0] === 'Portfolio' ? 'file' : 'text');
-
-    // 면접시간 선택 상태
+    const [answers, setAnswers] = useState<{ [id: number]: string }>({});
+    const [questionList, setQuestionList] = useState<QuestionResponse[]>([]);
+    const [highlightQuestions, setHighlightQuestions] = useState<{ [id: number]: boolean }>({});
+    const [schedule, setSchedule] = useState<Schedule[]>([]);
     const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
-    const [scheduleData, setScheduleData] = useState<{ date: string; timeSlots: { time: string }[] }[]>([]);
+    const [toast, setToast] = useState({ message: '', isError: false });
+    const [isToastOpen, setIsToastOpen] = useState(false);
+    const [highlightTimeSlot, setHighlightTimeSlot] = useState(false);
 
-    const [isNextEnabled, setIsNextEnabled] = useState(false);
+    const timeSlotRef = useRef<HTMLDivElement>(null);
+    const questionRefs = useRef<{ [id: number]: HTMLDivElement | null }>({});
 
-    useEffect(() => {
-        const requiredQuestionsFilled = questionList
-            .filter((q) => q.required)
-            .every((q) => {
-                const val = questions[q.id];
-                return val !== undefined && val.trim() !== '';
-            });
-
-        const hasSelectedTime = selectedTimes.length > 0;
-
-        setIsNextEnabled(requiredQuestionsFilled && hasSelectedTime);
-        console.log(buildTimeSlots(selectedTimes));
-    }, [questions, questionList, selectedTimes]);
-
-    const buildTimeSlots = (selectedTimes: string[]): { time: string }[] => {
-        return selectedTimes.map((datetimeStr) => {
-            const [datePart, timePart] = datetimeStr.split('T'); // "07/03 (목)", "14:45"
-            const cleanDate = datePart.trim().split(' ')[0]; // "07/03"
-            const [month, day] = cleanDate.split('/').map(Number);
-            const [hour, minute] = timePart.split(':').map(Number);
-
-            const date = new Date(2025, month - 1, day, hour, minute); // 2025 고정
-            const yyyy = date.getFullYear();
-            const mm = String(date.getMonth() + 1).padStart(2, '0');
-            const dd = String(date.getDate()).padStart(2, '0');
-            const hh = String(date.getHours()).padStart(2, '0');
-            const mi = String(date.getMinutes()).padStart(2, '0');
-
-            return { time: `${yyyy}-${mm}-${dd}T${hh}:${mi}` };
-        });
-    };
+    const uploadTitle = `아래의 목록 중 ${username}께서 소유하고 있으신 것이 있다면 자유롭게 첨부해주세요 :)`;
 
     useEffect(() => {
+        if (!resumeId) return;
+
         const fetchData = async () => {
-            const times = await getTime();
-            const questions = await getApplicationQuestion(resumeId, 2);
+            const questionData = await applyApplicationQuestion(resumeId, 2);
+            const timeData = await applySchedule();
+            const urlData = await applyUrl(resumeId);
 
-            const initialAnswers: { [id: number]: string } = {};
-            questions.forEach((q: any) => {
-                initialAnswers[q.id] = '';
+            setQuestionList(questionData);
+
+            const initialAnswers = questionData.reduce((acc: { [id: number]: string }, q: QuestionResponse) => {
+                acc[q.id] = '';
+                return acc;
+            }, {});
+
+            setAnswers(initialAnswers);
+
+            const formattedTime = formatTimeSlot(timeData);
+
+            setSchedule(formattedTime);
+
+            const tempData = await applyTempApplication(resumeId);
+
+            const filledAnswers = { ...initialAnswers };
+            tempData.page3.answers.forEach((item: Answer) => {
+                filledAnswers[item.resumeQuestionId] = item.answer ?? '';
             });
-            setQuestionList(questions);
-            setQuestions(initialAnswers);
 
-            if (times && Array.isArray(times) && times.length > 0) {
-                const formatted = formatTimeSlot(times);
+            setAnswers(filledAnswers);
 
-                setScheduleData(formatted);
-            }
+            setUploadValues((prev) => ({
+                ...prev,
+                ...{ Github: urlData.githubUrl },
+                ...{ TechBlog: urlData.blogUrl },
+                ...{ Portfolio: urlData.portfolioUrl },
+            }));
 
-            const temp = await getTempApplication(resumeId);
-
-            if (temp?.page3) {
-                // 질문 답변 채우기
-                const filled = { ...initialAnswers };
-                if (Array.isArray(temp.page3.answers)) {
-                    temp.page3.answers.forEach((item: any) => {
-                        filled[item.resumeQuestionId] = item.answer ?? '';
-                    });
-                }
-                setQuestions(filled);
-
-                // 여기 확인
-                setUploadValues((prev) => ({
-                    ...prev,
-                    ...(temp.page3.githubUrl && { Github: temp.page3.githubUrl }),
-                    ...(temp.page3.blogUrl && { 'Tech Blog': temp.page3.blogUrl }),
-                    ...(temp.page3.portfolioUrl && { Portfolio: temp.page3.portfolioUrl }),
-                }));
-
-                // 면접 시간 처리
-                if (temp?.page3?.timeSlots && Array.isArray(temp.page3.timeSlots)) {
-                    if (typeof temp.page3.timeSlots[0] === 'string') {
-                        setSelectedTimes(temp.page3.timeSlots);
-                    } else if (temp.page3.timeSlots[0]?.time) {
-                        setSelectedTimes(formatToSelectedTimes(temp.page3.timeSlots));
-                    }
-                }
+            if (tempData.page3.timeSlots) {
+                setSelectedTimes(formatSelectedTimes(tempData.page3.timeSlots));
             }
         };
 
         fetchData();
     }, [resumeId]);
 
-    // 날짜+시간 문자열 생성 후 토글 처리
     const toggleTimeSelection = (date: string, time: string) => {
         const dateTime = `${date}T${time}`;
         setSelectedTimes((prev) =>
@@ -146,141 +108,152 @@ const Common = () => {
         );
     };
 
+    const handleOptionChange = (option: string) => {
+        setSelectedOption(option);
+    };
+
     const handleAnswerChange = (id: number, value: string) => {
-        setQuestions((prev) => ({
+        setAnswers((prev) => ({
             ...prev,
             [id]: value,
         }));
     };
 
-    // 확인
-    const handleOptionChange = (option: string) => {
-        setSelectedOption(option);
-        setUploadType(option === 'Portfolio' ? 'file' : 'text');
-    };
-
-    // 확인
     const handleUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (uploadType === 'file') {
-            const file = e.target.files?.[0];
-            setUploadValues((prev) => ({
-                ...prev,
-                [selectedOption]: file ?? '',
-            }));
-        } else {
-            setUploadValues((prev) => ({
-                ...prev,
-                [selectedOption]: e.target.value,
-            }));
-        }
+        const value = uploadType === 'file' ? e.target.files?.[0] ?? '' : e.target.value;
+        setUploadValues((prev) => ({
+            ...prev,
+            [selectedOption]: value,
+        }));
     };
 
-    const buildRequestBody = (): ResumeAnswerRequest & {
-        timeSlots: { time: string }[];
-        languageLevels: any[];
-    } => ({
-        answers: Object.entries(questions).map(([id, answer]) => ({
+    const buildPostBody = (): ResumeData => ({
+        answers: Object.entries(answers).map(([id, answer]) => ({
             resumeQuestionId: Number(id),
             answer,
         })),
         languageLevels: [],
-        timeSlots: buildTimeSlots(selectedTimes), // ← 여기!
+        timeSlots: buildTimeSlot(selectedTimes),
     });
 
     const handleTempSave = async () => {
-        setToast({ message: '임시저장이 완료되었습니다.', isError: false });
-        await postTempApplication(resumeId, 3, buildRequestBody());
+        console.log(uploadValues['Portfolio']);
+        const res = await postTempApplication(resumeId, 3, buildPostBody());
+        if (res === 200) {
+            setToast({ message: '임시저장이 완료되었습니다.', isError: false });
+        } else {
+            setToast({ message: '임시저장에 실패하였습니다.', isError: true });
+        }
         setIsToastOpen(true);
     };
 
-    const handlePostOnly = async (step: number) => {
-        const isAllAnswersEmpty = Object.values(questions).every((val) => val.trim() === '');
-        const hasNoSelectedTime = selectedTimes.length === 0;
+    const canTempSave = () => {
+        const hasAnyAnswer = Object.values(answers).some((val) => val.trim() !== '');
+        const hasAnySelectedTime = selectedTimes.length > 0;
+        return hasAnyAnswer || hasAnySelectedTime;
+    };
 
-        // 질문도 없고 시간도 선택 안 했으면 저장 없이 넘어감
-        if (isAllAnswersEmpty && hasNoSelectedTime) {
-            setCurrentStep(step);
+    const handleBeforeTemp = async () => {
+        if (!canTempSave()) {
+            setCurrentStep(2);
             return;
         }
 
-        console.log(buildTimeSlots(selectedTimes));
-
-        await postTempApplication(resumeId, 3, buildRequestBody());
-        setCurrentStep(step);
-    };
-
-    const handleSubmit = async () => {
-        try {
-            await postResume(resumeId, buildRequestBody(), 3);
-            await getEmail(resumeId);
-
-            setIsClickedFourth(false);
-            setResumeState('SUBMITTED');
-            setCurrentStep(4);
-        } catch (e) {
-            console.error('제출 또는 이메일 전송 실패:', e);
+        const res = await postTempApplication(resumeId, 3, buildPostBody());
+        if (res === 200) {
+            setCurrentStep(2);
         }
     };
 
-    const canTempSave = Object.values(questions).some((val) => val.trim() !== '') || selectedTimes.length > 0;
+    const handlePostAndTemp = async () => {
+        if (selectedTimes.length === 0) {
+            timeSlotRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setHighlightTimeSlot(true);
+            setTimeout(() => setHighlightTimeSlot(false), 3000);
+            return;
+        }
 
-    const [isToastOpen, setIsToastOpen] = useState(false);
-    const [toast, setToast] = useState({ message: '', isError: false });
+        const emptyRequiredQuestion = questionList.find(
+            (q) => q.required && (!answers[q.id] || answers[q.id].trim() === '')
+        );
+
+        if (emptyRequiredQuestion) {
+            const ref = questionRefs.current[emptyRequiredQuestion.id];
+            ref?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setHighlightQuestions((prev) => ({ ...prev, [emptyRequiredQuestion.id]: true }));
+            setTimeout(() => {
+                setHighlightQuestions((prev) => ({ ...prev, [emptyRequiredQuestion.id]: false }));
+            }, 3000);
+            return;
+        }
+
+        const tempRes = await postResume(resumeId, buildPostBody(), 3);
+        const emailRes = await applyCompleteEmail(resumeId);
+        if (tempRes === 200 && emailRes === 200) {
+            setIsClickedFourth(false);
+            setResumeState('SUBMITTED');
+            setCurrentStep(4);
+        }
+    };
 
     return (
-        <div className="w-full h-full">
+        <>
             <button
                 onClick={handleTempSave}
-                disabled={!canTempSave}
-                className="disabled:cursor-not-allowed cursor-pointer hidden md:block absolute right-15 top-70 rounded-lg border border-[#E5E7EB] bg-white text-[#394150] p-3"
+                disabled={!canTempSave()}
+                className="disabled:cursor-not-allowed cursor-pointer hidden md:block absolute
+                right-15 top-60 rounded-lg border border-[#E5E7EB] bg-white text-[#394150]
+                disabled:text-[#394150]/50 p-3"
             >
                 임시 저장
             </button>
-            <FlexBox direction="col" className="gap-5 relative w-full h-full">
-                <h1 className="font-bold text-2xl text-[#394150] text-center">공통 질문</h1>
-
+            <FlexBox direction="col" className="gap-5">
+                <p className="font-bold md:text-2xl text-xl text-gray-700 text-center md:mb-3">공통 질문</p>
                 {questionList.map((q) => (
                     <Disclosure
                         key={q.id}
+                        ref={(el) => {
+                            questionRefs.current[q.id] = el;
+                        }}
                         title={q.question}
                         isRequired={q.required}
-                        description={`(${q.textLength}자 이내)`}
+                        description={` (${q.textLength}자 이내)`}
+                        highlight={highlightQuestions[q.id]}
                     >
                         <TextArea
-                            value={questions[q.id] ?? ''}
+                            value={answers[q.id] ?? ''}
                             setValue={(val) => handleAnswerChange(q.id, val)}
-                            placeholder="지원자님의 경험을 공유해주세요"
+                            placeholder="내용을 입력해주세요"
                             maxLength={q.textLength}
                         />
                     </Disclosure>
                 ))}
-
-                <Disclosure title={'아래의 목록 중 소유하고 있으신 것이 있다면 자유롭게 첨부해주세요 :)'} isRequired>
+                <Disclosure title={uploadTitle}>
                     <Uploader
                         options={uploadOptions}
                         selectedOption={selectedOption}
                         setSelectedOption={handleOptionChange}
-                        setUploadType={setUploadType}
                         uploadValues={uploadValues}
+                        uploadType={uploadType}
                         onSaveUpload={async (option) => {
                             const val = uploadValues[option];
-                            if (!val) return;
+                            if (!val) return 'error'; // 값 없으면 실패로 처리
 
                             try {
                                 if (option === 'Portfolio' && val instanceof File) {
-                                    await postURL(resumeId, val);
+                                    const res = await postPortfolio(resumeId, val);
+                                    return res === 200 ? 200 : 'error';
                                 } else {
-                                    // Github과 Tech Blog는 항상 string이므로, 안전하게 처리
                                     const githubUrl =
                                         option === 'Github' ? (val as string) : (uploadValues['Github'] as string);
                                     const blogUrl =
-                                        option === 'Tech Blog'
-                                            ? (val as string)
-                                            : (uploadValues['Tech Blog'] as string);
-                                    await postSocialLinks(resumeId, githubUrl, blogUrl);
+                                        option === 'TechBlog' ? (val as string) : (uploadValues['TechBlog'] as string);
+                                    const res = await postSocialLinks(resumeId, blogUrl, githubUrl);
+                                    return res === 200 ? 200 : 'error';
                                 }
                             } catch (e) {
                                 console.error(e);
+                                return 'error';
                             }
                         }}
                     >
@@ -293,9 +266,14 @@ const Common = () => {
                         />
                     </Uploader>
                 </Disclosure>
-                <Disclosure title="가능한 오프라인 면접 시간을 모두 체크해주세요" isRequired>
+                <Disclosure
+                    ref={timeSlotRef}
+                    highlight={highlightTimeSlot}
+                    title="가능한 오프라인 면접 시간을 모두 체크해주세요"
+                    isRequired
+                >
                     <TimePicker>
-                        {scheduleData.map((schedule) => (
+                        {schedule.map((schedule) => (
                             <TimePicker.DateRow key={schedule.date} date={schedule.date}>
                                 {schedule.timeSlots.map((timeSlot) => {
                                     const dateTime = `${schedule.date}T${timeSlot.time}`;
@@ -312,19 +290,20 @@ const Common = () => {
                         ))}
                     </TimePicker>
                 </Disclosure>
-
-                <FlexBox className="justify-between mt-8 mb-0 gap-2">
-                    <ButtonNavigate text="이전" onClick={() => handlePostOnly(2)} />
-                    <ButtonNavigate text="제출하기" onClick={handleSubmit} isActive={isNextEnabled} />
+                <FlexBox direction="col" className="gap-3">
+                    <FlexBox className="justify-between mt-4 gap-2">
+                        <ButtonNavigate text="이전" onClick={handleBeforeTemp} />
+                        <ButtonNavigate text="제출하기" onClick={handlePostAndTemp} />
+                    </FlexBox>
+                    <div className="md:hidden">
+                        <ButtonNavigate
+                            text="임시저장"
+                            onClick={handleTempSave}
+                            isActive={canTempSave()}
+                            hasBackGround={false}
+                        />
+                    </div>
                 </FlexBox>
-                <div className="md:hidden">
-                    <ButtonNavigate
-                        text="임시저장"
-                        onClick={handleTempSave}
-                        isActive={canTempSave}
-                        hasBackGround={false}
-                    />
-                </div>
             </FlexBox>
             {isToastOpen && (
                 <ToastMessage
@@ -334,7 +313,7 @@ const Common = () => {
                     message={toast.message}
                 />
             )}
-        </div>
+        </>
     );
 };
 
