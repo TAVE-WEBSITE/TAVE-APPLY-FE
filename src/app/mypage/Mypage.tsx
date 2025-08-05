@@ -37,11 +37,12 @@ const Mypage = () => {
             const current = historyData.find(
                 (item: ApplicantData) =>
                     item.generation === generation &&
-                    ['DOCUMENT_PASSED', 'REJECTED', 'FINAL_ACCEPTED'].includes(item.applicationStatus)
+                    ['DOCUMENT_PASSED', 'REJECTED', 'FINAL_ACCEPTED', 'FINAL_FAIL'].includes(item.applicationStatus)
             );
 
             if (current) {
-                setApplicationStatus(current.applicationStatus);
+                const status = current.applicationStatus === 'FINAL_FAIL' ? 'REJECTED' : current.applicationStatus;
+                setApplicationStatus(status);
             }
         };
 

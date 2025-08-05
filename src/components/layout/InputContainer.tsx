@@ -1,5 +1,5 @@
-import InputLabel from "./InputLabel";
-import FlexBox from "./FlexBox";
+import InputLabel from "@/components/layout/InputLabel";
+import FlexBox from "@/components/layout/FlexBox";
  
 interface InputContainerProps {
   children: React.ReactNode;

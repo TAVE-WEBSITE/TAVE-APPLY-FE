@@ -32,7 +32,7 @@ interface InterviewData {
     code: string;
 }
 
-type Status = 'DRAFT' | 'SUBMITTED' | 'DOCUMENT_PASSED' | 'REJECTED' | 'FINAL_ACCEPTED';
+type Status = 'DRAFT' | 'SUBMITTED' | 'DOCUMENT_PASSED' | 'REJECTED' | 'FINAL_FAIL' | 'FINAL_ACCEPTED';
 
 type OutcomeStatus = 'NO_STATUS' | 'DOCUMENT_PASSED' | 'REJECTED' | 'FINAL_ACCEPTED';
 

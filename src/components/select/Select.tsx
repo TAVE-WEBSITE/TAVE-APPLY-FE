@@ -1,36 +1,32 @@
-"use client";
+'use client';
 
-import { useState, createContext } from "react";
-import Trigger from "./Trigger";
-import Options from "./Options";
-import Option from "./Option";
+import { useState, createContext } from 'react';
+import Trigger from '@/components/select/Trigger';
+import Options from '@/components/select/Options';
+import Option from '@/components/select/Option';
 
 interface SelectContextType {
-  selectedValue: any;
-  setSelectedValue: (value: any) => void;
-  isOpen: boolean;
-  setIsOpen: (value: boolean) => void;
+    selectedValue: any;
+    setSelectedValue: (value: any) => void;
+    isOpen: boolean;
+    setIsOpen: (value: boolean) => void;
 }
 
-export const SelectContext = createContext<SelectContextType | undefined>(
-  undefined
-);
+export const SelectContext = createContext<SelectContextType | undefined>(undefined);
 
-export interface SelectProps {
-  selectedValue: any;
-  setSelectedValue: (value: any) => void;
-  children: React.ReactNode;
+interface SelectProps {
+    selectedValue: any;
+    setSelectedValue: (value: any) => void;
+    children: React.ReactNode;
 }
 
 const Select = ({ selectedValue, setSelectedValue, children }: SelectProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <SelectContext.Provider
-      value={{ selectedValue, setSelectedValue, isOpen, setIsOpen }}
-    >
-      {children}
-    </SelectContext.Provider>
-  );
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+        <SelectContext.Provider value={{ selectedValue, setSelectedValue, isOpen, setIsOpen }}>
+            {children}
+        </SelectContext.Provider>
+    );
 };
 
 Select.Trigger = Trigger;

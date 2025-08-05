@@ -12,10 +12,11 @@ interface GraphProps {
 const Graph = ({ applicantData, generation }: GraphProps) => {
     const statusMeta: Record<Status, { text: string; color: string }> = {
         DOCUMENT_PASSED: { text: '서류 합격', color: 'text-emerald-600' },
-        REJECTED: { text: '불합격', color: 'text-pink-600/80' },
+        REJECTED: { text: '서류 불합격', color: 'text-pink-600/80' },
         FINAL_ACCEPTED: { text: '최종 합격', color: 'text-emerald-600' },
         SUBMITTED: { text: '지원 완료', color: 'text-blue-600' },
         DRAFT: { text: '작성 중', color: 'text-black' },
+        FINAL_FAIL: { text: '면접 불합격', color: 'text-pink-600/80' },
     };
 
     const renderStatus = (item: ApplicantData) => {
@@ -33,7 +34,10 @@ const Graph = ({ applicantData, generation }: GraphProps) => {
             );
         }
 
-        if (['DOCUMENT_PASSED', 'REJECTED', 'FINAL_ACCEPTED'].includes(item.applicationStatus) && isCurrentGen) {
+        if (
+            ['DOCUMENT_PASSED', 'REJECTED', 'FINAL_ACCEPTED', 'FINAL_FAIL'].includes(item.applicationStatus) &&
+            isCurrentGen
+        ) {
             return (
                 <Link
                     href="/outcome"
@@ -45,11 +49,11 @@ const Graph = ({ applicantData, generation }: GraphProps) => {
             );
         }
 
-        if (item.applicationStatus === 'SUBMITTED') {
+        if (item.applicationStatus === 'SUBMITTED' && isCurrentGen) {
             return (
                 <Link
                     href="/mypage/submit"
-                    className="text-white md:text-[15px] text-[13px] font-bold py-2 px-3
+                    className="md:text-[15px] text-[13px] font-bold py-2 px-3
                     bg-blue-600 rounded-lg"
                 >
                     서류 확인

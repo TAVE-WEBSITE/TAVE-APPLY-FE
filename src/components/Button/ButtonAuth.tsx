@@ -1,3 +1,5 @@
+'use client';
+
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface ButtonAuthProps {

@@ -1,15 +1,13 @@
-import { RecruitField } from "@/modules/recruitType";
-
-interface SelectOptionProp<T> {
-  children: React.ReactNode;
+interface SelectOptionProps {
+    children: React.ReactNode;
 }
 
-const Options: React.FC<SelectOptionProp<RecruitField>> = ({ children }) => {
-  return (
-    <ul className="absolute z-99 mt-2 w-full flex flex-col border border-[#E5E7EB] bg-white p-2 rounded-xl text-[#394150]">
-      {children}
-    </ul>
-  );
+const Options = ({ children }: SelectOptionProps) => {
+    return (
+        <ul className="absolute z-99 mt-2 w-full flex flex-col border border-gray-200 bg-white p-2 rounded-xl text-gray-700">
+            {children}
+        </ul>
+    );
 };
 
 export default Options;

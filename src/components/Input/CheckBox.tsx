@@ -6,7 +6,7 @@ interface CheckBoxProps {
     id: string;
 }
 
-const CheckBox = ({ isChecked = false, setIsChecked, id }: CheckBoxProps) => {
+const CheckBox = ({ isChecked, setIsChecked, id }: CheckBoxProps) => {
     return (
         <div className="md:w-6 md:h-6 w-5 h-5 relative inline-block">
             <input

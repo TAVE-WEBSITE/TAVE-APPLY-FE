@@ -1,23 +1,13 @@
 'use client';
 
-import LoadingSpinner from '@/components/LoadingSpinner';
-import FlexBox from '@/components/layout/FlexBox';
-
 interface ButtonNavigateProps {
     text: string;
     onClick: () => void;
     isActive?: boolean;
     hasBackGround?: boolean;
-    isLoading?: boolean;
 }
 
-const ButtonNavigate = ({
-    text,
-    isActive = true,
-    onClick,
-    hasBackGround = true,
-    isLoading = false,
-}: ButtonNavigateProps) => {
+const ButtonNavigate = ({ text, isActive = true, onClick, hasBackGround = true }: ButtonNavigateProps) => {
     return (
         <button
             className={`w-full md:w-auto py-3.5 px-5.5 rounded-[10px] font-bold  
@@ -26,13 +16,7 @@ const ButtonNavigate = ({
             onClick={onClick}
             disabled={!isActive}
         >
-            {isLoading ? (
-                <FlexBox className="justify-center">
-                    <LoadingSpinner />
-                </FlexBox>
-            ) : (
-                text
-            )}
+            {text}
         </button>
     );
 };

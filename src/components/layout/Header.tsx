@@ -24,6 +24,8 @@ const Header = () => {
             if (res === 200) {
                 setIsMobileOpen(false);
                 window.location.replace('/');
+            } else {
+                alert('문제가 발생했어요.\n캐시를 비운 후 새로고침 해주세요.');
             }
         }
     };

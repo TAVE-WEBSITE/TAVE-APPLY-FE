@@ -20,8 +20,8 @@ const CardSchedule = ({ iconName, title, description, extra }: CardScheduleProps
             </div>
             <FlexBox direction="col" className="items-center">
                 <p className="font-bold md:text-xl text-base">{title}</p>
-                <p className="text-[#9fa7b3] md:text-base sm:text-sm text-xs mt-0.5">{description}</p>
-                <p className="md:text-sm text-xs text-[#A0A7B4] opacity-50">{extra}</p>
+                <p className="text-[#9fa7b3] md:text-base sm:text-sm text-[11.5px] mt-0.5">{description}</p>
+                <p className="md:text-sm text-[11.5px] text-[#A0A7B4] opacity-50">{extra}</p>
             </FlexBox>
         </FlexBox>
     );

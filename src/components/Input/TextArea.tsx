@@ -1,25 +1,13 @@
 'use client';
 
-import { TextareaHTMLAttributes } from 'react';
-
-interface TextAreaProps<T extends string | number>
-    extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value' | 'onChange'> {
+interface TextAreaProps<T extends string | number> {
     value: T;
-    placeholder?: string;
-    setValue?: (value: T) => void;
-    readonly?: boolean;
+    setValue: (value: T) => void;
     maxLength: number;
-    className?: string;
+    placeholder?: string;
 }
 
-const TextArea = <T extends string | number>({
-    value,
-    placeholder,
-    setValue,
-    readonly = false,
-    maxLength,
-    className,
-}: TextAreaProps<T>) => {
+const TextArea = <T extends string | number>({ value, setValue, placeholder, maxLength }: TextAreaProps<T>) => {
     return (
         <textarea
             value={value}
@@ -27,15 +15,13 @@ const TextArea = <T extends string | number>({
             maxLength={maxLength}
             onChange={(e) => {
                 const val = e.target.value;
-                if (setValue) {
-                    setValue(val as T);
-                }
+                setValue(val as T);
             }}
-            readOnly={readonly}
-            className={`w-full h-[200px] md:h-[250px] border border-[#E5E7EB] resize-none
-        p-3 md:p-4 rounded-xl text-[#394150] md:text-base shadow-[0px_0px_24px_0px_#195BFF14] ${
-            readonly ? 'bg-[#F3F4F6] text-[#394150] opacity-50' : ''
-        } ${className}`}
+            className={`w-full border border-gray-200 resize-none font-medium
+        p-3 md:p-4 rounded-[10px] text-gray-700 md:text-base text-sm bg-white
+        focus:outline-none focus:shadow-[0px_0px_24px_0px_#195BFF14]
+        focus:border-blue-600/50 placeholder:text-[#B0B3B9] 
+       ${maxLength >= 300 ? 'h-[250px]' : 'h-[180px] md:h-[160px]'}`}
         />
     );
 };
