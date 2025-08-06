@@ -62,12 +62,7 @@ const ResetPassword = () => {
             </InputContainer>
             <div className="flex flex-col-reverse md:flex-row md:justify-between mt-4 gap-1">
                 <ButtonNavigate text="이전" hasBackGround={false} onClick={() => setCurrentStep(1)} />
-                <ButtonNavigate
-                    text="비밀번호 재설정"
-                    isActive={handleCheck()}
-                    onClick={handleResetPassword}
-                    isLoading={isResetPasswordLoading}
-                />
+                <ButtonNavigate text="비밀번호 재설정" isActive={handleCheck()} onClick={handleResetPassword} />
             </div>
         </FlexBox>
     );
