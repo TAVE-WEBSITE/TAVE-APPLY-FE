@@ -85,8 +85,8 @@ function formatDate(dateStr: string, type: 'only' | 'time'): string {
 
 function isInDocumentPeriod(startStr: string, endStr: string): boolean {
     const now = new Date();
-    const start = new Date(startStr);
-    const end = new Date(endStr);
+    const start = new Date(`${startStr}+09:00`);
+    const end = new Date(`${endStr}+09:00`);
 
     return now >= start && now <= end;
 }
