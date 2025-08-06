@@ -1,65 +1,61 @@
-import { useRef } from 'react';
-import FlexBox from '../layout/FlexBox';
-import Icons from '../Icons';
+'use client';
 
-interface UploadFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    type?: string;
+import FlexBox from '@/components/layout/FlexBox';
+import Icons from '@/components/Icons';
+import InputField from '@/components/Input/InputField';
+import Link from 'next/link';
+
+interface UploadFieldProps {
+    type: 'file' | 'text';
     value: any;
     setValue: (value: any) => void;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function UploadField({ type = 'text', value, onChange, setValue }: UploadFieldProps) {
-    const inputRef = useRef<HTMLInputElement | null>(null);
-
+const UploadField = ({ type, value, onChange, setValue }: UploadFieldProps) => {
     if (type === 'file') {
         const isUploaded = typeof value === 'string' && value !== '';
 
-        return (
-            <FlexBox className="items-center gap-3 border border-[#E5E7EB] rounded-xl px-4 py-3 md:py-4 w-full justify-between">
-                <FlexBox className="items-center gap-3">
-                    <Icons name={isUploaded ? 'fileGray' : 'upload'} width={16} height={16} />
-                    {isUploaded ? (
-                        <a
-                            href={value}
-                            download
-                            className="text-[#394150] underline hover:text-blue-600 text-sm"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            파일 확인
-                        </a>
-                    ) : (
-                        <>
-                            <label htmlFor="file-input" className="text-[#394150] md:text-base cursor-pointer">
-                                {value?.name ? value.name : '파일 선택 (100MB 이내)'}
-                            </label>
-                            <input id="file-input" ref={inputRef} type="file" onChange={onChange} className="hidden" />
-                        </>
+        if (!isUploaded) {
+            const field = value instanceof File ? value.name : '파일 선택 (100MB 이내 PDF)';
+            return (
+                <FlexBox
+                    className="w-full p-3 md:p-4 rounded-[10px]
+                    text-gray-700 bg-white border border-gray-200 justify-between"
+                >
+                    <label htmlFor="file-input" className="flex gap-3 cursor-pointer">
+                        <Icons name="upload" width={18} height={18} />
+                        <span>{field}</span>
+                        <input id="file-input" type="file" onChange={onChange} className="hidden" />
+                    </label>
+                    {value instanceof File && (
+                        <button onClick={() => setValue('')} className="text-gray-400 cursor-pointer">
+                            ✕
+                        </button>
                     )}
                 </FlexBox>
+            );
+        }
 
-                {isUploaded && (
-                    <button
-                        onClick={() => setValue('')}
-                        type="button"
-                        className="text-gray-400 hover:text-red-500 text-sm"
-                    >
-                        ✕
-                    </button>
-                )}
+        return (
+            <FlexBox
+                className="w-full p-3 md:p-4 rounded-[10px] text-gray-700 bg-white
+                border border-gray-200 justify-between"
+            >
+                <FlexBox className="gap-3">
+                    <Icons name="fileGray" width={14} height={14} />
+                    <Link href={value} target="_blank" rel="noopener noreferrer" className="underline">
+                        파일 확인
+                    </Link>
+                </FlexBox>
+                <button onClick={() => setValue('')} className="text-gray-400 cursor-pointer">
+                    ✕
+                </button>
             </FlexBox>
         );
     }
 
-    return (
-        <input
-            type={type}
-            ref={inputRef}
-            className="w-full border border-[#E5E7EB] p-3 md:p-4 rounded-xl text-[#394150] md:text-base cursor-pointer"
-            placeholder={type === 'text' ? 'ex. https://github.com/yourname' : ''}
-            value={value}
-            onChange={onChange}
-        />
-    );
-}
+    return <InputField placeholder="ex. https://url.com" value={value} onChange={onChange} />;
+};
+
+export default UploadField;

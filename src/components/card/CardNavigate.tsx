@@ -19,7 +19,7 @@ const CardNavigate = ({ title, buttonText, deadline, type, value }: CardNavigate
     const copyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-        const endTime = new Date(deadline);
+        const endTime = new Date(deadline.replace('T', ' '));
 
         const updateRemainingTime = () => {
             const now = new Date();

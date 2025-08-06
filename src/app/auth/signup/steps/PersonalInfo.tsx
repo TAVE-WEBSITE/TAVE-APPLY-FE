@@ -92,7 +92,9 @@ const PersonalInfo = () => {
                 <ButtonNavigate text="이전" hasBackGround={false} onClick={() => setCurrentStep(1)} />
                 <ButtonNavigate text="다음" onClick={handleNext} />
             </div>
-            {isToastOpen && <ToastMessage isOpen={isToastOpen} setIsOpen={setIsToastOpen} message={toastMessage} />}
+            {isToastOpen && (
+                <ToastMessage isOpen={isToastOpen} setIsOpen={setIsToastOpen} message={toastMessage} isError />
+            )}
         </FlexBox>
     );
 };

@@ -19,8 +19,8 @@ const CardField = ({ title, imgSrc, subTitle, hoverSrc, description, state }: Ca
     const filteredSub = subTitle.toLowerCase().includes('frontend') ? subTitle.replace(/frontend/gi, '') : subTitle;
 
     useEffect(() => {
-        const img = new Image();
-        img.src = hoverSrc.src;
+        const hoverImg = new Image();
+        hoverImg.src = hoverSrc.src;
     }, [hoverSrc]);
 
     return (

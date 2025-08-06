@@ -7,6 +7,7 @@ interface SelectOptionsProps {
     selectedOption: string;
     setSelectedOption: (option: string) => void;
 }
+
 const SelectOptions = ({ options, selectedOption, setSelectedOption }: SelectOptionsProps) => {
     return (
         <FlexBox className="justify-between gap-3">

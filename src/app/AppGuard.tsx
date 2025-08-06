@@ -18,7 +18,7 @@ export default function AppGuard({ children }: AppGuardProps) {
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
-        const requiresAuth = PROTECTED_PATHS.some((path) => pathname === path);
+        const requiresAuth = PROTECTED_PATHS.some((path) => pathname.startsWith(path));
 
         if (requiresAuth && !token) {
             router.replace('/auth/signin');

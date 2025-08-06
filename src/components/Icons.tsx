@@ -11,9 +11,8 @@ export type IconKeys =
   | "mail"
   | "award"
   | "x"
-  | "circleArrow"
+  | "circle"
   | "check"
-  | "error"
   | "upload";
 
 const iconMap: Record<IconKeys, string> = {
@@ -27,9 +26,8 @@ const iconMap: Record<IconKeys, string> = {
   message: "/message.svg",
   x: "/x.svg",
   arrow: "/arrow.svg",
-  circleArrow: "/circle-arrow.svg",
+  circle: "/circle.svg",
   check: "/check.svg",
-  error: "/error.svg",
   upload: "/upload.svg",
 };
 
@@ -38,7 +36,7 @@ interface IconProps {
   width: number;
   height: number;
   alt?: string;
-  isPriority?: boolean; // true면 우선적으로 로드
+  isPriority?: boolean;
   className?: string;
 }
 

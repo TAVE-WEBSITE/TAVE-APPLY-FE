@@ -64,12 +64,12 @@ const Recruit = () => {
                 >
                     {isDocument ? (
                         resumeState === 'SUBMITTED' && isClickedFourth ? (
-                            recruitMap[currentStep]
+                            <Guide type="submit" />
                         ) : (
                             recruitMap[currentStep]
                         )
                     ) : (
-                        recruitMap[currentStep]
+                        <Guide type="period" />
                     )}
                 </FlexBox>
             </section>

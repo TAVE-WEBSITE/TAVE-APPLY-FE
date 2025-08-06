@@ -1,4 +1,4 @@
-import FlexBox from './FlexBox';
+import FlexBox from '@/components/layout/FlexBox';
 
 interface InputLabelProps {
     label: string;
@@ -17,7 +17,7 @@ const InputLabel = ({ label, isRequired, description, isStress = false }: InputL
                         <span className="text-pink-600/80">*</span>
                     </FlexBox>
                     {description && (
-                        <span className={` md:text-sm text-xs ${isStress ? 'text-pink-600/80' : 'text-[#81818A]'}`}>
+                        <span className={`md:text-sm text-xs ${isStress ? 'text-pink-600/80' : 'text-[#81818A]'}`}>
                             {description}
                         </span>
                     )}
