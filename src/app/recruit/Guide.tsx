@@ -9,7 +9,7 @@ interface GuideProps {
 const Guide = ({ type }: GuideProps) => {
     const router = useRouter();
     return (
-        <FlexBox direction="col" className="items-center h-full gap-10 mt-27">
+        <FlexBox direction="col" className="items-center justify-center h-full gap-7">
             <p className="text-gray-700 sm:text-3xl text-2xl font-bold">
                 {type === 'period' ? '현재는 지원 기간이 아닙니다.' : '이미 지원을 완료하셨습니다.'}
             </p>

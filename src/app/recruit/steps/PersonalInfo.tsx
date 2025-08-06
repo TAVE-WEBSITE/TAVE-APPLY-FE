@@ -37,10 +37,10 @@ const PersonalInfo = () => {
         const fetchPersonal = async () => {
             const personalData = await applyPersonal(memberId);
             setPersonal(personalData);
-            setMajor(personalData.major ?? '');
-            setMinor(personalData.minor ?? '');
-            setSchool(personalData.school ?? '');
-            setApplyField(formattedToRecruitField(personalData.field ?? ''));
+            setMajor(personalData.major);
+            setMinor(personalData.minor);
+            setSchool(personalData.school);
+            setApplyField(formattedToRecruitField(personalData.field));
         };
 
         fetchPersonal();

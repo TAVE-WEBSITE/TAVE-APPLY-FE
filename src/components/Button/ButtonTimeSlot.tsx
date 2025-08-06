@@ -3,7 +3,7 @@
 interface ButtonTimeSlotProps {
     time: string;
     isSelected: boolean;
-    onClick?: (time: string) => void;
+    onClick?: () => void;
     isActive?: boolean;
 }
 
@@ -19,7 +19,7 @@ const ButtonTimeSlot = ({ time, isSelected, onClick, isActive = true }: ButtonTi
         ${isActive && 'cursor-pointer'}
       `}
             onClick={() => {
-                if (isActive && onClick) onClick(time);
+                if (isActive && onClick) onClick();
             }}
             disabled={!isActive}
         >
