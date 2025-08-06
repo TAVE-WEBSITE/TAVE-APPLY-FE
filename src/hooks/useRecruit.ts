@@ -1,6 +1,7 @@
 import { axiosClient } from '@/services/axiosClient';
-import { PersonalData, FormattedField, ResumeData } from '@/modules/recruitType';
+import { PersonalData, ResumeData } from '@/modules/recruitType';
 import { useMemberStore } from '@/store/memberStore';
+import axios from 'axios';
 
 const useRecruit = () => {
     const { setResumeId } = useMemberStore();
@@ -22,15 +23,6 @@ const useRecruit = () => {
         } catch (error) {
             console.error(error);
             return error;
-        }
-    };
-
-    const applyProgrammingLevel = async (field: FormattedField) => {
-        try {
-            const res = await axiosClient.get(`/v1/member/lan/field/${field}`);
-            return res.data.result;
-        } catch (error) {
-            console.error(error);
         }
     };
 
@@ -116,19 +108,26 @@ const useRecruit = () => {
         }
     };
 
-    const postPortfolio = async (resumeId: number, portfolio: File) => {
+    const postPortfolio = async (resumeId: number, portfolio: File | string) => {
         try {
-            const file = new FormData();
-            file.append('file', portfolio);
-            const res = await axiosClient.post(`/v1/member/resume/${resumeId}/portfolio`, file, {
-                headers: {
-                    'Content-Type': undefined,
-                },
-            });
+            let res;
+            if (portfolio === '') {
+                res = await axiosClient.post(`/v1/member/resume/${resumeId}/portfolio`);
+            } else {
+                const file = new FormData();
+                file.append('file', portfolio);
+                res = await axiosClient.post(`/v1/member/resume/${resumeId}/portfolio`, file, {
+                    headers: {
+                        'Content-Type': undefined,
+                    },
+                });
+            }
             return res.status;
         } catch (error) {
             console.error(error);
-            return error;
+            if (axios.isAxiosError(error)) {
+                return error.response?.data;
+            }
         }
     };
 
@@ -150,7 +149,6 @@ const useRecruit = () => {
         postTempApplication,
         applySchedule,
         applyCompleteEmail,
-        applyProgrammingLevel,
         postSocialLinks,
         postPortfolio,
         applyUrl,

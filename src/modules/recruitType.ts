@@ -5,11 +5,6 @@ interface PersonalData {
     field: FormattedField;
     generation: string;
 }
-interface ResumeData {
-    answers: Answer[] | null;
-    languageLevels: LanguageLevel[] | null;
-    timeSlots: TimeSlot[] | null;
-}
 
 interface LanguageLevel {
     language: string;
@@ -52,6 +47,12 @@ interface QuestionResponse {
     textLength: number;
     required: boolean;
     common: boolean;
+}
+
+interface ResumeData {
+    answers: Answer[] | null;
+    languageLevels: LanguageLevel[] | null;
+    timeSlots: TimeSlot[] | null;
 }
 
 type RecruitField = '디자인' | '웹 프론트엔드' | '앱 프론트엔드' | '백엔드' | '데이터분석' | '딥러닝';

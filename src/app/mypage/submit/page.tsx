@@ -5,14 +5,14 @@ const page = () => {
     return (
         <FlexBox direction="col" className="min-h-screen">
             <div
-                className="flex flex-col md:pt-40 md:pb-25 pt-26 pb-14 justify-center gap-2 text-center"
+                className="flex flex-col items-center md:gap-5 gap-3.5 pt-24 pb-10 md:pt-28 md:pb-12"
                 style={{
                     backgroundImage: 'url(/background/side-bg.png)',
                     backgroundSize: 'cover',
-                    backgroundPosition: 'center',
+                    backgroundPosition: 'top',
                 }}
             >
-                <h2 className="md:text-3xl text-2xl font-bold">16TH APPLICATION</h2>
+                <h2 className="md:text-3xl text-2xl font-bold">APPLICATION OVERVIEW</h2>
             </div>
             <section className="bg-[#F9FAFB] flex-1">
                 <FlexBox

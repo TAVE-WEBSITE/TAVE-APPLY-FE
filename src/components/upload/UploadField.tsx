@@ -17,16 +17,23 @@ const UploadField = ({ type, value, onChange, setValue }: UploadFieldProps) => {
         const isUploaded = typeof value === 'string' && value !== '';
 
         if (!isUploaded) {
+            const field = value instanceof File ? value.name : '파일 선택 (100MB 이내 PDF)';
             return (
-                <label
-                    htmlFor="file-input"
-                    className="w-full flex gap-3 p-3 md:p-4 rounded-[10px]
-                    text-gray-700 bg-white border border-gray-200 cursor-pointer"
+                <FlexBox
+                    className="w-full p-3 md:p-4 rounded-[10px]
+                    text-gray-700 bg-white border border-gray-200 justify-between"
                 >
-                    <Icons name="upload" width={18} height={18} />
-                    <span>파일 선택 (100MB 이내 PDF)</span>
-                    <input id="file-input" type="file" onChange={onChange} className="hidden" />
-                </label>
+                    <label htmlFor="file-input" className="flex gap-3 cursor-pointer">
+                        <Icons name="upload" width={18} height={18} />
+                        <span>{field}</span>
+                        <input id="file-input" type="file" onChange={onChange} className="hidden" />
+                    </label>
+                    {value instanceof File && (
+                        <button onClick={() => setValue('')} className="text-gray-400 cursor-pointer">
+                            ✕
+                        </button>
+                    )}
+                </FlexBox>
             );
         }
 
