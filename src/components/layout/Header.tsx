@@ -13,7 +13,7 @@ const Header = () => {
     const { isLogin } = useMemberStore();
     const { signOut } = useAuth();
 
-    const redirectionList = [...(isLogin ? ['RECRUIT'] : []), 'FAQ', ...(isLogin ? ['MYPAGE'] : [])];
+    const redirectionList = [...(isLogin ? ['APPLY'] : []), 'FAQ', ...(isLogin ? ['MYPAGE'] : [])];
 
     const handleLoginAndOut = async () => {
         if (!isLogin) {
@@ -40,7 +40,7 @@ const Header = () => {
                     <ul className="flex gap-x-12 font-bold items-center">
                         {redirectionList.map((item, index) => (
                             <li key={index}>
-                                <Link href={`/${item.toLowerCase()}`}>{item}</Link>
+                                <Link href={item === 'APPLY' ? '/recruit' : `/${item.toLowerCase()}`}>{item}</Link>
                             </li>
                         ))}
                         <li>
@@ -100,7 +100,10 @@ const Header = () => {
                 >
                     {redirectionList.map((item, index) => (
                         <li key={index} className="py-3">
-                            <Link onClick={() => setIsMobileOpen(false)} href={`/${item.toLowerCase()}`}>
+                            <Link
+                                onClick={() => setIsMobileOpen(false)}
+                                href={item === 'APPLY' ? '/recruit' : `/${item.toLowerCase()}`}
+                            >
                                 {item}
                             </Link>
                         </li>
