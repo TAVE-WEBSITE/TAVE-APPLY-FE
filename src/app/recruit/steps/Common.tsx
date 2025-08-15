@@ -107,6 +107,17 @@ const Common = () => {
         fetchData();
     }, [resumeId]);
 
+    useEffect(() => {
+        const currentValue = uploadValues[selectedOption];
+        let uploaded = false;
+
+        if (uploadType === 'file') {
+            uploaded = typeof currentValue === 'string' && currentValue !== '';
+        }
+
+        setSaveStatus(uploaded ? 'success' : 'idle');
+    }, [uploadValues, selectedOption, uploadType]);
+
     const toggleTimeSelection = (date: string, time: string) => {
         const dateTime = `${date}T${time}`;
         setSelectedTimes((prev) =>
