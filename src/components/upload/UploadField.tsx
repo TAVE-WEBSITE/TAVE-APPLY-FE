@@ -17,7 +17,7 @@ const UploadField = ({ type, value, onChange, setValue }: UploadFieldProps) => {
         const isUploaded = typeof value === 'string' && value !== '';
 
         if (!isUploaded) {
-            const field = value instanceof File ? value.name : '파일 선택 (200MB 이내 PDF)';
+            const field = value instanceof File ? value.name : '파일 선택 (200MB 이내 PDF).';
             return (
                 <FlexBox
                     className="w-full p-3 md:p-4 rounded-[10px]
