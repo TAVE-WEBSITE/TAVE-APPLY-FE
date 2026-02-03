@@ -24,21 +24,21 @@ const recruitMap: Record<number, JSX.Element> = {
 const stepCount = Object.keys(recruitMap).length;
 
 const Recruit = () => {
-    const [isDocument, setIsDocument] = useState(false);
+    const [isStarted, setIsStarted] = useState(false);
     const { currentStep, isClickedFourth } = useRecruitStore();
-    const { applyIsDocument } = useResult();
+    const { applyIsStarted } = useResult();
     const { generation } = useHomeStore();
     const { resumeState } = useMemberStore();
 
     const title = `${formatOrdinal(generation)} TAVE APPLY STEP`;
 
     useEffect(() => {
-        const fetchDocument = async () => {
-            const documentData = await applyIsDocument();
-            setIsDocument(documentData);
+        const fetchStarted = async () => {
+            const startedData = await applyIsStarted();
+            setIsStarted(startedData);
         };
 
-        fetchDocument();
+        fetchStarted();
     }, []);
 
     return (
@@ -51,7 +51,7 @@ const Recruit = () => {
                     backgroundPosition: 'center',
                 }}
             >
-                {(resumeState === 'SUBMITTED' && isClickedFourth) || !isDocument ? (
+                {(resumeState === 'SUBMITTED' && isClickedFourth) || !isStarted ? (
                     <h2 className="md:text-3xl text-2xl font-bold text-center">TAVE APPLICATION INFO</h2>
                 ) : (
                     <StepBar title={title} maxStep={stepCount} currentStep={currentStep} />
@@ -62,7 +62,7 @@ const Recruit = () => {
                     direction="col"
                     className="md:pt-12 pt-10 md:pb-26 pb-16 md:w-[570px] sm:w-[400px] w-[314px] mx-auto"
                 >
-                    {isDocument ? (
+                    {isStarted ? (
                         resumeState === 'SUBMITTED' && isClickedFourth ? (
                             <Guide type="submit" />
                         ) : (

@@ -49,6 +49,15 @@ const useResult = () => {
         }
     };
 
+    const applyIsStarted = async () => {
+        try {
+            const res = await axiosClient.get('/v1/member/apply-recruit/started');
+            return res.data.result;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const applyResumeHistory = async (resumeId: number) => {
         try {
             const res = await axiosClient.get(`/v1/member/resumes/${resumeId}/details`);
@@ -64,6 +73,7 @@ const useResult = () => {
         applyFinal,
         applyCoordinates,
         applyIsDocument,
+        applyIsStarted,
         applyResumeHistory,
     };
 };
