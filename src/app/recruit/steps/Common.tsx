@@ -27,20 +27,18 @@ const Common = () => {
         applySchedule,
         applyCompleteEmail,
         postSocialLinks,
-        postPortfolio,
         applyUrl,
     } = useRecruit();
 
-    type UploadType = 'text' | 'file';
-    const uploadOptions = ['Github', 'TechBlog', 'Portfolio'];
+    // const uploadOptions = ['Github', 'TechBlog', 'Portfolio'];
+    const uploadOptions = ['Github'];
 
     const [selectedOption, setSelectedOption] = useState(uploadOptions[0]);
-    const uploadType: UploadType = selectedOption === 'Portfolio' ? 'file' : 'text';
+    // const uploadType: UploadType = selectedOption === 'Portfolio' ? 'file' : 'text';
+    const uploadType = 'text';
 
     const [uploadValues, setUploadValues] = useState<Record<string, string | File>>({
         Github: '',
-        TechBlog: '',
-        Portfolio: '',
     });
 
     const [answers, setAnswers] = useState<{ [id: number]: string }>({});
@@ -57,7 +55,7 @@ const Common = () => {
     const questionRefs = useRef<{ [id: number]: HTMLDivElement | null }>({});
     const urlTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-    const uploadTitle = `아래의 항목 중 ${username}님께서 보유하고 계신 것을 자유롭게 첨부해주세요. 제출하시면 실력 평가에 가산점이 부여됩니다.`;
+    const uploadTitle = '링크 형식으로 제출해주세요. (노션, 구글 드라이브, 블로그 링크 등)';
 
     useEffect(() => {
         if (!resumeId) return;
@@ -94,9 +92,7 @@ const Common = () => {
             setAnswers(filledAnswers);
 
             setUploadValues({
-                Github: urlData.githubUrl ?? '',
-                TechBlog: urlData.blogUrl ?? '',
-                Portfolio: urlData.portfolioUrl ?? '',
+                Github: urlData.githubUrl ?? urlData.blogUrl ?? '',
             });
 
             if (tempData.page3.timeSlots) {
@@ -109,14 +105,10 @@ const Common = () => {
 
     useEffect(() => {
         const currentValue = uploadValues[selectedOption];
-        let uploaded = false;
-
-        if (uploadType === 'file') {
-            uploaded = typeof currentValue === 'string' && currentValue !== '';
-        }
+        const uploaded = typeof currentValue === 'string' && currentValue.trim() !== '';
 
         setSaveStatus(uploaded ? 'success' : 'idle');
-    }, [uploadValues, selectedOption, uploadType]);
+    }, [uploadValues, selectedOption]);
 
     const toggleTimeSelection = (date: string, time: string) => {
         const dateTime = `${date}T${time}`;
@@ -141,7 +133,8 @@ const Common = () => {
     };
 
     const handleUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = uploadType === 'file' ? e.target.files?.[0] ?? '' : e.target.value;
+        // const value = uploadType === 'file' ? e.target.files?.[0] ?? '' : e.target.value;
+        const value = e.target.value;
         setUploadValues((prev) => ({
             ...prev,
             [selectedOption]: value,
@@ -162,20 +155,15 @@ const Common = () => {
     });
 
     const handleSaveUpload = async () => {
-        const val = uploadValues[selectedOption];
-        let res;
-
-        if (selectedOption === 'Portfolio') {
-            res = await postPortfolio(resumeId, val);
-        } else {
-            const githubUrl = uploadValues['Github'] as string;
-            const blogUrl = uploadValues['TechBlog'] as string;
-            res = await postSocialLinks(resumeId, blogUrl, githubUrl);
-        }
+        const githubUrl = uploadValues['Github'] as string;
+        // const blogUrl = uploadValues['TechBlog'] as string;
+        const res = await postSocialLinks(resumeId, '', githubUrl);
 
         if (res !== 200) {
             setSaveStatus('error');
-            setToast({ message: res.message, isError: true });
+            const errorMessage =
+                typeof res === 'object' && res && 'message' in res ? String(res.message) : '링크 저장에 실패했습니다.';
+            setToast({ message: errorMessage, isError: true });
             setIsToastOpen(true);
         } else {
             setSaveStatus('success');
