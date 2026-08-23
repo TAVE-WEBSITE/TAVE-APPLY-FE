@@ -3,6 +3,7 @@ import Icons from '@/components/Icons';
 import Link from 'next/link';
 import { Status, ApplicantData } from '@/modules/resultType';
 import { formattedToRecruitField } from '@/utils/formatField';
+import { IS_INTERVIEW_OPEN } from '@/modules/featureFlag';
 
 interface GraphProps {
     generation: string;
@@ -34,10 +35,11 @@ const Graph = ({ applicantData, generation }: GraphProps) => {
             );
         }
 
-        if (
-            ['DOCUMENT_PASSED', 'REJECTED', 'FINAL_ACCEPTED', 'FINAL_FAIL'].includes(item.applicationStatus) &&
-            isCurrentGen
-        ) {
+        const outcomeStatuses = IS_INTERVIEW_OPEN
+            ? ['DOCUMENT_PASSED', 'REJECTED', 'FINAL_ACCEPTED', 'FINAL_FAIL']
+            : ['REJECTED', 'FINAL_ACCEPTED', 'FINAL_FAIL'];
+
+        if (outcomeStatuses.includes(item.applicationStatus) && isCurrentGen) {
             return (
                 <Link
                     href="/outcome"
