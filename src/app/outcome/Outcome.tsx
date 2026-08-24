@@ -11,7 +11,6 @@ import Failed from './results/Failed';
 import FlexBox from '@/components/layout/FlexBox';
 import formatOrdinal from '@/utils/formatOrdinal';
 import useResult from '@/hooks/useResult';
-import { IS_INTERVIEW_OPEN } from '@/modules/featureFlag';
 
 const Outcome = () => {
     const router = useRouter();
@@ -24,7 +23,7 @@ const Outcome = () => {
     useEffect(() => {
         if (!generation || !applicationStatus) return;
 
-        if (applicationStatus === 'NO_STATUS' || (!IS_INTERVIEW_OPEN && applicationStatus === 'DOCUMENT_PASSED')) {
+        if (applicationStatus === 'NO_STATUS' ) {
             router.replace('/mypage');
             return;
         }
