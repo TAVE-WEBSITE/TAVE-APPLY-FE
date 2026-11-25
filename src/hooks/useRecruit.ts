@@ -3,6 +3,9 @@ import { PersonalData, ResumeData } from '@/modules/recruitType';
 import { useMemberStore } from '@/store/memberStore';
 import axios from 'axios';
 
+const PDF_CONTENT_TYPE = 'application/pdf';
+const PORTFOLIO_MAX_SIZE = 200 * 1024 * 1024;
+
 const useRecruit = () => {
     const { setResumeId } = useMemberStore();
 
@@ -108,26 +111,51 @@ const useRecruit = () => {
         }
     };
 
-    const postPortfolio = async (resumeId: number, portfolio: File | string) => {
+    // PresignedUrl 발급 → S3 직접 업로드 → 완료 처리, 빈 값이면 포트폴리오 삭제
+    const postPortfolio = async (
+        resumeId: number,
+        portfolio: File | string
+    ): Promise<{ status: number; portfolioUrl: string | null } | { message: string }> => {
         try {
-            let res;
             if (portfolio === '') {
-                res = await axiosClient.post(`/v1/member/resume/${resumeId}/portfolio`);
-            } else {
-                const file = new FormData();
-                file.append('file', portfolio);
-                res = await axiosClient.post(`/v1/member/resume/${resumeId}/portfolio`, file, {
-                    headers: {
-                        'Content-Type': undefined,
-                    },
-                });
+                const res = await axiosClient.delete(`/v1/member/resume/${resumeId}/portfolio`);
+                return { status: res.status, portfolioUrl: null };
             }
-            return res.status;
+
+            // 이미 업로드된 파일(URL)은 다시 올리지 않음
+            if (typeof portfolio === 'string') {
+                return { status: 200, portfolioUrl: portfolio };
+            }
+
+            const isPdf = portfolio.type === PDF_CONTENT_TYPE || portfolio.name.toLowerCase().endsWith('.pdf');
+            if (!isPdf) {
+                return { message: 'PDF 파일만 업로드할 수 있습니다.' };
+            }
+            if (portfolio.size > PORTFOLIO_MAX_SIZE) {
+                return { message: '파일 크기는 최대 200MB까지 허용됩니다.' };
+            }
+
+            const issueRes = await axiosClient.post(`/v1/member/resume/${resumeId}/portfolio/presigned-url`, {
+                contentType: PDF_CONTENT_TYPE,
+                fileSize: portfolio.size,
+            });
+            const { presignedUrl, objectKey } = issueRes.data.result;
+
+            // S3 서명이 깨지지 않도록 인증 헤더가 붙는 axiosClient 대신 기본 axios 사용
+            await axios.put(presignedUrl, portfolio, {
+                headers: { 'Content-Type': PDF_CONTENT_TYPE },
+            });
+
+            const completeRes = await axiosClient.post(`/v1/member/resume/${resumeId}/portfolio/complete`, {
+                objectKey,
+            });
+            return { status: completeRes.status, portfolioUrl: completeRes.data.result.portfolioUrl };
         } catch (error) {
             console.error(error);
-            if (axios.isAxiosError(error)) {
-                return error.response?.data;
+            if (axios.isAxiosError(error) && typeof error.response?.data?.message === 'string') {
+                return { message: error.response.data.message };
             }
+            return { message: '포트폴리오 업로드에 실패했습니다.' };
         }
     };
 

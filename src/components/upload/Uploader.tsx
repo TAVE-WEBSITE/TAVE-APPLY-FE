@@ -26,7 +26,7 @@ const Uploader = ({ options, selectedOption, onSaveUpload, onOptionChange, child
                         }`}
                         onClick={() => onOptionChange(option)}
                     >
-                        Link
+                        {option}
                     </button>
                 ))}
             </FlexBox>

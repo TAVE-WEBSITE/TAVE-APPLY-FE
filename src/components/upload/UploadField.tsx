@@ -26,7 +26,13 @@ const UploadField = ({ type, value, onChange, setValue }: UploadFieldProps) => {
                     <label htmlFor="file-input" className="flex gap-3 cursor-pointer">
                         <Icons name="upload" width={18} height={18} />
                         <span>{field}</span>
-                        <input id="file-input" type="file" onChange={onChange} className="hidden" />
+                        <input
+                            id="file-input"
+                            type="file"
+                            accept=".pdf,application/pdf"
+                            onChange={onChange}
+                            className="hidden"
+                        />
                     </label>
                     {value instanceof File && (
                         <button onClick={() => setValue('')} className="text-gray-400 cursor-pointer">
